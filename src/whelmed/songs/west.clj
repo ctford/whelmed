@@ -3,10 +3,12 @@
     [leipzig.melody]
     [whelmed.melody]
     [leipzig.scale]
+    [leipzig.chord]
     [whelmed.instrument]
     [overtone.live :only [stop midi->hz]]))
 
-(def progression (map seventh [0 (low 4) (low 5) (low 2)]))
+(def progression
+  (map seventh [0 (low 4) (low 5) (low 2)]))
 
 (def backing
   (let [render-chord (fn [start notes] (map #(identity {:time start :duration 4 :pitch %}) notes))]
@@ -70,7 +72,6 @@
        [  4   9   8   7])))
 
 (def consider-that (assoc (vec consider-this) 3 {:time 0 :pitch 6 :duration 4})) 
-
 (def consider-everything
   (->>
     (take 3 consider-this)

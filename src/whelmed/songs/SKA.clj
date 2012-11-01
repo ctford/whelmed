@@ -2,6 +2,7 @@
   (:use
         [leipzig.melody]
         [leipzig.scale]
+        [leipzig.chord]
         [whelmed.instrument]
         [overtone.live :only [ctl at midi->hz now stop]]))
 
