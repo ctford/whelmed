@@ -61,7 +61,7 @@
    (then like-fairy-floss)
    (then dissolves-on-the-tip-of-my-tongue) 
    (then dissolves-on-the-tip-of-my-tongue)
-   (where :part (constantly ::response))))
+   (where :part (is ::response))))
 
 (def consider-this
   (after -3/2
@@ -89,34 +89,34 @@
 (def break
   (->>
     (with breakup breakdown)
-    (where :part (constantly ::break))))
+    (where :part (is ::break))))
 
 (def theme
   (->>
     ill-run-away
     (then (after 3 ill-get-away))
     (then (after 3 my-heart-will-go-west-with-the-sun))
-    (where :part (constantly ::lead))))
+    (where :part (is ::lead))))
 
 (def half-theme
   (->>
     ill-run-away
     (then (after 3 ill-get-away))
-    (where :part (constantly ::lead))))
+    (where :part (is ::lead))))
 
 (def spilling-theme
   (->>
     ill-run-away
     (then (after 3 ill-get-away))
     (then (after 3 west-with-the-west-with-the))
-    (where :part (constantly ::lead))))
+    (where :part (is ::lead))))
 
 (def accompaniment
   (->>
     (apply concat backing)
     (times 6)
     (then (after 16 (times 6 (apply concat backing))))
-    (where :part (constantly ::accompaniment))))
+    (where :part (is ::accompaniment))))
 
 (def bass
   (let [vanilla
@@ -129,7 +129,7 @@
   (->>
     lowered
    (with seventh)
-   (where :part (constantly ::bass)))))
+   (where :part (is ::bass)))))
 
 (def west-with-the-sun
   (->>
