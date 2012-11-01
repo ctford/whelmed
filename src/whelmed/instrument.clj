@@ -1,5 +1,6 @@
 (ns whelmed.instrument
   (:use
+    [leipzig.melody]
     [overtone.inst.sampled-piano]
     [overtone.live]))
 
