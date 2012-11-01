@@ -1,7 +1,7 @@
 (ns whelmed.core
   (:use
     [overtone.live :only [recording-start recording-stop]]
-    [whelmed.melody :only [play then after]]
+    [leipzig.melody :only [play then after]]
     [whelmed.songs.west :only [west-with-the-sun]]
     [whelmed.songs.SKA :only [ska]]))
 

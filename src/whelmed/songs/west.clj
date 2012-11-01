@@ -1,7 +1,7 @@
 (ns whelmed.songs.west
   (:use
-    [whelmed.melody]
-    [whelmed.scale]
+    [leipzig.melody]
+    [leipzig.scale]
     [whelmed.instrument]
     [overtone.live :only [stop midi->hz]]))
 

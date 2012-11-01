@@ -36,3 +36,7 @@
         (+ -0.04 (sin-osc freq))))))
 
 (def piano sampled-piano)
+
+(defmethod play-note :default [{:keys [pitch time duration]}]
+     (let [id (at time (piano pitch))]
+              (at (+ time duration) (ctl id :gate 0))))

@@ -1,7 +1,7 @@
 (ns whelmed.songs.SKA
   (:use
-        [whelmed.melody]
-        [whelmed.scale]
+        [leipzig.melody]
+        [leipzig.scale]
         [whelmed.instrument]
         [overtone.live :only [ctl at midi->hz now stop]]))
 
