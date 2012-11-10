@@ -53,7 +53,7 @@
     pitches))
 
 (defn chord [degree duration]
-  (->> (triad degree) vals (cluster duration)))
+  (->> (-> triad (root degree)) vals (cluster duration)))
 
 (def rhythm
   (->>
@@ -70,7 +70,7 @@
   (->> (take 6 rhythm)
     (then
       (->>
-        (-> (triad 3.5) (update-in [:iii] #(+ % 0.5)) vals)
+        (-> (-> triad (root 3.5)) (update-in [:iii] #(+ % 0.5)) vals)
         (cluster 2)
         (after 2)))))
 
@@ -102,7 +102,7 @@
 
 (def suns-on-the-rise 
   (->>
-    (->> [(triad 1)]
+    (->> [(-> triad (root 1))]
       (where :i #(+ % 1/2))
       (where :v #(+ % 1/2))
       (mapcat vals)
@@ -125,10 +125,10 @@
     (then (chord -3 4))
     (then
       (cluster 4
-        (-> (triad 1) (update-in [:iii] #(+ % 1/2)) vals)))
+        (-> (-> triad (root 1)) (update-in [:iii] #(+ % 1/2)) vals)))
     (then
       (cluster 4
-        (-> (triad -2) (update-in [:iii] #(+ % 1/2)) vals)))))
+        (-> (-> triad (root -2)) (update-in [:iii] #(+ % 1/2)) vals)))))
 
 (def youd-be-home-by-now
   (->>

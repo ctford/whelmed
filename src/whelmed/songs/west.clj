@@ -8,7 +8,7 @@
     [overtone.live :only [stop midi->hz]]))
 
 (def progression
-  (map seventh [0 (low 4) (low 5) (low 2)]))
+  (map (partial root seventh) [0 (low 4) (low 5) (low 2)]))
 
 (def backing
   (let [render-chord (fn [start notes] (map #(identity {:time start :duration 4 :pitch %}) notes))]

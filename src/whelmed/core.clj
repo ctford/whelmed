@@ -3,6 +3,7 @@
     [overtone.live :only [recording-start recording-stop]]
     [leipzig.melody :only [play then after]]
     [whelmed.songs.west :only [west-with-the-sun]]
+    [whelmed.songs.dolorem-ipsum :only [dolorem-ipsum]]
     [whelmed.songs.SKA :only [ska]]))
 
 (def tracks

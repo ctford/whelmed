@@ -29,45 +29,45 @@
 (defn y [chord element f] (update-in chord [element] f))
 (def raise #(-> % (y :iii inc) (y :v inc)))
 
-(def theme (let [base (triad 0)]
-             (->>
-               [base (raise base) (raise (raise base)) (raise base)]
-               (map #(arpeggiate % [:v :i :iii :v] 1/4))
-               (reduce #(then %2 %1)))))
+(def theme 
+  (->>
+    [triad (raise triad) (raise (raise triad)) (raise triad)]
+    (map #(arpeggiate % [:v :i :iii :v] 1/4))
+    (reduce #(then %2 %1))))
 
 (def response
   (->>
       (->> (arpeggiate
-             (raise (triad 1))
+             (raise (-> triad (root 1)))
              [:iii :i :iii :v] 1/4)
         (times 4))
     (then
       (->> (arpeggiate
-             (-> (triad 1) (assoc :vi 6))
+             (-> (-> triad (root 1)) (assoc :vi 6))
              [:v :iii :i :vi] 1/4)
         (times 4)))))
 
 (def wander
   (->> 
       (->> (arpeggiate
-             (-> (triad 2))
+             (-> (-> triad (root 2)))
              [:iii :i :iii :v] 1/4)
         (times 4))
     (then
       (->> (arpeggiate
-             (-> (triad 2) (assoc :vi 7))
+             (-> (-> triad (root 2)) (assoc :vi 7))
              [:v :iii :i :vi] 1/4)
         (times 4)))
     (then
       response)
     (then
       (->> (arpeggiate
-             (raise (triad 1))
+             (raise (-> triad (root 1)))
              [:iii :i :iii :v] 1/4)
         (times 4)))
     (then
       (->> (arpeggiate
-             (-> (raise (triad 1)) (update-in [:iii] #(- % 3/2)))
+             (-> (raise (-> triad (root 1))) (update-in [:iii] #(- % 3/2)))
              [:iii :i :iii :v] 1/4)
         (times 4)))))
 
