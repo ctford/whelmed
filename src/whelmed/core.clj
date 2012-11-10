@@ -8,7 +8,8 @@
 (def tracks
   (sorted-map
     "ska" ska
-    "west" west-with-the-sun))
+    "west" west-with-the-sun
+    "dolorem" dolorem-ipsum))
 
 (defn -main
 
