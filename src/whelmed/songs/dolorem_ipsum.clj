@@ -1,4 +1,4 @@
-(ns whelmed.songs.west
+(ns whelmed.songs.dolorem-ipsum
   (:use
     [leipzig.melody]
     [whelmed.melody]
@@ -37,26 +37,56 @@
 
 (def response
   (->>
-      (->> (arpeggiate (raise (triad 1)) [:iii :i :iii :v] 1/4)
+      (->> (arpeggiate
+             (raise (triad 1))
+             [:iii :i :iii :v] 1/4)
         (times 4))
     (then
-      (->> (arpeggiate (triad 1) [:iii :i :iii :v] 1/4)
+      (->> (arpeggiate
+             (-> (triad 1) (assoc :vi 6))
+             [:v :iii :i :vi] 1/4)
+        (times 4)))))
+
+(def wander
+  (->> 
+      (->> (arpeggiate
+             (-> (triad 2))
+             [:iii :i :iii :v] 1/4)
+        (times 4))
+    (then
+      (->> (arpeggiate
+             (-> (triad 2) (assoc :vi 7))
+             [:v :iii :i :vi] 1/4)
+        (times 4)))
+    (then
+      response)
+    (then
+      (->> (arpeggiate
+             (raise (triad 1))
+             [:iii :i :iii :v] 1/4)
+        (times 4)))
+    (then
+      (->> (arpeggiate
+             (-> (raise (triad 1)) (update-in [:iii] #(- % 3/2)))
+             [:iii :i :iii :v] 1/4)
         (times 4)))))
 
 (def dolorem-ipsum
-  (->> theme (times 2) (then response) (times 2)
-    (where :time (bpm 100))
-    (where :duration (bpm 100))
+  (->> theme (times 2) (then response) (times 2) (then wander)
+    (where :time (bpm 80))
+    (where :duration (bpm 80))
     (where :pitch (comp F lydian))))
 
 (defn demo
   ([notes] (demo notes major))
   ([scale notes]
     (->> notes
-      (where :time (bpm 90))
-      (where :duration (bpm 90))
+      (where :time (bpm 80))
+      (where :duration (bpm 80))
       (where :pitch (comp C scale))
       play)))
+
+;(->> wander demo)
 
 ;(->> dolorem-ipsum play)
 
