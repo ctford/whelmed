@@ -76,8 +76,10 @@
              [:iii :i :iii :v] 1/4)
         (times 4)))))
 
+(def end (phrase [1/4] [7]))
+
 (def dolorem-ipsum
-  (->> theme (times 2) (then response) (times 2) (then wander)
+  (->> theme (times 2) (then response) (times 2) (then wander) (then end)
     (where :time (bpm 80))
     (where :duration (bpm 80))
     (where :pitch (comp F lydian))))
