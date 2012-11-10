@@ -27,22 +27,26 @@
     []))
 
 (defn y [chord element f] (update-in chord [element] f))
-(def theme (let [base (triad 0)
-                 raise #(-> % (y :iii inc) (y :v inc))]
+(def raise #(-> % (y :iii inc) (y :v inc)))
+
+(def theme (let [base (triad 0)]
              (->>
                [base (raise base) (raise (raise base)) (raise base)]
-               (map #(arpeggiate % [:v :i :iii :v] 1/2))
+               (map #(arpeggiate % [:v :i :iii :v] 1/4))
                (reduce #(then %2 %1)))))
 
 (def response
   (->>
-    [(triad 4) (triad 4) (triad 1) (triad 1)]
-    (progress 4)))
+      (->> (arpeggiate (raise (triad 1)) [:iii :i :iii :v] 1/4)
+        (times 4))
+    (then
+      (->> (arpeggiate (triad 1) [:iii :i :iii :v] 1/4)
+        (times 4)))))
 
 (def dolorem-ipsum
   (->> theme (times 2) (then response) (times 2)
-    (where :time (bpm 120))
-    (where :duration (bpm 120))
+    (where :time (bpm 100))
+    (where :duration (bpm 100))
     (where :pitch (comp F lydian))))
 
 (defn demo
