@@ -75,11 +75,15 @@
 (def end (phrase [1/4] [7]))
 
 (def dolorem-ipsum
-  (->> theme (times 2) (then response) (times 2) (then wander) (then end)
+  (->> 
+    (times 2 theme) (then response) (times 2)
+    (then wander)
+    (then (times 2 theme)) (then response) (then end)
+    (where :part (is ::melody))
     (where :time (bpm 80))
     (where :duration (bpm 80))
     (where :pitch (comp F lydian))))
 
-;(->> dolorem-ipsum play)
+(defmethod play-note ::melody [{:keys [pitch]}] (-> pitch midi->hz sawish))
 
-;(defmethod play-note ::bass [{:keys [pitch]}] (-> pitch midi->hz groan))
+;(->> dolorem-ipsum play)
