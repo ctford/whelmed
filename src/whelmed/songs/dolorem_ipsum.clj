@@ -47,17 +47,13 @@
              [:v :iii :i :vi] 1/4)
         (times 4)))))
 
-(defn but [predicate? f notes]
-  (for [note notes]
-    (if (predicate? note) (f note) note)))
-
 (def wander
   (->> 
       (->> (arpeggiate
              (-> (-> triad (root 2)))
              [:iii :i :iii :v] 1/4)
         (times 4)
-        (but #(= 15/4 (:time %)) #(update-in % [:pitch] inc)))
+        (but 15/4 16/4 #(where :pitch inc %)))
     (then
       (->> (arpeggiate
              (-> (-> triad (root 2)) (assoc :vi 7))

@@ -9,6 +9,16 @@
     (take start notes)
     (drop end notes)))
 
+(defn but [from to f notes]
+  (let [early? #(< (:time %) from)
+        late? #(>= (:time %) to)
+        apple (->> notes
+                (filter #(or (early? %) (late? %)))) 
+        core (->> notes
+               (filter #(not (early? %))) 
+               (filter #(not (late? %))))] 
+    (with apple (f core))))
+
 (defn demo
   ([notes] (demo notes major))
   ([scale notes]
