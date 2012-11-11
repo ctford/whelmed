@@ -84,6 +84,7 @@
     (where :duration (bpm 80))
     (where :pitch (comp F lydian))))
 
-(defmethod play-note ::melody [{:keys [pitch]}] (-> pitch midi->hz sawish))
+(defmethod play-note ::melody [{:keys [pitch]}]
+  (->> [pitch (- pitch 12)] (map midi->hz) (map sawish) dorun))
 
 ;(->> dolorem-ipsum play)
