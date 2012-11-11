@@ -7,6 +7,13 @@
     [whelmed.instrument]
     [overtone.live :only [stop midi->hz]]))
 
+(def neque
+  (->>
+    (phrase
+      [1/2 1/2 1/2 1/4 1/4 1/2 1/2 1/2 1/4 1/4]
+      [4 4 5 4 5 6 8 5 4 5])
+    (where :part (is ::melody))))
+
 (defn cluster [pitches duration]
   (map
     #(zipmap
@@ -75,16 +82,21 @@
 (def end (phrase [1/4] [7]))
 
 (def dolorem-ipsum
-  (->> 
-    (times 2 theme) (then response) (times 2)
-    (then wander)
-    (then (times 2 theme)) (then response) (then end)
-    (where :part (is ::melody))
-    (where :time (bpm 80))
-    (where :duration (bpm 80))
-    (where :pitch (comp F lydian))))
+  (let [intro
+         (->> (times 2 theme) (then response) (where :part (is ::arpeggios))
+           (with (->> (times 2 neque) (where :part (is ::melody))))
+           (times 2))
+        development (->> wander (where :part (is ::arpeggios)))
+        finale (->> end (where :part (is ::arpeggios)))]
+    (->> intro (then development) (then intro) (then finale) 
+      (where :time (bpm 80))
+      (where :duration (bpm 80))
+      (where :pitch (comp F lydian)))))
 
-(defmethod play-note ::melody [{:keys [pitch]}]
-  (->> [pitch (- pitch 12)] (map midi->hz) (map sawish) dorun))
+(defmethod play-note ::arpeggios [{:keys [pitch]}]
+  (-> pitch (- 12) midi->hz sawish))
+
+(defmethod play-note ::melody [{:keys [pitch duration]}]
+  (-> pitch midi->hz bell))
 
 ;(->> dolorem-ipsum play)
