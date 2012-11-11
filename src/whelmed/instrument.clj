@@ -45,7 +45,7 @@
         proportional-partial
           (fn [harmonic proportion]
             (let [envelope
-                    (env-gen (perc 0.01 (* proportion duration)))
+                    (env-gen (perc 0.01 (* proportion (/ duration 1000))))
                   overtone
                     (* harmonic frequency)]
               (* 1/2 proportion envelope (sin-osc overtone))))
