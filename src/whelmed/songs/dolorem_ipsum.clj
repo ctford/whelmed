@@ -96,26 +96,26 @@
         (times 4)))))
 
 (def end (phrase [1/4] [7]))
+(def it (reduce with [(phrase [1] [7]) (phrase [2] [4]) (phrase [3] [0])]))
 
 (def dolorem-ipsum
   (let [intro
-         (->> (times 2 theme) (then response) (where :part (is ::arpeggios))
-           (times 2)
-           (with (->> (times 2 neque) (then sit-amet) (after 16) (where :part (is ::melody)))))
+         (->> (times 2 theme) (where :part (is ::arpeggios))
+           (then (->> (times 2 theme) (then response) (where :part (is ::arpeggios))
+           (with (->> (times 2 neque) (then sit-amet) (where :part (is ::melody)))) (times 2))))
         development (->> wander (where :part (is ::arpeggios))
                       (with notice))
-        finale (->> end (where :part (is ::arpeggios)))]
-    (->> intro (then development) (then intro) (then finale) 
+        finale (with
+                 (where :part (is ::arpeggios) end)
+                 (where :part (is ::melody) it))]
+    (->> intro (then development) (then intro) (then development) (then finale) 
       (where :time (bpm 80))
       (where :duration (bpm 80))
       (where :pitch (comp F lydian)))))
 
-;(defmethod play-note ::arpeggios [{:keys [pitch]}]
-;  (-> pitch (- 12) midi->hz sawish))
-
 (defmethod play-note ::melody [{:keys [pitch duration]}]
-  (bell (midi->hz pitch) (* 5 duration)))
-(defmethod play-note ::arpeggios [{:keys [pitch duration]}]
+  (bell (midi->hz pitch) (* 10 duration)))
+(defmethod play-note ::arpeggios [{:keys [pitch]}]
   (sawnoff (midi->hz (- pitch 24))))
 
 ;(->> dolorem-ipsum play)
