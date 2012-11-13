@@ -114,7 +114,7 @@
     (phrase
       [1 1 1 1]
       [2 3 4 3])
-    (canon (interval 2))
+    (canon (interval -5))
     (times 2)
     (then
       (->> aaah (with (phrase [4 4] [4 3]))))
@@ -122,9 +122,15 @@
 
 (def la-la-la-la
   (->>
-    (phrase [2 1 1/2 1/4 9/4 1 1/2 1/2 8]
+    (phrase [2 1 1/2 1/2 2 1 1/2 1/2 4]
             [4 8 6 4 2 8 6 4 1])
+    (then (phrase [4] [3]))
     (times 2)
+    (where :part (is ::oooh))))
+
+(def wa-wa-wa-wa
+  (->>
+    (phrase [4 4 4 4 4 4] [4 7 8 10 11 8])
     (where :part (is ::oooh))))
 
 (def ends (->> (phrase [1/4] [7]) (where :part (is ::arpeggios))))
@@ -142,9 +148,10 @@
     (->> lorem
       (then intro) (then development)
       (then (->> theme (but 4 8 (partial where :pitch high))))
+      (then (->> theme (with neque)))
       (then (->> lorem (with oooh-aaah)))
       (then (->> intro (with la-la-la-la)
-              (then development) (then finale))) 
+              (then (with development wa-wa-wa-wa)) (then finale)))
       (where :time (bpm 80))
       (where :duration (bpm 80))
       (where :pitch (comp F lydian)))))
@@ -154,6 +161,6 @@
 (defmethod play-note ::arpeggios [{:keys [pitch]}]
   (sawnoff (midi->hz (- pitch 24))))
 (defmethod play-note ::oooh [{:keys [pitch duration]}]
-  (groan (midi->hz pitch) (* 2 duration)))
+  (groan (midi->hz pitch) (* 2 duration) 1/4))
 
 ;(->> dolorem-ipsum play)
