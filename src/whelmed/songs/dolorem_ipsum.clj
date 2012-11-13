@@ -4,6 +4,7 @@
     [whelmed.melody]
     [leipzig.scale]
     [leipzig.chord]
+    [leipzig.canon]
     [whelmed.instrument]
     [overtone.live :only [stop midi->hz]]))
 
@@ -14,7 +15,7 @@
       [4 4 5 4 5 6 8 5 4 5])
     (times 2)
     (but 3.5 4 (is
-                 (->> (phrase [1/8 1/8 1/4] [5 4 5])
+                 (->> (phrase [1/8 1/8 1/8 1/8] [4 5 4 5])
                    (after 3.5)
                    (where :duration (is 1/4)))))
     (where :part (is ::melody))))
@@ -104,6 +105,21 @@
         (times 4)))
     (where :part (is ::arpeggios))))
 
+(def aaah
+  (->> (phrase [1 1] [6 5]) (times 4)
+    (where :part (is ::oooh))))
+
+(def oooh-aaah
+  (->>
+    (phrase
+      [1 1 1 1]
+      [2 3 4 3])
+    (canon (interval -5))
+    (times 2)
+    (then
+      (->> aaah (with (phrase [4 4] [4 3]))))
+    (where :part (is ::oooh))))
+
 (def ends (->> (phrase [1/4] [7]) (where :part (is ::arpeggios))))
 (def it (->> (reduce with
                      [(phrase [1] [7]) (phrase [2] [4]) (phrase [3] [0])])
@@ -119,7 +135,9 @@
     (->> lorem
       (then intro) (then development)
       (then (->> theme (but 4 8 (partial where :pitch high))))
-      (then intro) (then development) (then finale) 
+      (then (->> lorem (with oooh-aaah)))
+      (then (with (after 32 (times 3 aaah))
+              (->> intro (then development) (then finale)))) 
       (where :time (bpm 80))
       (where :duration (bpm 80))
       (where :pitch (comp F lydian)))))
@@ -128,5 +146,7 @@
   (bell (midi->hz pitch) (* 7 duration)))
 (defmethod play-note ::arpeggios [{:keys [pitch]}]
   (sawnoff (midi->hz (- pitch 24))))
+(defmethod play-note ::oooh [{:keys [pitch duration]}]
+  (groan (midi->hz pitch) (* 2 duration)))
 
 ;(->> dolorem-ipsum play)
