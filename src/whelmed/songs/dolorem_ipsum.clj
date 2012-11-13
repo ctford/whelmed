@@ -13,6 +13,10 @@
       [1/2 1/2 1/2 1/4 1/4 1/2 1/2 1/2 1/4 1/4]
       [4 4 5 4 5 6 8 5 4 5])
     (times 2)
+    (but 3.5 4 (is
+                 (->> (phrase [1/16 1/16 1/16 1/16 1/4] [5 4 5 4 5])
+                   (after 3.5)
+                   (where :duration (partial + 1/2)))))
     (where :part (is ::melody))))
 
 (def sit-amet 
@@ -114,7 +118,7 @@
         finale (with it ends)]
     (->> lorem
       (then intro) (then development)
-      (then theme)
+      (then (->> theme (but 4 8 (partial where :pitch high))))
       (then intro) (then development) (then finale) 
       (where :time (bpm 80))
       (where :duration (bpm 80))
@@ -125,4 +129,4 @@
 (defmethod play-note ::arpeggios [{:keys [pitch]}]
   (sawnoff (midi->hz (- pitch 24))))
 
-;(->> dolorem-ipsum play)
+(->> dolorem-ipsum play)
