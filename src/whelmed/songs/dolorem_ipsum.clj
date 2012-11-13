@@ -115,9 +115,11 @@
       [1 1 1 1]
       [2 3 4 3])
     (canon (interval -5))
+    (with (phrase [1 1 1 1] [0 0 0 0]))
     (times 2)
     (then
-      (->> aaah (with (phrase [4 4] [4 3]))))
+      (->> aaah (with (phrase [2 2 2 2] [4 4 3 3]))
+        (with (phrase [1 1 1 1] [1 1 1 1]))))
     (where :part (is ::oooh))))
 
 (def la-la-la-la
@@ -132,6 +134,12 @@
   (->>
     (phrase [4 4 4 4 4 4] [4 7 8 10 11 8])
     (where :part (is ::oooh))))
+
+(def air
+  (->>
+    (map #(times 4 (phrase [1/4] [%])) [0 -4 0 -5 0 0 0])
+    (reduce #(then %2 %1))
+    (where :part (is ::arpeggios))))
 
 (def ends (->> (phrase [1/4] [7]) (where :part (is ::arpeggios))))
 (def it (->> (reduce with
@@ -149,9 +157,10 @@
       (then intro) (then development)
       (then (->> theme (but 4 8 (partial where :pitch high))))
       (then (->> theme (with neque)))
-      (then (->> lorem (with oooh-aaah)))
+      (then oooh-aaah)
       (then (->> intro (with la-la-la-la)
-              (then (with development wa-wa-wa-wa)) (then finale)))
+              (then (with development wa-wa-wa-wa))
+              (then air) (then finale)))
       (where :time (bpm 80))
       (where :duration (bpm 80))
       (where :pitch (comp F lydian)))))
