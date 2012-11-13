@@ -99,22 +99,23 @@
 (def it (reduce with [(phrase [1] [7]) (phrase [2] [4]) (phrase [3] [0])]))
 
 (def dolorem-ipsum
-  (let [intro
-         (->> (times 2 theme) (where :part (is ::arpeggios))
-           (then (->> (times 2 theme) (then response) (where :part (is ::arpeggios))
-           (with (->> (times 2 neque) (then sit-amet) (where :part (is ::melody)))) (times 2))))
+  (let [dol (->> (times 2 theme) (where :part (is ::arpeggios)))
+        lorem (->> dol (then response) (where :part (is ::arpeggios)))
+        intro
+         (->> (times 2 theme) (then response) (where :part (is ::arpeggios))
+           (with (->> (times 2 neque) (then sit-amet) (where :part (is ::melody)))) (times 2))
         development (->> wander (where :part (is ::arpeggios))
                       (with notice))
         finale (with
                  (where :part (is ::arpeggios) end)
                  (where :part (is ::melody) it))]
-    (->> intro (then development) (then intro) (then development) (then finale) 
+    (->> lorem (then intro) (then development) (then dol) (then intro) (then development) (then finale) 
       (where :time (bpm 80))
       (where :duration (bpm 80))
       (where :pitch (comp F lydian)))))
 
 (defmethod play-note ::melody [{:keys [pitch duration]}]
-  (bell (midi->hz pitch) (* 10 duration)))
+  (bell (midi->hz pitch) (* 7 duration)))
 (defmethod play-note ::arpeggios [{:keys [pitch]}]
   (sawnoff (midi->hz (- pitch 24))))
 
