@@ -14,9 +14,9 @@
       [4 4 5 4 5 6 8 5 4 5])
     (times 2)
     (but 3.5 4 (is
-                 (->> (phrase [1/16 1/16 1/16 1/16 1/4] [5 4 5 4 5])
+                 (->> (phrase [1/8 1/8 1/4] [5 4 5])
                    (after 3.5)
-                   (where :duration (partial + 1/2)))))
+                   (where :duration (is 1/4)))))
     (where :part (is ::melody))))
 
 (def sit-amet 
@@ -129,4 +129,4 @@
 (defmethod play-note ::arpeggios [{:keys [pitch]}]
   (sawnoff (midi->hz (- pitch 24))))
 
-(->> dolorem-ipsum play)
+;(->> dolorem-ipsum play)
