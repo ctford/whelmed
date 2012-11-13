@@ -12,6 +12,7 @@
     (phrase
       [1/2 1/2 1/2 1/4 1/4 1/2 1/2 1/2 1/4 1/4]
       [4 4 5 4 5 6 8 5 4 5])
+    (times 2)
     (where :part (is ::melody))))
 
 (def sit-amet 
@@ -56,7 +57,9 @@
   (->>
     [triad (raise triad) (raise (raise triad)) (raise triad)]
     (map #(arpeggiate % [:v :i :iii :v] 1/4))
-    (reduce #(then %2 %1))))
+    (reduce #(then %2 %1))
+    (times 2)
+    (where :part (is ::arpeggios))))
 
 (def response
   (->>
@@ -68,7 +71,8 @@
       (->> (arpeggiate
              (-> (-> triad (root 1)) (assoc :vi 6))
              [:v :iii :i :vi] 1/4)
-        (times 4)))))
+        (times 4)))
+    (where :part (is ::arpeggios))))
 
 (def wander
   (->> 
@@ -93,23 +97,25 @@
       (->> (arpeggiate
              (-> (raise (-> triad (root 1))) (update-in [:iii] #(- % 3/2)))
              [:iii :i :iii :v] 1/4)
-        (times 4)))))
+        (times 4)))
+    (where :part (is ::arpeggios))))
 
-(def end (phrase [1/4] [7]))
-(def it (reduce with [(phrase [1] [7]) (phrase [2] [4]) (phrase [3] [0])]))
+(def ends (->> (phrase [1/4] [7]) (where :part (is ::arpeggios))))
+(def it (->> (reduce with
+                     [(phrase [1] [7]) (phrase [2] [4]) (phrase [3] [0])])
+          (where :part (is ::melody))))
 
 (def dolorem-ipsum
-  (let [dol (->> (times 2 theme) (where :part (is ::arpeggios)))
-        lorem (->> dol (then response) (where :part (is ::arpeggios)))
+  (let [lorem (->> theme (then response))
         intro
-         (->> (times 2 theme) (then response) (where :part (is ::arpeggios))
-           (with (->> (times 2 neque) (then sit-amet) (where :part (is ::melody)))) (times 2))
-        development (->> wander (where :part (is ::arpeggios))
-                      (with notice))
-        finale (with
-                 (where :part (is ::arpeggios) end)
-                 (where :part (is ::melody) it))]
-    (->> lorem (then intro) (then development) (then dol) (then intro) (then development) (then finale) 
+         (->> lorem 
+           (with (->> neque (then sit-amet))) (times 2))
+        development (->> wander (with notice))
+        finale (with it ends)]
+    (->> lorem
+      (then intro) (then development)
+      (then theme)
+      (then intro) (then development) (then finale) 
       (where :time (bpm 80))
       (where :duration (bpm 80))
       (where :pitch (comp F lydian)))))
