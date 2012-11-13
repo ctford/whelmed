@@ -55,7 +55,16 @@
       (detect-silence whole :action FREE)
       whole))
 
+(definst sawnoff [freq 440 depth 10]
+  (let [envelope (env-gen (perc 0.1 0.9) :action FREE)] 
+    (* 
+      envelope
+      (sin-osc freq)
+      (sin-osc (* 2 freq))
+      (saw (+ freq (* depth (lf-saw:kr 0.1 0.2)))))))
+
 (defmethod play-note :default [{:keys [pitch time duration]}]
      (let [id (at time (piano pitch))]
               (at (+ time duration) (ctl id :gate 0))))
+
 

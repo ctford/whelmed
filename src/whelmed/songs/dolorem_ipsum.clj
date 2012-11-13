@@ -21,6 +21,15 @@
       [4 6 5])
     (where :part (is ::melody))))
 
+(def notice
+  (->>
+    (phrase
+      [1 5/2 1/4 1/4 2 2 4 1 2.5 1/4 1/4 4 4]
+      [5 4 2 3 4 7 6 6 5 4 3 4 2.5]
+      )
+    (where :part (is ::melody))))
+
+
 (defn cluster [pitches duration]
   (map
     #(zipmap
@@ -91,9 +100,10 @@
 (def dolorem-ipsum
   (let [intro
          (->> (times 2 theme) (then response) (where :part (is ::arpeggios))
-           (with (->> (times 2 neque) (then sit-amet) (where :part (is ::melody))))
-           (times 2))
-        development (->> wander (where :part (is ::arpeggios)))
+           (times 2)
+           (with (->> (times 2 neque) (then sit-amet) (after 16) (where :part (is ::melody)))))
+        development (->> wander (where :part (is ::arpeggios))
+                      (with notice))
         finale (->> end (where :part (is ::arpeggios)))]
     (->> intro (then development) (then intro) (then finale) 
       (where :time (bpm 80))
@@ -106,6 +116,6 @@
 (defmethod play-note ::melody [{:keys [pitch duration]}]
   (bell (midi->hz pitch) (* 5 duration)))
 (defmethod play-note ::arpeggios [{:keys [pitch duration]}]
-  (bell (midi->hz (- pitch 12)) (* 10 duration) 1 0.3 0.2 0.1 0.1 0))
+  (sawnoff (midi->hz (- pitch 24))))
 
 ;(->> dolorem-ipsum play)
