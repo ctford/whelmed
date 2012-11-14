@@ -5,5 +5,6 @@ https://github.com/ctford/whelmed
 lein run \[trackname\] \[filename\].wav
 
 Tracks:
+  * dolorem
   * ska
   * west
