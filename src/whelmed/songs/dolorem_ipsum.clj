@@ -34,11 +34,11 @@
       )
     (where :part (is ::melody))))
 
-(defn arpeggiate [chord [k & ks] duration]
-  (if k (then
-          (arpeggiate chord ks duration)
-          [{:time 0 :pitch (chord k) :duration duration}])
-    []))
+(defn arpeggiate [chord ks duration]
+  (map 
+    (fn [k time] {:time time :pitch (chord k) :duration duration})
+    ks
+    (reductions + 0 (repeat duration))))
 
 (defn y [chord element f] (update-in chord [element] f))
 (def raise #(-> % (y :iii inc) (y :v inc)))
