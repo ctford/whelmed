@@ -11,12 +11,13 @@
   (map (partial root seventh) [0 (low 4) (low 5) (low 2)]))
 
 (def backing
-  (let [render-chord (fn [start notes] (map #(identity {:time start :duration 4 :pitch %}) notes))]
+  (let [render-chord
+         (fn [notes]
+           (map #(zipmap [:time :duration :pitch] [0 4 %]) notes))]
     (->>
       progression
-      (map vals)
-      (map render-chord [0 4 8 12])
-      (reduce with)
+      (map (comp render-chord vals))
+      (reduce #(then %2 %1))
       (where :part (is ::accompaniment)))))
 
 (def ill-run-away
