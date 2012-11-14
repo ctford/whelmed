@@ -3,6 +3,8 @@
     [leipzig.melody]
     [leipzig.scale]))
 
+(defn from [base] (partial + base))
+
 (defn but [from to f notes]
   (let [early? #(< (:time %) from)
         late? #(>= (:time %) to)
