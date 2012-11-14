@@ -15,8 +15,6 @@
     ks
     (reductions + 0 (repeat duration))))
 
-(defn raise [chord k n] (update-in chord [k] #(+ % n)))
-
 (defn inversion [chord n]
   (cond
     (= n 1)

@@ -3,12 +3,6 @@
     [leipzig.melody]
     [leipzig.scale]))
 
-(defn cut [start end notes] (->> notes (take end) (drop start)))
-(defn except [start end notes]
-  (concat
-    (take start notes)
-    (drop end notes)))
-
 (defn but [from to f notes]
   (let [early? #(< (:time %) from)
         late? #(>= (:time %) to)
@@ -20,10 +14,19 @@
     (with apple (f core))))
 
 (defn demo
-  ([notes] (demo notes major))
+  ([notes] (demo major notes))
   ([scale notes]
     (->> notes
       (where :time (bpm 90))
       (where :duration (bpm 90))
       (where :pitch (comp C scale))
       play)))
+
+(defn cluster [duration pitches]
+  (map
+    #(zipmap
+      [:time :duration :pitch]
+      [0 duration %])
+    pitches))
+
+(defn raise [chord k n] (update-in chord [k] #(+ % n)))

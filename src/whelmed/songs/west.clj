@@ -42,8 +42,7 @@
 (def west-with-the-west-with-the 
   (let [west-with-the
           (->> my-heart-will-go-west-with-the-sun
-               (cut 1 4)
-               (times 4))]
+               (take 4) (drop 1) (times 4))]
   (->>
     [{:time -1/2 :pitch 3 :duration 1/2}]
     (then west-with-the)

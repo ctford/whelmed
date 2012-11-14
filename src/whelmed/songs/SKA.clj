@@ -4,16 +4,8 @@
         [leipzig.scale]
         [leipzig.chord]
         [whelmed.instrument]
+        [whelmed.melody]
         [overtone.live :only [ctl at midi->hz now stop]]))
-
-(defn demo
-  ([notes] (demo notes major))
-  ([notes scale]
-    (->> notes
-      (where :time (bpm 90))
-      (where :duration (bpm 90))
-      (where :pitch (comp C scale))
-      play)))
 
 (def bass
   (->>
@@ -24,7 +16,7 @@
       (phrase
         [3/2 1 1/2 1]
         [5   5   4 2]))
-    (where :part (constantly ::bass))
+    (where :part (is ::bass))
     (where :pitch (comp low low))))
 
 (def fallbass
@@ -43,14 +35,7 @@
         [2/3 1/3 3/3 3/3 3/3 2/3 1/3 2/3 3/3 4/3]
         [0 1 0 4 0 2 3 2 1 0]))
     (where :pitch high)
-    (where :part (constantly ::melody))))
-
-(defn cluster [duration pitches]
-  (map
-    #(zipmap
-       [:time :duration :pitch]
-       [0 duration %])
-    pitches))
+    (where :part (is ::melody))))
 
 (defn chord [degree duration]
   (->> (-> triad (root degree)) vals (cluster duration)))
@@ -64,13 +49,13 @@
       (after 1)
       (times 2)
       (after 4)))
-    (where :part (constantly ::rhythm))))
+    (where :part (is ::rhythm))))
 
 (def fallchords
   (->> (take 6 rhythm)
     (then
       (->>
-        (-> (-> triad (root 3.5)) (update-in [:iii] #(+ % 0.5)) vals)
+        (-> triad (root 3.5) (raise :iii 1/2) vals)
         (cluster 2)
         (after 2)))))
 
@@ -102,14 +87,11 @@
 
 (def suns-on-the-rise 
   (->>
-    (->> [(-> triad (root 1))]
-      (where :i #(+ % 1/2))
-      (where :v #(+ % 1/2))
-      (mapcat vals)
-      (cluster 4))
+    (-> triad (root 1) (raise :i 1/2) (raise :v 1/2) vals)
+    (cluster 4)
     (then (chord -2 4))
     (then (chord 0 4))
-    (where :part (constantly ::rhythm))))
+    (where :part (is ::rhythm))))
 
 (def oooh
   (->>
@@ -117,7 +99,7 @@
       [3 1/3 2/3 3 2/3 1/3 3]
       [3 4 3 2 0 -1 0]) 
     (where :pitch high)
-    (where :part (constantly ::melody))))
+    (where :part (is ::melody))))
 
 (def and-if-you-lived-here
   (->>
@@ -125,10 +107,10 @@
     (then (chord -3 4))
     (then
       (cluster 4
-        (-> (-> triad (root 1)) (update-in [:iii] #(+ % 1/2)) vals)))
+        (-> triad (root 1) (raise :iii 1/2) vals)))
     (then
       (cluster 4
-        (-> (-> triad (root -2)) (update-in [:iii] #(+ % 1/2)) vals)))))
+        (-> triad (root -2) (raise :iii 1/2) vals)))))
 
 (def youd-be-home-by-now
   (->>
@@ -177,7 +159,7 @@
     (then first-section)
     (then intro)
     (then first-section)
-    (then (where :pitch (comp low B flat major)  mid-section))
+    (then (where :pitch (comp low B flat major) mid-section))
     (then fallback)
     (then (->> first-section (in-time #(* % 4/3))))
     (in-time (bpm 180))))
