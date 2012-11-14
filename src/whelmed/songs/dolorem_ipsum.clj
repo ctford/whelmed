@@ -58,6 +58,15 @@
 (defn y [chord element f] (update-in chord [element] f))
 (def raise #(-> % (y :iii inc) (y :v inc)))
 
+(defn inversion [chord n]
+  (cond
+    (= n 1)
+      (-> chord (root -7) (y :i #(+ % 7))) 
+    (= n 2)
+      (-> chord (y :iii #(+ % 7)) (inversion 1)))) 
+
+(def sixth (-> triad (assoc :vi 5)))
+
 (def theme 
   (->>
     [triad (raise triad) (raise (raise triad)) (raise triad)]
@@ -69,12 +78,12 @@
 (def response
   (->>
       (->> (arpeggiate
-             (raise (-> triad (root 1)))
-             [:iii :i :iii :v] 1/4)
+             (-> triad (root 4) (inversion 2))
+             [:i :v :i :iii] 1/4)
         (times 4))
     (then
       (->> (arpeggiate
-             (-> (-> triad (root 1)) (assoc :vi 6))
+             (-> sixth (root 1))
              [:v :iii :i :vi] 1/4)
         (times 4)))
     (where :part (is ::arpeggios))))
@@ -82,26 +91,26 @@
 (def wander
   (->> 
       (->> (arpeggiate
-             (-> (-> triad (root 2)))
+             (-> triad (root 2))
              [:iii :i :iii :v] 1/4)
         (times 4)
         (but 15/4 16/4 #(where :pitch inc %)))
     (then
       (->> (arpeggiate
-             (-> (-> triad (root 2)) (assoc :vi 7))
+             (-> sixth (root 2))
              [:v :iii :i :vi] 1/4)
         (times 4)))
     (then
       response)
     (then
       (->> (arpeggiate
-             (raise (-> triad (root 1)))
-             [:iii :i :iii :v] 1/4)
+             (-> triad (root 4) (inversion 2))
+             [:i :v :i :iii] 1/4)
         (times 4)))
     (then
       (->> (arpeggiate
-             (-> (raise (-> triad (root 1))) (update-in [:iii] #(- % 3/2)))
-             [:iii :i :iii :v] 1/4)
+             (-> triad (root 4) (inversion 2) (y :i #(- % 3/2)))
+             [:i :v :i :iii] 1/4)
         (times 4)))
     (where :part (is ::arpeggios))))
 
