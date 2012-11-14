@@ -155,10 +155,10 @@
       (where :time (bpm 80))
       (where :duration (bpm 80)))))
 
-(defmethod play-note ::bass [{:keys [pitch]}] (-> pitch midi->hz groan))
-(defmethod play-note ::accompaniment [{:keys [pitch]}] (-> pitch midi->hz shudder))
-(defmethod play-note ::lead [{:keys [pitch]}] (-> pitch midi->hz sawish))
-(defmethod play-note ::response [{:keys [pitch]}] (-> pitch midi->hz sinish))
-(defmethod play-note ::break [{:keys [pitch]}] (-> pitch midi->hz sinish))
+(defmethod play-note ::bass [{midi :pitch}] (-> midi midi->hz groan))
+(defmethod play-note ::accompaniment [{midi :pitch}] (-> midi midi->hz shudder))
+(defmethod play-note ::lead [{midi :pitch}] (-> midi midi->hz sawish))
+(defmethod play-note ::response [{midi :pitch}] (-> midi midi->hz sinish))
+(defmethod play-note ::break [{midi :pitch}] (-> midi midi->hz sinish))
 
 ;(->> west-with-the-sun play)
