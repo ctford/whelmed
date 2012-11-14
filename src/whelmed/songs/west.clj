@@ -31,7 +31,7 @@
 
 (def ill-get-away
   (->> ill-run-away
-    (but 1/4 1/2 (partial where :pitch #(+ % 3)))))
+    (but 1/4 1/2 (partial where :pitch (from 3)))))
 
 (def my-heart-will-go-west-with-the-sun
   (after -1/2
@@ -137,7 +137,7 @@
 (def bass
   (->> light-bass
     (with (->> light-bass
-            (where :pitch #(+ 6 %))
+            (where :pitch (from 6))
             (where :time inc)
             (where :duration dec)))))
 

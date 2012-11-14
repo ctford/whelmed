@@ -29,4 +29,4 @@
       [0 duration %])
     pitches))
 
-(defn raise [chord k n] (update-in chord [k] #(+ % n)))
+(defn raise [chord k n] (update-in chord [k] (from n)))
