@@ -30,8 +30,7 @@
   (->>
     (phrase
       [1 5/2 1/4 1/4 2 2 4 1 2.5 1/4 1/4 4 4]
-      [5 4 2 3 4 7 6 6 5 4 3 4 2.5]
-      )
+      [5 4 2 3 4 7 6 6 5 4 3 4 2.5])
     (where :part (is ::melody))))
 
 (defn arpeggiate [chord ks duration]
@@ -40,61 +39,58 @@
     ks
     (reductions + 0 (repeat duration))))
 
-(defn y [chord element f] (update-in chord [element] f))
-(def raise #(-> % (y :iii inc) (y :v inc)))
+(defn raise [chord element n] (update-in chord [element] #(+ % n)))
 
 (defn inversion [chord n]
   (cond
     (= n 1)
-      (-> chord (root -7) (y :i #(+ % 7))) 
+      (-> chord (root -7) (raise :i 7)) 
     (= n 2)
-      (-> chord (y :iii #(+ % 7)) (inversion 1)))) 
+      (-> chord (raise :iii 7) (inversion 1)))) 
 
 (def sixth (-> triad (assoc :vi 5)))
 
 (def theme 
-  (->>
-    [triad (raise triad) (raise (raise triad)) (raise triad)]
-    (map #(arpeggiate % [:v :i :iii :v] 1/4))
-    (reduce #(then %2 %1))
-    (times 2)
-    (where :part (is ::arpeggios))))
+  (let [up
+          #(-> % (raise :iii 1) (raise :v 1))
+        chords
+          [triad (up triad) (up (up triad)) (up triad)]]
+    (->> chords
+      (map #(arpeggiate % [:v :i :iii :v] 1/4))
+      (reduce #(then %2 %1))
+      (times 2)
+      (where :part (is ::arpeggios)))))
 
 (def response
   (->>
-      (->> (arpeggiate
-             (-> triad (root 4) (inversion 2))
-             [:i :v :i :iii] 1/4)
-        (times 4))
+      (arpeggiate (-> triad (root 4) (inversion 2))
+        [:i :v :i :iii] 1/4)
+      (times 4)
     (then
-      (->> (arpeggiate
-             (-> sixth (root 1))
+      (->> (arpeggiate (-> sixth (root 1))
              [:v :iii :i :vi] 1/4)
         (times 4)))
     (where :part (is ::arpeggios))))
 
 (def wander
   (->> 
-      (->> (arpeggiate
-             (-> triad (root 2))
-             [:iii :i :iii :v] 1/4)
-        (times 4)
-        (but 15/4 16/4 #(where :pitch inc %)))
+      (arpeggiate (-> triad (root 2))
+        [:iii :i :iii :v] 1/4)
+      (times 4)
+      (but 15/4 16/4 #(where :pitch inc %))
     (then
-      (->> (arpeggiate
-             (-> sixth (root 2))
+      (->> (arpeggiate (-> sixth (root 2))
              [:v :iii :i :vi] 1/4)
         (times 4)))
     (then
       response)
     (then
-      (->> (arpeggiate
-             (-> triad (root 4) (inversion 2))
+      (->> (arpeggiate (-> triad (root 4) (inversion 2))
              [:i :v :i :iii] 1/4)
         (times 4)))
     (then
       (->> (arpeggiate
-             (-> triad (root 4) (inversion 2) (y :i #(- % 3/2)))
+             (-> triad (root 4) (inversion 2) (raise :i -3/2))
              [:i :v :i :iii] 1/4)
         (times 4)))
     (where :part (is ::arpeggios))))
