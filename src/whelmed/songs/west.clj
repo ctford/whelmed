@@ -15,7 +15,9 @@
     (->>
       progression
       (map vals)
-      (map render-chord [0 4 8 12]))))
+      (map render-chord [0 4 8 12])
+      (reduce with)
+      (where :part (is ::accompaniment)))))
 
 (def ill-run-away
   (->>
@@ -23,7 +25,6 @@
      [1/2 1/4 1/4 1/2]
      [  3   4   3   4])
   (after -1/2)))
-
 
 (def ill-get-away (assoc (vec ill-run-away) 2 {:time 1/4 :pitch 6 :duration 1/4}))
 
@@ -86,7 +87,7 @@
    (then consider-that)
    (then consider-everything)))
 
-(def breakup (where :pitch low breakdown))
+(def breakup (->> breakdown (where :pitch low)))
 (def break
   (->>
     (with breakup breakdown)
@@ -100,10 +101,13 @@
     (where :part (is ::lead))))
 
 (def half-theme
-  (->>
-    ill-run-away
-    (then (after 3 ill-get-away))
-    (where :part (is ::lead))))
+  (let [crippled-theme
+          (->> ill-run-away
+               (then (->> ill-get-away (after 3))))]
+    (->>
+      (after 1/2 crippled-theme)
+      (then (after 3 crippled-theme))
+      (where :part (is ::lead)))))
 
 (def spilling-theme
   (->>
@@ -112,46 +116,48 @@
     (then (after 3 west-with-the-west-with-the))
     (where :part (is ::lead))))
 
-(def accompaniment
-  (->>
-    (apply concat backing)
-    (times 6)
-    (then (after 16 (times 6 (apply concat backing))))
-    (where :part (is ::accompaniment))))
+(def light-bass
+  (->> (map :i progression)
+    (phrase (repeat 4 4))
+    (where :pitch low)
+    (where :part (is ::bass))))
 
 (def bass
-  (let [vanilla
-          (->>
-            (map :i progression)
-            (phrase (repeat 4 4))
-            (times 13))
-        lowered (where :pitch low vanilla)
-        seventh (->> vanilla (where :time inc) (where :pitch dec) (except 20 28))]
-  (->>
-    lowered
-   (with seventh)
-   (where :part (is ::bass)))))
+  (->> light-bass
+    (with (->> light-bass
+            (where :pitch #(+ 6 %))
+            (where :time inc)
+            (where :duration dec)))))
 
 (def west-with-the-sun
-  (->>
-    (reduce with 
-       [accompaniment
-       (->> theme (times 2) (after 32))
-       (->> reply (times 2) (after 64))
-       (->> break (times 2) (after 96))
-       (->> theme (after 128))
-       (->> spilling-theme (after 144))
-       (->> reply (times 2) (after 160))
-       (->> break (after 176))
-       (->> half-theme (after 192.5))
-       (->> half-theme (after 200.5))
-       (->> bass (after 16))])
-    (where :pitch (comp E minor))
-    (where :time (bpm 80))
-    (where :duration (bpm 80))))
+  (let [accompaniment
+          (->> backing (with bass)) 
+        intro
+         (->> backing (then accompaniment))
+        call
+          (->> theme (with accompaniment) (times 2))
+        response
+          (->> reply (with accompaniment) (times 2))
+        variation
+          (->> theme (then spilling-theme)
+            (with (->> accompaniment (times 2))))
+        fadeout
+          (->> accompaniment (with half-theme) (then bass))]
+    (->>
+      intro (then call) (then response)
+      (then (->> break (with light-bass) (times 2)
+              (with (->> backing (after 16)))))
+      (then variation)
+      (then (->> response (with (->> break (after 16)))))
+      (then fadeout)
+      (where :pitch (comp E minor))
+      (where :time (bpm 80))
+      (where :duration (bpm 80)))))
 
 (defmethod play-note ::bass [{:keys [pitch]}] (-> pitch midi->hz groan))
 (defmethod play-note ::accompaniment [{:keys [pitch]}] (-> pitch midi->hz shudder))
 (defmethod play-note ::lead [{:keys [pitch]}] (-> pitch midi->hz sawish))
 (defmethod play-note ::response [{:keys [pitch]}] (-> pitch midi->hz sinish))
 (defmethod play-note ::break [{:keys [pitch]}] (-> pitch midi->hz sinish))
+
+;(->> west-with-the-sun play)
