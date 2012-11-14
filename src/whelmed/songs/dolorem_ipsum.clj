@@ -8,6 +8,25 @@
     [whelmed.instrument]
     [overtone.live :only [stop midi->hz]]))
 
+; Extra concepts
+(defn arpeggiate [chord ks duration]
+  (map 
+    (fn [k time] {:time time :pitch (chord k) :duration duration})
+    ks
+    (reductions + 0 (repeat duration))))
+
+(defn raise [chord element n] (update-in chord [element] #(+ % n)))
+
+(defn inversion [chord n]
+  (cond
+    (= n 1)
+      (-> chord (root -7) (raise :i 7)) 
+    (= n 2)
+      (-> chord (raise :iii 7) (inversion 1)))) 
+
+(def sixth (-> triad (assoc :vi 5)))
+
+; The music!
 (def neque
   (->>
     (phrase
@@ -32,23 +51,6 @@
       [1 5/2 1/4 1/4 2 2 4 1 2.5 1/4 1/4 4 4]
       [5 4 2 3 4 7 6 6 5 4 3 4 2.5])
     (where :part (is ::melody))))
-
-(defn arpeggiate [chord ks duration]
-  (map 
-    (fn [k time] {:time time :pitch (chord k) :duration duration})
-    ks
-    (reductions + 0 (repeat duration))))
-
-(defn raise [chord element n] (update-in chord [element] #(+ % n)))
-
-(defn inversion [chord n]
-  (cond
-    (= n 1)
-      (-> chord (root -7) (raise :i 7)) 
-    (= n 2)
-      (-> chord (raise :iii 7) (inversion 1)))) 
-
-(def sixth (-> triad (assoc :vi 5)))
 
 (def theme 
   (let [up
@@ -155,6 +157,7 @@
       (where :duration (bpm 80))
       (where :pitch (comp F lydian)))))
 
+; The arrangement
 (defmethod play-note ::melody [{:keys [pitch duration]}]
   (bell (midi->hz pitch) (* 7 duration)))
 (defmethod play-note ::arpeggios [{:keys [pitch]}]
