@@ -15,18 +15,18 @@
     ks
     (reductions + 0 (repeat duration))))
 
-(defn raise [chord element n] (update-in chord [element] #(+ % n)))
+(defn raise [chord k n] (update-in chord [k] #(+ % n)))
 
 (defn inversion [chord n]
   (cond
     (= n 1)
       (-> chord (root -7) (raise :i 7)) 
     (= n 2)
-      (-> chord (raise :iii 7) (inversion 1)))) 
+      (-> chord (inversion 1) (raise :iii 7)))) 
 
 (def sixth (-> triad (assoc :vi 5)))
 
-; The music!
+; Melody
 (def neque
   (->>
     (phrase
@@ -52,6 +52,11 @@
       [5 4 2 3 4 7 6 6 5 4 3 4 2.5])
     (where :part (is ::melody))))
 
+(def it (->> (reduce with
+                     [(phrase [1] [7]) (phrase [2] [4]) (phrase [3] [0])])
+          (where :part (is ::melody))))
+
+; Arpeggios
 (def theme 
   (let [up
           #(-> % (raise :iii 1) (raise :v 1))
@@ -97,6 +102,15 @@
         (times 4)))
     (where :part (is ::arpeggios))))
 
+(def air
+  (->>
+    (map #(times 4 (phrase [1/4] [%])) [0 -4 0 -5 0 0 0])
+    (reduce #(then %2 %1))
+    (where :part (is ::arpeggios))))
+
+(def ends (->> (phrase [1/4] [7]) (where :part (is ::arpeggios))))
+
+; Oooh
 (def aaah
   (->> (phrase [1 1] [6 5]) (times 4)
     (where :part (is ::oooh))))
@@ -127,24 +141,16 @@
     (phrase [4 4 4 4 4 4] [4 7 8 10 11 8])
     (where :part (is ::oooh))))
 
-(def air
-  (->>
-    (map #(times 4 (phrase [1/4] [%])) [0 -4 0 -5 0 0 0])
-    (reduce #(then %2 %1))
-    (where :part (is ::arpeggios))))
-
-(def ends (->> (phrase [1/4] [7]) (where :part (is ::arpeggios))))
-(def it (->> (reduce with
-                     [(phrase [1] [7]) (phrase [2] [4]) (phrase [3] [0])])
-          (where :part (is ::melody))))
-
+; Pull it all together
 (def dolorem-ipsum
-  (let [lorem (->> theme (then response))
+  (let [lorem
+          (->> theme (then response))
         intro
-         (->> lorem 
-           (with (->> neque (then sit-amet))) (times 2))
-        development (->> wander (with notice))
-        finale (with it ends)]
+          (->> lorem (with (->> neque (then sit-amet))) (times 2))
+        development
+          (->> wander (with notice))
+        finale
+          (with it ends)]
     (->> lorem
       (then intro) (then development)
       (then (->> theme (but 4 8 (partial where :pitch high))))
