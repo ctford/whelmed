@@ -10,16 +10,18 @@
 (def progression
   (map (partial root seventh) [0 (low 4) (low 5) (low 2)]))
 
+; Accompaniment
 (def backing
   (let [render-chord
-         (fn [notes]
-           (map #(zipmap [:time :duration :pitch] [0 4 %]) notes))]
+         (fn [chord] (->> chord vals
+           (map #(zipmap [:time :duration :pitch] [0 4 %]))))]
     (->>
       progression
-      (map (comp render-chord vals))
+      (map render-chord)
       (reduce #(then %2 %1))
       (where :part (is ::accompaniment)))))
 
+; Lead
 (def ill-run-away
   (->>
    (phrase
@@ -27,7 +29,9 @@
      [  3   4   3   4])
   (after -1/2)))
 
-(def ill-get-away (assoc (vec ill-run-away) 2 {:time 1/4 :pitch 6 :duration 1/4}))
+(def ill-get-away
+  (->> ill-run-away
+    (but 1/4 1/2 (partial where :pitch #(+ % 3)))))
 
 (def my-heart-will-go-west-with-the-sun
   (after -1/2
@@ -36,63 +40,14 @@
        [  3   4   3   2   4   3   2   -1])))
 
 (def west-with-the-west-with-the 
-  (let [west-with-the (->>
-                        my-heart-will-go-west-with-the-sun
-                        (cut 1 4)
-                        (times 4))]
+  (let [west-with-the
+          (->> my-heart-will-go-west-with-the-sun
+               (cut 1 4)
+               (times 4))]
   (->>
     [{:time -1/2 :pitch 3 :duration 1/2}]
     (then west-with-the)
     (then [{:time 0 :pitch 7 :duration 1/4}]))))
-
-(def a-parting-kiss
-  (phrase
-    [1/4 1/4 1/4 3/4 10/4]
-    [  4   3   4   6    4]))
-
-(def like-fairy-floss (cons {:time -1/4 :pitch 3 :duration 1/4} a-parting-kiss))
-
-(def dissolves-on-the-tip-of-my-tongue
-  (->>
-    (phrase
-      [1/4 3/4 13/4]
-      [  4   6    4])
-    (after -1/4)))
-
-(def reply
- (->>
-   a-parting-kiss
-   (then like-fairy-floss)
-   (then dissolves-on-the-tip-of-my-tongue) 
-   (then dissolves-on-the-tip-of-my-tongue)
-   (where :part (is ::response))))
-
-(def consider-this
-  (after -3/2
-     (phrase
-       [1/2 1/2 1/2 8/2]
-       [  4   9   8   7])))
-
-(def consider-that (assoc (vec consider-this) 3 {:time 0 :pitch 6 :duration 4})) 
-(def consider-everything
-  (->>
-    (take 3 consider-this)
-    (then
-      (phrase
-        [2/2 1/2 2/2 2/2 9/2]
-        [  7   8   7   6   4]))))
-
-(def breakdown
- (->>
-   consider-this
-   (then consider-that)
-   (then consider-everything)))
-
-(def breakup (->> breakdown (where :pitch low)))
-(def break
-  (->>
-    (with breakup breakdown)
-    (where :part (is ::break))))
 
 (def theme
   (->>
@@ -117,6 +72,63 @@
     (then (after 3 west-with-the-west-with-the))
     (where :part (is ::lead))))
 
+; Response
+(def a-parting-kiss
+  (phrase
+    [1/4 1/4 1/4 3/4 10/4]
+    [  4   3   4   6    4]))
+
+(def like-fairy-floss
+  (with [{:time -1/4 :pitch 3 :duration 1/4}]
+        a-parting-kiss))
+
+(def dissolves-on-the-tip-of-my-tongue
+  (->>
+    (phrase
+      [1/4 3/4 13/4]
+      [  4   6    4])
+    (after -1/4)))
+
+(def reply
+ (->>
+   a-parting-kiss
+   (then like-fairy-floss)
+   (then dissolves-on-the-tip-of-my-tongue) 
+   (then dissolves-on-the-tip-of-my-tongue)
+   (where :part (is ::response))))
+
+; Break
+(def consider-this
+  (after -3/2
+     (phrase
+       [1/2 1/2 1/2 8/2]
+       [  4   9   8   7])))
+
+(def consider-that
+  (->> consider-this
+    (but 0 1/2 (partial where :pitch dec))))
+
+(def consider-everything
+  (->>
+    (take 3 consider-this)
+    (then
+      (phrase
+        [2/2 1/2 2/2 2/2 9/2]
+        [  7   8   7   6   4]))))
+
+(def breakdown
+ (->>
+   consider-this
+   (then consider-that)
+   (then consider-everything)))
+
+(def breakup (->> breakdown (where :pitch low)))
+(def break
+  (->>
+    (with breakup breakdown)
+    (where :part (is ::break))))
+
+; Bass
 (def light-bass
   (->> (map :i progression)
     (phrase (repeat 4 4))
@@ -130,6 +142,7 @@
             (where :time inc)
             (where :duration dec)))))
 
+; Body
 (def west-with-the-sun
   (let [accompaniment
           (->> backing (with bass)) 
@@ -155,6 +168,7 @@
       (where :time (bpm 80))
       (where :duration (bpm 80)))))
 
+; Arrangement
 (defmethod play-note ::bass [{midi :pitch}] (-> midi midi->hz groan))
 (defmethod play-note ::accompaniment [{midi :pitch}] (-> midi midi->hz shudder))
 (defmethod play-note ::lead [{midi :pitch}] (-> midi midi->hz sawish))
