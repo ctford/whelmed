@@ -34,20 +34,6 @@
       )
     (where :part (is ::melody))))
 
-
-(defn cluster [pitches duration]
-  (map
-    #(zipmap
-      [:time :duration :pitch]
-      [0 duration %])
-    pitches))
-
-(defn progress [duration chords]
-  (->> chords 
-    (map vals)
-    (map #(cluster % duration))
-    (reduce #(then %2 %1))))
-
 (defn arpeggiate [chord [k & ks] duration]
   (if k (then
           (arpeggiate chord ks duration)
