@@ -16,8 +16,7 @@
     (times 2)
     (but 3.5 4 (is
                  (->> (phrase [1/8 1/8 1/8 1/8] [4 5 4 5])
-                   (after 3.5)
-                   (where :duration (is 1/4)))))
+                   (after 3.5))))
     (where :part (is ::melody))))
 
 (def sit-amet 
