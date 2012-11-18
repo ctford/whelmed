@@ -28,17 +28,23 @@
     (reduce #(then %2 %1))))
 
 (def arpeggios 
-  (->> progression
-    (map #(arpeggiate %2 %1 1/2)
-         [[:i :iii :v :vii] 
-          [:v- :i :iii :v] 
-          [:i :v :vii :ix :vii]])
-    (reduce #(then %2 %1))
-    (but 12/2 13/2 (partial where :time inc))
-    (but 14/2 15/2 (partial where :duration (from 1/2)))))
+  (let [one
+    (->> progression
+      (map #(arpeggiate %2 %1 1/2)
+           [[:i :iii :v :vii] 
+            [:v- :i :iii :v] 
+            [:i :v :vii :ix :vii]])
+      (reduce #(then %2 %1))
+      (but 12/2 13/2 (partial where :time inc))
+      (but 14/2 15/2 (partial where :duration (from 1/2))))
+        two (->> one
+             (but 2 8 (is (after 2
+               (phrase [1/2 1/2 1/2 1/2 4] [5 4 2 -1 0])))))]
+    (->> one (then two))))
 
 (comment
   (->> chords
+    (times 2)
     (with arpeggios)
     (times 2)
     (where :time (bpm 90))
