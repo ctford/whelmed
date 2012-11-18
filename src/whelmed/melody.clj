@@ -1,6 +1,7 @@
 (ns whelmed.melody
   (:use
     [leipzig.melody]
+    [leipzig.chord]
     [leipzig.scale]))
 
 (defn from [base] (partial + base))
@@ -32,3 +33,10 @@
     pitches))
 
 (defn raise [chord k n] (update-in chord [k] (from n)))
+
+(defn inversion [chord n]                                                                      
+  (cond
+    (= n 1)
+      (-> chord (root -7) (raise :i 7))
+    (= n 2)
+      (-> chord (inversion 1) (raise :iii 7))))

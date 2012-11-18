@@ -15,13 +15,6 @@
     ks
     (reductions + 0 (repeat duration))))
 
-(defn inversion [chord n]
-  (cond
-    (= n 1)
-      (-> chord (root -7) (raise :i 7)) 
-    (= n 2)
-      (-> chord (inversion 1) (raise :iii 7)))) 
-
 (def sixth (-> triad (assoc :vi 5)))
 
 ; Melody
