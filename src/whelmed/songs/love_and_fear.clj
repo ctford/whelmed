@@ -8,17 +8,43 @@
     [overtone.live :only [stop midi->hz]]))
 
 (defn bass [chord element] (assoc chord :bass (-> chord element low)))
+(defn arpeggiate [chord ks duration]
+  (map
+    (fn [k time] {:time time :pitch (chord k) :duration duration})
+      ks
+      (reductions + 0 (repeat duration))))
 
 (def progression
-  (map #(-> %1 (bass %2) vals ((partial cluster %3)))
-     [(-> triad (root 0)) (-> triad (root 2) (inversion 2)) (-> triad (root -2))]
-     [:i :v :i]
-     [4 4 8]))
+  (map bass
+     [(-> seventh (root 0))
+      (-> triad (assoc :v- -3) (root 2))
+      (-> ninth (root -2))]
+     [:i :v :i]))
 
-(->> progression
-  (reduce #(then %2 %1))
-  (where :time (bpm 90))
-  (where :duration (bpm 90))
-  (where :pitch (comp G minor))
-  play)
+(def chords
+  (->> progression
+    (map #(cluster %1 (vals %2))
+      [2 2 4])
+    (reduce #(then %2 %1))))
+
+(def arpeggios 
+  (->> progression
+    (map #(arpeggiate %2 %1 1/2)
+         [[:i :iii :v :vii] 
+          [:v- :i :iii :v] 
+          [:i :v :vii :ix :vii]])
+    (reduce #(then %2 %1))
+    (but 12/2 13/2 (partial where :time inc))
+    (but 14/2 15/2 (partial where :duration (from 1/2)))))
+
+(comment
+  (->> chords
+    (with arpeggios)
+    (times 2)
+    (where :time (bpm 90))
+    (where :duration (bpm 90))
+    (where :pitch (comp G minor))
+    play)
+
+)
 
