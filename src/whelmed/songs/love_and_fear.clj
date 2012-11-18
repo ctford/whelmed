@@ -19,7 +19,12 @@
      [(-> seventh (root 0))
       (-> triad (assoc :v- -3) (root 2))
       (-> ninth (root -2))]
-     [:i :v :i]))
+     [:i :v- :i]))
+
+(def bassline
+  (->> progression
+    (map :bass)
+    (phrase [2 2 4])))
 
 (def chords
   (->> progression
@@ -43,10 +48,11 @@
     (->> one (then two))))
 
 (comment
-  (->> chords
+  (->> bassline 
     (times 2)
     (with arpeggios)
     (times 2)
+    (then (->> chords (times 2)))
     (where :time (bpm 90))
     (where :duration (bpm 90))
     (where :pitch (comp G minor))
