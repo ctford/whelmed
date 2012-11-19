@@ -64,14 +64,17 @@
 (def melody
   (let [aaaaand [1 2] 
         rhythm [1/2 3/2 1/2 1 1 1 1 2 2 9/2] 
+        and-feeeaaar (phrase (take-last 3 rhythm) [4 4 5])
         there-are-only-two-feelings 
           (->>
             (phrase
               (concat aaaaand rhythm)
               [4 6 6 6 6 7 6 5 6 6 6 7])
-            (after -2))
+            (after -2)
+            (with (after 15/2 and-feeeaaar)))
         love-and-fear
-          (->> (phrase rhythm [9 9 8 7 6 4 6 6 6 7]) (after 1))
+          (->> (phrase rhythm [9 9 8 7 6 4 6 6 6 7]) (after 1)
+            (with (after 15/2 and-feeeaaar)))
         there-are 
           (->>
             (phrase
@@ -111,4 +114,3 @@
   (demo minor chords)
   (play love-and-fear)
 )
-
