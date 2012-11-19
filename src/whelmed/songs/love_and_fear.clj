@@ -39,6 +39,8 @@
     (map #(cluster %1 (vals %2))
       [2 2 4])
     (reduce #(then %2 %1))
+    (times 2)
+    (with (->> (phrase [2 2 4] [6 6 7]) (where :pitch high) (after 8)))
     (where :part (is ::chords))))
 
 (def arpeggios 
@@ -55,7 +57,9 @@
         two (->> one
              (but 2 8 (is (after 2
                (phrase [1/2 1/2 1/2 1/2 4] [5 4 2 -1 0])))))]
-    (->> one (then two) (where :part (is ::arpeggios)))))
+    (->> one (then two) (times 2)  
+      (but 27 32 (is (->> (phrase [1 4] [7 6]) (after 27))))
+      (where :part (is ::arpeggios)))))
 
 (def melody
   (let [aaaaand [1 2] 
@@ -88,21 +92,23 @@
 (defmethod play-note ::melody [{midi :pitch}] (-> midi midi->hz (bell 5000)))
 
 (def love-and-fear
-  (->> 
-    (->> bassline 
-      (times 2)
-      (with arpeggios)
-      (times 2))
-    (then
-      (->> melody
-            (with (times 6 chords))         
-            (with (after 32 (->> arpeggios (times 2))))))
+  (let [intro
+          (->> bassline 
+            (times 4)
+            (with arpeggios))
+        statement
+          (->> melody
+            (with (times 2 chords))         
+            (with (after 32 arpeggios)))]
+
+  (->> intro (then (times 2 statement)) 
     (where :duration (bpm 80))
     (where :time (bpm 80))
-    (where :pitch (comp G minor))))
+    (where :pitch (comp G minor)))))
 
 (comment
   (demo minor (->> melody (after 2)))
+  (demo minor chords)
   (play love-and-fear)
 )
 
