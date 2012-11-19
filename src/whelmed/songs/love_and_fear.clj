@@ -1,6 +1,7 @@
 (ns whelmed.songs.love-and-fear
   (:use
     [leipzig.melody]
+    [leipzig.canon]
     [whelmed.melody]
     [leipzig.scale]
     [leipzig.chord]
@@ -61,20 +62,22 @@
       (but 27 32 (is (->> (phrase [1 4] [7 6]) (after 27))))
       (where :part (is ::arpeggios)))))
 
+(def theme
+  (->> (phrase [2 2 9/2] [6 6 7])
+    (canon (interval -2))
+    (where :part (is ::melody))))
+
 (def melody
   (let [aaaaand [1 2] 
-        rhythm [1/2 3/2 1/2 1 1 1 1 2 2 9/2] 
-        and-feeeaaar (phrase (take-last 3 rhythm) [4 4 5])
+        rhythm [1/2 3/2 1/2 1 1 1 1] 
         there-are-only-two-feelings 
           (->>
             (phrase
               (concat aaaaand rhythm)
-              [4 6 6 6 6 7 6 5 6 6 6 7])
-            (after -2)
-            (with (after 15/2 and-feeeaaar)))
+              [4 6 6 6 6 7 6 5 6])
+            (after -2) (then theme))
         love-and-fear
-          (->> (phrase rhythm [9 9 8 7 6 4 6 6 6 7]) (after 1)
-            (with (after 15/2 and-feeeaaar)))
+          (->> (phrase rhythm [9 9 8 7 6 4 6]) (after 1) (then theme))
         there-are 
           (->>
             (phrase
@@ -91,6 +94,7 @@
     (then (times 2 (->> there-are (then only-two-activities))))
     (where :part (is ::melody)))))
 
+
 ; Arrangement
 (defmethod play-note ::melody [{midi :pitch}] (-> midi midi->hz (bell 5000)))
 
@@ -102,9 +106,16 @@
         statement
           (->> melody
             (with (times 2 chords))         
-            (with (after 32 arpeggios)))]
+            (with (after 32 (with arpeggios (times 4 bassline)))))
+        oh-love-and-fear 
+          (->> (phrase [1/2 1/2 1 1/2 1/2 1 1/2 1/2 4] [2 1 0 0 -1 0 2 3 2]) (after -1)) 
+        outro (->> chords
+               (with (->> (after -1/2 theme) (with oh-love-and-fear)
+                       (times 2)))
+                (times 2)
+                (then (take 3 oh-love-and-fear)))]
 
-  (->> intro (then (times 2 statement)) 
+  (->> intro (then (times 2 statement)) (then outro) 
     (where :duration (bpm 80))
     (where :time (bpm 80))
     (where :pitch (comp G minor)))))
