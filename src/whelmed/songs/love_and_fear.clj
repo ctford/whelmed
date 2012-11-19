@@ -87,9 +87,7 @@
 ; Arrangement
 (defmethod play-note ::melody [{midi :pitch}] (-> midi midi->hz (bell 5000)))
 
-(comment
-  (demo minor (->> melody (after 2)))
-
+(def love-and-fear
   (->> 
     (->> bassline 
       (times 2)
@@ -101,8 +99,10 @@
             (with (after 32 (->> arpeggios (times 2))))))
     (where :duration (bpm 80))
     (where :time (bpm 80))
-    (where :pitch (comp G minor))
-    play)
+    (where :pitch (comp G minor))))
 
+(comment
+  (demo minor (->> melody (after 2)))
+  (play love-and-fear)
 )
 

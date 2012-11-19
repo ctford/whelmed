@@ -4,13 +4,15 @@
     [leipzig.melody :only [play then after]]
     [whelmed.songs.west :only [west-with-the-sun]]
     [whelmed.songs.dolorem-ipsum :only [dolorem-ipsum]]
+    [whelmed.songs.love-and-fear :only [love-and-fear]]
     [whelmed.songs.SKA :only [ska]]))
 
 (def tracks
   (sorted-map
     "ska" ska
     "west" west-with-the-sun
-    "dolorem" dolorem-ipsum))
+    "dolorem" dolorem-ipsum
+    "love" love-and-fear))
 
 (defn -main
 
