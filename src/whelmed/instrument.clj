@@ -66,7 +66,5 @@
       (saw (+ freq (* depth (lf-saw:kr 0.1 0.2)))))))
 
 (defmethod play-note :default [{:keys [pitch time duration]}]
-     (let [id (at time (piano pitch))]
-              (at (+ time duration) (ctl id :gate 0))))
-
-
+  (let [id (at time (piano pitch))]
+    (at (+ time duration) (ctl id :gate 0))))

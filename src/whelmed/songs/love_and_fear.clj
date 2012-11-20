@@ -6,7 +6,7 @@
     [leipzig.scale]
     [leipzig.chord]
     [whelmed.instrument]
-    [overtone.live :only [stop midi->hz]]))
+    [overtone.live :only [stop midi->hz at ctl]]))
 
 (defn bass [chord element]
   (-> chord (assoc :bass (-> chord element low))))
@@ -30,10 +30,14 @@
      [:i :v- :i]))
 
 (def bassline
-  (->> [0 0 -1 -1 -2 -5 -2 -5 -2 -5 -2 -1]
-    (map low)
-    (phrase (concat (repeat 4 1) (repeat 8 1/2)))
-    (where :part (is ::bass))))
+  (let [one
+        (phrase (concat [1 1/2 1/2 1 1/2 1/2] (repeat 8 1/2))
+              [0 0 -3 -1 -1 -3 -2 -5 -2 -5 -2 -5 -2 -1])
+        two
+        (phrase [1 1/2 1/2 1 1/2 9/2] [0 0 2 -1 -3 -2])]
+    (->> one (then two)
+      (where :pitch low)
+      (where :part (is ::bass)))))
 
 (def chords
   (->> progression
@@ -97,24 +101,29 @@
 
 ; Arrangement
 (defmethod play-note ::melody [{midi :pitch}] (-> midi midi->hz (bell 5000)))
+(defmethod play-note :default [{:keys [pitch time duration]}]                   
+  (let [id (at time (piano pitch 0.6))]
+    (at (+ time duration) (ctl id :gate 0))))
 
 (def love-and-fear
   (let [intro
           (->> bassline 
-            (times 4)
+            (times 2)
             (with arpeggios))
         statement
           (->> melody
             (with (times 2 chords))         
-            (with (after 32 (with arpeggios (times 4 bassline)))))
+            (with (after 32 (with arpeggios (times 2 bassline)))))
         oh-love-and-fear 
-          (->> (phrase [1/2 1/2 1 1/2 1/2 1 1/2 1/2 4] [2 1 0 0 -1 0 2 3 2]) (after -1)
+          (->> (phrase [1/2 1/2 1 1/2 1/2 1 1/2 1/2 4]
+                       [2 1 0 0 -1 0 2 3 2])
+            (after -1)
             (canon (interval 7))) 
         outro (->> chords
                (with (->> (after -1/2 theme) (with oh-love-and-fear)
                        (times 2)))
                 (times 2)
-                (then (take 3 oh-love-and-fear)))]
+                (then (take 6 oh-love-and-fear)))]
 
   (->> intro (then (times 2 statement)) (then outro) 
     (where :duration (bpm 80))
@@ -122,7 +131,5 @@
     (where :pitch (comp G minor)))))
 
 (comment
-  (demo minor (->> melody (after 2)))
-  (demo minor chords)
   (play love-and-fear)
 )
