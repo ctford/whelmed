@@ -162,4 +162,6 @@
 (defmethod play-note ::oooh [{:keys [pitch duration]}]
   (groan (midi->hz pitch) (* 2 duration) 1/4))
 
-;(->> dolorem-ipsum play)
+(comment
+  (->> dolorem-ipsum play)
+)

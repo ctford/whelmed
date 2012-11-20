@@ -30,9 +30,9 @@
      [:i :v- :i]))
 
 (def bassline
-  (->> progression
-    (map :bass)
-    (phrase [2 2 4])
+  (->> [0 0 -1 -1 -2 -5 -2 -5 -2 -5 -2 -1]
+    (map low)
+    (phrase (concat (repeat 4 1) (repeat 8 1/2)))
     (where :part (is ::bass))))
 
 (def chords
@@ -108,7 +108,8 @@
             (with (times 2 chords))         
             (with (after 32 (with arpeggios (times 4 bassline)))))
         oh-love-and-fear 
-          (->> (phrase [1/2 1/2 1 1/2 1/2 1 1/2 1/2 4] [2 1 0 0 -1 0 2 3 2]) (after -1)) 
+          (->> (phrase [1/2 1/2 1 1/2 1/2 1 1/2 1/2 4] [2 1 0 0 -1 0 2 3 2]) (after -1)
+            (canon (interval 7))) 
         outro (->> chords
                (with (->> (after -1/2 theme) (with oh-love-and-fear)
                        (times 2)))
