@@ -1,6 +1,6 @@
 (ns whelmed.play
   (:use
-    [overtone.live :only [recording-start recording-stop]]
+    [overtone.live :only [recording-start recording-stop kill-server]]
     [leipzig.melody :only [play then after]]
     [whelmed.songs.west :only [west-with-the-sun]]
     [whelmed.songs.dolorem-ipsum :only [dolorem-ipsum]]
@@ -25,20 +25,24 @@
     ((fn [{:keys [time duration]}] (+ time duration)))
     Thread/sleep))
 
+(defn finish []
+  (kill-server)
+  (System/exit 0))
+
 (defn -main
 
   ([track-name file-name]
    (recording-start file-name)
    (-main track-name)
    (recording-stop)
-   (System/exit 0))
+   (finish))
 
   ([track-name]
    (->>
      track-name
      track-map
      run)
-   (System/exit 0))
+   (finish))
 
   ([]
     (->>
@@ -46,4 +50,4 @@
       (map second)
       (reduce #(then (after 2000 %2) %1))
        run)
-   (System/exit 0)))
+   (finish)))
