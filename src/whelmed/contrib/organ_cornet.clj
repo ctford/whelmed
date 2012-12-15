@@ -1,4 +1,4 @@
-(ns whelmed.organ-cornet
+(ns whelmed.contrib.organ-cornet
   (:use [overtone.live]))
 
 ;; From https://gist.github.com/1551277 by jennifersmith.

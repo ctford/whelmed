@@ -1,7 +1,7 @@
 (ns whelmed.instrument
   (:use
     [leipzig.melody]
-    [whelmed.organ-cornet]
+    [whelmed.contrib.organ-cornet]
     [overtone.live]))
 
 (definst shudder [freq 440 vibrato 6]

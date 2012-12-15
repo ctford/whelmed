@@ -4,6 +4,8 @@
         [leipzig.scale]
         [leipzig.chord]
         [whelmed.instrument]
+        [whelmed.contrib.harpsichord]
+        [whelmed.contrib.organ-cornet]
         [whelmed.melody]
         [overtone.live :only [ctl at midi->hz now stop]]))
 
@@ -90,8 +92,7 @@
     (-> triad (root 1) (raise :i 1/2) (raise :v 1/2) vals)
     (cluster 4)
     (then (chord -2 4))
-    (then (chord 0 4))
-    (where :part (is ::rhythm))))
+    (then (chord 0 4))))
 
 (def oooh
   (->>
@@ -164,4 +165,12 @@
     (then (->> first-section (in-time #(* % 4/3))))
     (in-time (bpm 180))))
 
-;(play ska)
+(defmethod play-note ::bass [{midi :pitch}] (-> midi midi->hz harpsichord))
+(defmethod play-note ::rhythm [{midi :pitch}]
+  (organ-cornet (midi->hz midi) 150 2/3))   
+(defmethod play-note :default [{midi :pitch, ms :duration}]
+  (organ-cornet (midi->hz midi) ms 2/3))   
+
+(comment
+  (play ska)
+)
