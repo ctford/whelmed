@@ -19,8 +19,8 @@
   (let [base (fn [chord]
               (->> chord
                 :base
-                (repeat 1)
-                (phrase [4])))
+                (repeat 2)
+                (phrase [3 1])))
         
         rhythm (fn [chord]
                  (->> (dissoc chord :base)
