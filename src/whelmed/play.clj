@@ -17,28 +17,33 @@
 
 (def track-map (reduce #(assoc %1 (first %2) (second %2)) {} tracks))
 
+(defn run [music]
+  (play music)
+  (->>
+    music
+    last
+    ((fn [{:keys [time duration]}] (+ time duration)))
+    Thread/sleep))
+
 (defn -main
 
-  ([trackname filename]
-   (recording-start filename)
-   (-main trackname)
-   (->>
-     trackname
-     track-map
-     last
-     ((fn [{:keys [time duration]}] (+ time duration)))
-     Thread/sleep)
-   (recording-stop))
+  ([track-name file-name]
+   (recording-start file-name)
+   (-main track-name)
+   (recording-stop)
+   (System/exit 0))
 
-  ([trackname]
-    (->>
-      trackname
-      track-map
-      play))
+  ([track-name]
+   (->>
+     track-name
+     track-map
+     run)
+   (System/exit 0))
 
   ([]
     (->>
       tracks
       (map second)
       (reduce #(then (after 2000 %2) %1))
-       play)))
+       run)
+   (System/exit 0)))
