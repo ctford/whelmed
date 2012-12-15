@@ -1,4 +1,4 @@
-(ns whelmed.core
+(ns whelmed.play
   (:use
     [overtone.live :only [recording-start recording-stop]]
     [leipzig.melody :only [play then after]]
