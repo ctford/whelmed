@@ -52,6 +52,7 @@
             [:v- :i :iii :v] 
             [:i :v :vii :ix :vii]])
       (reduce #(then %2 %1))
+      (but 11/2 12/2 (partial where :duration inc))
       (but 12/2 13/2 (partial where :time inc))
       (but 14/2 15/2 (partial where :duration (from 1/2))))
         two (->> one
