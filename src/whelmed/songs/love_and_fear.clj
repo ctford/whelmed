@@ -101,9 +101,6 @@
 
 ; Arrangement
 (defmethod play-note ::melody [{midi :pitch}] (-> midi midi->hz (bell 5000)))
-(defmethod play-note :default [{:keys [pitch time duration]}]                   
-  (let [id (at time (piano pitch 0.6))]
-    (at (+ time duration) (ctl id :gate 0))))
 
 (def love-and-fear
   (let [intro

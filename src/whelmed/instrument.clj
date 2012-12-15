@@ -1,7 +1,7 @@
 (ns whelmed.instrument
   (:use
     [leipzig.melody]
-    [overtone.inst.sampled-piano]
+    [whelmed.organ-cornet]
     [overtone.live]))
 
 (definst shudder [freq 440 vibrato 6]
@@ -38,8 +38,6 @@
         (* (sin-osc 0.8) (+ -0.03 (square freq)))
         (+ -0.04 (sin-osc freq))))))
 
-(def piano sampled-piano)
-
 (definst bell [frequency 440 duration 1000
   h0 1 h1 0.6 h2 0.4 h3 0.25 h4 0.2 h5 0.15]
   (let [harmonics   [ 1  2  3  4.2  5.4 6.8]
@@ -66,5 +64,4 @@
       (saw (+ freq (* depth (lf-saw:kr 0.1 0.2)))))))
 
 (defmethod play-note :default [{:keys [pitch time duration]}]
-  (let [id (at time (piano pitch))]
-    (at (+ time duration) (ctl id :gate 0))))
+  (organ-cornet (midi->hz pitch) duration 2/3))
