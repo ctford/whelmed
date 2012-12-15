@@ -27,7 +27,7 @@
                    vals
                    (cluster 2)
                    (after 2)))
-        once #(with (base %) (rhythm %))]
+        once #(with (rhythm %) (base %))]
     (->> progression
       (map once)
       (reduce #(then %2 %1)))))
@@ -74,7 +74,7 @@
             (where :duration #( * % 2/3)))))
     (then finale)
     (where :time (bpm 160))
-    (where :duration (bpm 160))
+    (where :duration (is 200))
     (where :pitch (comp low G major))))
 
 ;(play at-all)
