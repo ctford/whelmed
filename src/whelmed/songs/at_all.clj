@@ -7,27 +7,27 @@
     whelmed.instrument))
 
 (defn with-bass [chord]
-  (-> chord (assoc :base (low (:i chord)))))
+  (-> chord (assoc :bass (low (:i chord)))))
 
 (def I (-> triad (root 0) with-bass))
 (def II (-> triad (root 1) with-bass))
 (def V (-> triad (root 4) with-bass))
 
-(def progression [I I II II II V I (update-in V [:base] low)])
+(def progression [I I II II II V I (update-in V [:bass] low)])
 
 (def rhythm-n-bass
-  (let [base (fn [chord]
+  (let [bass (fn [chord]
               (->> chord
-                :base
+                :bass
                 (repeat 2)
                 (phrase [3 1])))
         
         rhythm (fn [chord]
-                 (->> (dissoc chord :base)
+                 (->> (dissoc chord :bass)
                    vals
                    (cluster 2)
                    (after 2)))
-        once #(with (rhythm %) (base %))]
+        once #(with (rhythm %) (bass %))]
     (->> progression
       (map once)
       (reduce #(then %2 %1)))))
@@ -77,4 +77,6 @@
     (where :duration (is 200))
     (where :pitch (comp low G major))))
 
-;(play at-all)
+(comment
+  (play at-all)
+) 
