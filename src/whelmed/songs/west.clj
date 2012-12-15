@@ -130,7 +130,7 @@
 ; Bass
 (def light-bass
   (->> (map :i progression)
-    (phrase (repeat 4 4))
+    (phrase (repeat 4))
     (where :pitch low)
     (where :part (is ::bass))))
 

@@ -34,29 +34,29 @@
 
 (def intro
   (->> (take 32 (cycle [5 4]))
-    (phrase (repeat 32 1))
+    (phrase (repeat 1))
     (with rhythm-n-bass)))
 
 (def melody
   (->>
-    (after -1 (phrase (repeat 7 1/2) [2 4 5 4 4 2 4]))
+    (after -1 (phrase (repeat 1/2) [2 4 5 4 4 2 4]))
     (then
-      (after 9/2 (phrase (repeat 7 1/2) [-2 1 2 1 1 -2 1])))
+      (after 9/2 (phrase (repeat 1/2) [-2 1 2 1 1 -2 1])))
     (then
-      (after 9/2 (phrase (repeat 10 1/2) [-2 1 2 1 1 -2 1 2 3 4])))
+      (after 9/2 (phrase (repeat 1/2) [-2 1 2 1 1 -2 1 2 3 4])))
     (then
-      (after 6/2 (phrase (repeat 10 1/2) [-1 -2 -3 0 0 -3 0 1 0 -3])))
+      (after 6/2 (phrase (repeat 1/2) [-1 -2 -3 0 0 -3 0 1 0 -3])))
     (with rhythm-n-bass)))
 
 (def answer
   (->>
-    (after 9/2 (phrase (repeat 5 1/2) [11 11 12 9 7]))
+    (after 9/2 (phrase (repeat 1/2) [11 11 12 9 7]))
     (then
-      (after 11/2 (phrase (repeat 5 1/2) [8 8 9 8 3])))
+      (after 11/2 (phrase (repeat 1/2) [8 8 9 8 3])))
     (then
-      (after 11/2 (phrase (repeat 5 1/2) [8 8 9 6 4])))
+      (after 11/2 (phrase (repeat 1/2) [8 8 9 6 4])))
     (then
-      (after 11/2 (phrase (repeat 5 1/2) [11 11 12 11 8])))))
+      (after 11/2 (phrase (repeat 1/2) [11 11 12 11 8])))))
 
 (def finale
   (->> (phrase [1/2 1/2 1/2] [11 13 14])
