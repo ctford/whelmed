@@ -17,11 +17,6 @@
       ks
       (reductions + 0 (repeat duration))))
 
-(defn sustain [notes]
-  (let [finishes-at (fn [note] (+ (:time note) (:duration note)))
-        total (-> notes last finishes-at)]
-    (->> notes (map #(assoc % :duration (- total (:time %)))))))
-
 (def progression
   (map bass
      [(-> seventh (root 0))
@@ -55,7 +50,6 @@
            [[:i :iii :v :vii] 
             [:v- :i :iii :v] 
             [:i :v :vii :ix :vii]])
-      (map sustain)
       (reduce #(then %2 %1))
       (but 12/2 13/2 (partial where :time inc))
       (but 14/2 15/2 (partial where :duration (from 1/2))))
