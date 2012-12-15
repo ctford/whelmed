@@ -41,6 +41,7 @@
     (reduce #(then %2 %1))
     (times 2)
     (with (->> (phrase [2 2 4] [6 6 7]) (where :pitch high) (after 8)))
+    (where :pitch low)
     (where :part (is ::chords))))
 
 (def arpeggios 
@@ -122,5 +123,5 @@
     (where :pitch (comp G minor)))))
 
 (comment
-  (play love-and-fear)
+ (play love-and-fear)
 )
