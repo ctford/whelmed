@@ -12,7 +12,7 @@
       (sin-osc freq))))
 
 (definst sawish [freq 440]
-  (let [envelope (pluck (env-gen (perc 0.2 1.5) :action FREE))]
+  (let [envelope (env-gen (perc 0.2 1.5) :action FREE)]
     (*
       0.7
       envelope
