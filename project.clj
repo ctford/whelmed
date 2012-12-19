@@ -4,6 +4,6 @@
   :main ^{:skip-aot true} whelmed.play
   :dependencies	[
     [org.clojure/clojure "1.4.0"]
-    [overtone "0.7.1" :exclusions [seesaw]]
+    [overtone "0.8.0-RC5"]
     [leipzig "0.2.0-SNAPSHOT" :exclusions [seesaw]]
     [org.clojure/math.numeric-tower "0.0.1"]])

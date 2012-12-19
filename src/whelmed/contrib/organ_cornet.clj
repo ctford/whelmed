@@ -18,7 +18,7 @@
        (env-gen
          (asr 0.1 1.0 0.5)
          (line:kr 1.0 0.0 (/ dur 1000))
-         :timeScale (/ dur 1000) :action FREE))))
+         (/ dur 1000) :action FREE))))
 
 (definst organ-cornet [freq 440 dur 1000 vol 1.0]
   (* 1/4  
