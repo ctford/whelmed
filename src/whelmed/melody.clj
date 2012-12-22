@@ -2,6 +2,8 @@
   (:use
     [leipzig.melody]
     [leipzig.chord]
+    [whelmed.instrument]
+    [overtone.live :only [midi->hz]]
     [leipzig.scale]))
 
 (defn from [base] (partial + base))
@@ -40,3 +42,21 @@
       (-> chord (root -7) (raise :i 7))
     (= n 2)
       (-> chord (inversion 1) (raise :iii 7))))
+
+
+(defmethod play-note :default [{midi :pitch}]  (-> midi midi->hz  (bell 5000)))
+
+(def bassline
+  (phrase [1 2/3 1/3] [1 2 4])
+)
+
+(def it
+  (->> bassline
+    (where :pitch (comp G flat blues))
+    (where :time (bpm 100))
+    (where :duration (bpm 100))))
+
+(defn forever [fragment] (->> @fragment (then (lazy-seq (forever fragment)))))
+(defn jam [it] (->> it forever play)) 
+
+(jam (var it))
