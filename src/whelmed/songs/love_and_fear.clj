@@ -96,6 +96,20 @@
     (then (times 2 (->> there-are (then only-two-activities))))
     (where :part (is ::melody)))))
 
+(def two-motives
+  (let [two
+         (phrase [1/2 1/2 3/2] [2 1 0]) 
+        motives (->> two (then
+         (phrase [1/2 1 1/2 1 5/2] [0 0 0 1 0]))) 
+        procedures ( ->> two (then 
+         (phrase [1/2 1 1/2 7/2] [-1 0 -1 -3])))
+        results (->> two (then
+         (phrase [1/2 1 1/2 1 1 1 1 3/2 1/2 1 1/2 4]
+                 [0 0 0 1 0 -1 0 0 -1 0 -1 -3])))] 
+    (->> motives (then procedures) (then results))))
+
+;(jam (bpm 120) (comp G aeolian) two-motives)
+;(def two-motives nil)
 
 ; Arrangement
 (defmethod play-note ::melody [{midi :pitch}] (-> midi midi->hz (bell 5000)))
