@@ -59,4 +59,4 @@
 (defn forever [fragment] (->> @fragment (then (lazy-seq (forever fragment)))))
 (defn jam [it] (->> it forever play)) 
 
-(jam (var it))
+;(jam (var it))
