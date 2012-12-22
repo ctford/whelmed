@@ -31,7 +31,7 @@
         two
           (phrase [1 1/2 1/2 1 1/2 9/2] [0 0 2 -1 -3 -2])
         three        
-          (phrase (concat (repeat 8 1/2) [4]) [0 -1 -3 -7 -5 -3 -1 2 5])] 
+          (phrase (concat (repeat 8 1/2) [4]) [0 -1 -3 -7 -5 -3 -1 2 -2])] 
     (->> one (then two) (then one) (then three)
       (where :pitch low)
       (where :part (is ::bass)))))
@@ -127,5 +127,3 @@
 (comment
  (play love-and-fear)
 )
-
-;(jam (bpm 90) (comp G minor) bassline)

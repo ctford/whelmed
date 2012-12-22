@@ -2,8 +2,6 @@
   (:use
     [leipzig.melody]
     [leipzig.chord]
-    [whelmed.instrument]
-    [overtone.live :only [midi->hz]]
     [leipzig.scale]))
 
 (defn from [base] (partial + base))
