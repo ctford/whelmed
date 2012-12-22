@@ -1,6 +1,7 @@
 (ns whelmed.instrument
   (:use
     [leipzig.melody]
+    [overtone.inst.sampled-piano]
     [whelmed.contrib.organ-cornet]
     [overtone.live]))
 
@@ -64,4 +65,4 @@
       (saw (+ freq (* depth (lf-saw:kr 0.1 0.2)))))))
 
 (defmethod play-note :default [{:keys [pitch time duration]}]
-  (organ-cornet (midi->hz pitch) duration 2/3))
+  (sampled-piano pitch))

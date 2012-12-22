@@ -26,11 +26,13 @@
 
 (def bassline
   (let [one
-        (phrase (concat [1 1/2 1/2 1 1/2 1/2] (repeat 8 1/2))
-              [0 0 -3 -1 -1 -3 -2 -5 -2 -5 -2 -5 -2 -1])
+          (phrase (concat [1 1/2 1/2 1 1/2 1/2] (repeat 8 1/2))
+            [0 0 -3 -1 -1 -3 -2 -5 -2 -5 -2 -5 -2 -1])
         two
-        (phrase [1 1/2 1/2 1 1/2 9/2] [0 0 2 -1 -3 -2])]
-    (->> one (then two)
+          (phrase [1 1/2 1/2 1 1/2 9/2] [0 0 2 -1 -3 -2])
+        three        
+          (phrase (concat (repeat 8 1/2) [4]) [0 -1 -3 -7 -5 -3 -1 2 5])] 
+    (->> one (then two) (then one) (then three)
       (where :pitch low)
       (where :part (is ::bass)))))
 
@@ -101,12 +103,11 @@
 (def love-and-fear
   (let [intro
           (->> bassline 
-            (times 2)
             (with arpeggios))
         statement
           (->> melody
             (with (times 2 chords))         
-            (with (after 32 (with arpeggios (times 2 bassline)))))
+            (with (after 32 (with arpeggios bassline))))
         oh-love-and-fear 
           (->> (phrase [1/2 1/2 1 1/2 1/2 1 1/2 1/2 4]
                        [2 1 0 0 -1 0 2 3 2])
@@ -126,3 +127,5 @@
 (comment
  (play love-and-fear)
 )
+
+;(jam (bpm 90) (comp G minor) bassline)

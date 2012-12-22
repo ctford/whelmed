@@ -36,27 +36,20 @@
 
 (defn raise [chord k n] (update-in chord [k] (from n)))
 
-(defn inversion [chord n]                                                                      
+(defn inversion [chord n]
   (cond
     (= n 1)
       (-> chord (root -7) (raise :i 7))
     (= n 2)
       (-> chord (inversion 1) (raise :iii 7))))
 
+(defn- forever [it] (->> @it (then (lazy-seq (forever it)))))
+(defn jam-on [timing key it]
+ (->> it
+   forever
+   (where :time timing)
+   (where :duration timing)
+   (where :pitch key)
+   play)) 
 
-(defmethod play-note :default [{midi :pitch}]  (-> midi midi->hz  (bell 5000)))
-
-(def bassline
-  (phrase [1 2/3 1/3] [1 2 4])
-)
-
-(def it
-  (->> bassline
-    (where :pitch (comp G flat blues))
-    (where :time (bpm 100))
-    (where :duration (bpm 100))))
-
-(defn forever [fragment] (->> @fragment (then (lazy-seq (forever fragment)))))
-(defn jam [it] (->> it forever play)) 
-
-;(jam (var it))
+(defmacro jam [timing key it] `(jam-on ~timing ~key (var ~it)))
