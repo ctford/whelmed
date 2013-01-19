@@ -30,10 +30,8 @@
           (phrase (concat [1 1/2 1/2 1 1/2 1/2] (repeat 8 1/2))
             [0 0 -3 -1 -1 -3 -2 -5 -2 -5 -2 -5 -2 -1])
         two
-          (phrase [1 1/2 1/2 1 1/2 9/2] [0 0 2 -1 -3 -2])
-        three        
-          (phrase (concat (repeat 8 1/2) [4]) [0 -1 -3 -7 -5 -3 -1 2 -2])] 
-    (->> one (then two) (then one) (then three)
+          (phrase [1 1/2 1/2 1 1/2 9/2] [0 0 2 -1 -3 -2])] 
+    (->> one (then two) (times 2) 
       (where :pitch low)
       (where :part (is ::bass)))))
 
@@ -121,7 +119,7 @@
                     (ektara midi :distort distort :amp amp :gate 1))]
     (overtone/at  (+ start length)  (overtone/ctl synth-id :gate 0))))
 
-(defmethod play-note ::melody [note] (pick 0.6 0.7 note))
+(defmethod play-note ::melody [note] (pick 0.99 0.7 note))
 (defmethod play-note :default [note] (pick 0.99 0.3 note))
 
 (def love-and-fear
