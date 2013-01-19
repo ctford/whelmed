@@ -8,7 +8,37 @@
     [whelmed.contrib.organ-cornet]
     [whelmed.instrument])
   (:require [overtone.live :as overtone]
+            [overtone.inst.drum :as drums]
             [overtone.synth.stringed :as strings]))
+
+(defn tap [drum times] (map #(zipmap [:time :drum] [%1 drum]) times))
+
+(def beata 
+  (->>
+    (reduce with
+      [(tap :tock [1 3 5 7]) 
+      (tap :tick [15/4 30/4]) 
+      (tap :kick [0 3/4 6/4 10/4 14/4 16/4 19/4 22/4 26/4])])
+    (where :part (is ::beat))
+    (where :duration (is 0))))
+
+(def beatb 
+  (->>
+    (reduce with
+      [(tap :tick [4/4 6/4 12/4]) 
+       (tap :kick [0 1/4 2/4 3/4 8/4 9/4 10/4 11/4])])
+   (where :duration (is 0))
+   (where :part (is ::beat))))
+
+(defn beat-times [shift times beat]
+  (with beat
+    (if (= 1 times)
+      []
+      (beat-times shift (dec times) (->> beat (where :time (from shift)))))))
+
+(def kit {:kick #(drums/kick2 50 0.5) 
+          :tick drums/closed-hat,
+          :tock drums/open-hat})
 
 (defn bass [chord element]
   (-> chord (assoc :bass (-> chord element low))))
@@ -132,13 +162,21 @@
   (pick 0.3 0.3 (-> note (update-in [:duration] (is 500)))))
 (defmethod play-note ::bass [note] (pick 0.99 0.5 note))
 (defmethod play-note ::arpeggios [note] (pick 0.99 0.5 note))
+(defmethod play-note ::beat [note]
+  ((-> note :drum kit)))
+
+(defn when-present [f] (fn [attribute] (when attribute (f attribute))))
 
 (def love-and-fear
   (let [intro (with bassline arpeggios)
         statement
           (->> melody
+            (with (beat-times 8 4 beata))
             (with (times 2 chords))         
-            (with (after 32 (with arpeggios bassline))))
+            (with (after 32
+                         (->> arpeggios
+                           (with bassline)
+                           (with (beat-times 8 4 beatb))))))
         oh-love-and-fear 
           (->> (phrase [1/2 1/2 1 1/2 1/2 1 1/2 1/2 4]
                        [2 1 0 0 -1 0 2 3 2])
@@ -149,6 +187,7 @@
                (with (->> modified-theme (with oh-love-and-fear)
                        (times 2)))
                 (times 2)
+                (with (beat-times 8 4 beata))
                 (then (take 6 oh-love-and-fear)))]
 
   (->>
@@ -158,9 +197,9 @@
     (then (->> melodyb (where :pitch low)
             (with (->> (times 2 chords) (where :part (is ::blurt))))))
     (then outro) 
-    (where :duration (bpm 80))
-    (where :time (bpm 80))
-    (where :pitch (comp G minor)))))
+    (where :duration (when-present (bpm 80)))
+    (where :time (when-present (bpm 80)))
+    (where :pitch (when-present (comp G minor))))))
 
 (comment
  (play love-and-fear)
