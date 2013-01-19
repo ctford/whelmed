@@ -3,7 +3,8 @@
     [leipzig.melody]
     [overtone.inst.sampled-piano]
     [whelmed.contrib.organ-cornet]
-    [overtone.live]))
+    [overtone.live])
+  (:require [overtone.synth.stringed :as strings])) 
 
 (definst shudder [freq 440 vibrato 6]
   (let [envelope (env-gen (perc 2 1.5) :action FREE)]
@@ -64,5 +65,8 @@
       (sin-osc (* 2 freq))
       (saw (+ freq (* depth (lf-saw:kr 0.1 0.2)))))))
 
-(defmethod play-note :default [{:keys [pitch time duration]}]
-  (sampled-piano pitch))
+(strings/gen-stringed-synth ektara 1 true)
+(defn pick [distort amp  {midi :pitch, start :time, length :duration}]
+  (let [synth-id (at start
+         (ektara midi :distort distort :amp amp :gate 1))]
+    (at (+ start length) (ctl synth-id :gate 0))))

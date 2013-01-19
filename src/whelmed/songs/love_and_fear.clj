@@ -125,19 +125,13 @@
 ;(def two-motives nil)
 
 ; Arrangement
-(strings/gen-stringed-synth ektara 1 true)
-
-(defn pick [distort amp  {midi :pitch, start :time, length :duration}]
-  (let [synth-id (overtone/at start
-                   (ektara midi :distort distort :amp amp :gate 1))]
-    (overtone/at (+ start length)  (overtone/ctl synth-id :gate 0))))
-
 (defmethod play-note ::melody [note] (pick 0.99 0.7 note))
 (defmethod play-note ::chords [{midi :pitch, length :duration}]
   (organ-cornet (overtone/midi->hz midi) length 0.2))
-(defmethod play-note :default [note] (pick 0.99 0.3 note))
 (defmethod play-note ::blurt [note]
   (pick 0.3 0.3 (-> note (update-in [:duration] (is 500)))))
+(defmethod play-note ::bass [note] (pick 0.99 0.5 note))
+(defmethod play-note ::arpeggios [note] (pick 0.99 0.5 note))
 
 (def love-and-fear
   (let [intro (with bassline arpeggios)
@@ -149,7 +143,8 @@
           (->> (phrase [1/2 1/2 1 1/2 1/2 1 1/2 1/2 4]
                        [2 1 0 0 -1 0 2 3 2])
             (after -1)
-            (canon (interval 7))) 
+            (canon (interval 7))
+            (where :part (is ::melody))) 
         outro (->> chords
                (with (->> modified-theme (with oh-love-and-fear)
                        (times 2)))

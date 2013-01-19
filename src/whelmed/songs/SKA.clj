@@ -168,8 +168,6 @@
 (defmethod play-note ::bass [{midi :pitch}] (-> midi midi->hz harpsichord))
 (defmethod play-note ::rhythm [{midi :pitch}]
   (organ-cornet (midi->hz midi) 150 2/3))   
-(defmethod play-note :default [{midi :pitch, ms :duration}]
-  (organ-cornet (midi->hz midi) ms 2/3))   
 
 (comment
   (play ska)
