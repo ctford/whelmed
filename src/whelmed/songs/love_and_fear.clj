@@ -25,8 +25,8 @@
 (def beatb 
   (->>
     (reduce with
-      [(tap :tick [4/4 6/4 12/4]) 
-       (tap :kick [0 1/4 2/4 3/4 8/4 9/4 10/4 11/4])])
+      [(tap :tick [4/4 6/4 12/4 20/4 22/4 28/4]) 
+       (tap :kick [0 1/4 2/4 3/4 8/4 9/4 10/4 11/4 16/4 19/4 24/4 27/4])])
    (where :duration (is 0))
    (where :part (is ::beat))))
 
@@ -36,7 +36,7 @@
       []
       (beat-times shift (dec times) (->> beat (where :time (from shift)))))))
 
-(def kit {:kick #(drums/kick2 50 0.5) 
+(def kit {:kick drums/kick2 
           :tick drums/closed-hat,
           :tock drums/open-hat})
 
@@ -155,13 +155,13 @@
 ;(def two-motives nil)
 
 ; Arrangement
-(defmethod play-note ::melody [note] (pick 0.99 0.7 note))
+(defmethod play-note ::melody [note] (pick 0.99 0.3 note))
 (defmethod play-note ::chords [{midi :pitch, length :duration}]
-  (organ-cornet (overtone/midi->hz midi) length 0.2))
+  (organ-cornet (overtone/midi->hz midi) length 0.1))
 (defmethod play-note ::blurt [note]
-  (pick 0.3 0.3 (-> note (update-in [:duration] (is 500)))))
-(defmethod play-note ::bass [note] (pick 0.99 0.5 note))
-(defmethod play-note ::arpeggios [note] (pick 0.99 0.5 note))
+  (pick 0.3 0.1 (-> note (update-in [:duration] (is 500)))))
+(defmethod play-note ::bass [note] (pick 0.99 0.1 note))
+(defmethod play-note ::arpeggios [note] (pick 0.99 0.1 note))
 (defmethod play-note ::beat [note]
   ((-> note :drum kit)))
 
