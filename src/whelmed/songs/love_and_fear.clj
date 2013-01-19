@@ -5,8 +5,9 @@
     [whelmed.melody]
     [leipzig.scale]
     [leipzig.chord]
-    [whelmed.instrument]
-    [overtone.live :only [stop midi->hz at ctl]]))
+    [whelmed.instrument])
+  (:require [overtone.live :as overtone]
+            [overtone.synth.stringed :as strings]))
 
 (defn bass [chord element]
   (-> chord (assoc :bass (-> chord element low))))
@@ -112,7 +113,16 @@
 ;(def two-motives nil)
 
 ; Arrangement
-(defmethod play-note ::melody [{midi :pitch}] (-> midi midi->hz (bell 5000)))
+
+(strings/gen-stringed-synth ektara 1 true)
+
+(defn pick [distort amp  {midi :pitch, start :time, length :duration}]
+  (let [synth-id  (overtone/at start
+                    (ektara midi :distort distort :amp amp :gate 1))]
+    (overtone/at  (+ start length)  (overtone/ctl synth-id :gate 0))))
+
+(defmethod play-note ::melody [note] (pick 0.6 0.7 note))
+(defmethod play-note :default [note] (pick 0.99 0.3 note))
 
 (def love-and-fear
   (let [intro
