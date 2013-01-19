@@ -37,8 +37,7 @@
 
 (def chords
   (->> progression
-    (map #(cluster %1 (vals %2))
-      [2 2 4])
+    (map #(cluster %1 (vals %2)) [2 2 4])
     (reduce #(then %2 %1))
     (times 2)
     (with (->> (phrase [2 2 4] [6 6 7]) (where :pitch high) (after 8)))
@@ -51,9 +50,9 @@
       (map #(arpeggiate %2 %1 1/2)
            [[:i :iii :v :vii] 
             [:v- :i :iii :v] 
-            [:i :v :vii :ix :vii]])
+            [:i :v :vii :ix :iii :vii]])
       (reduce #(then %2 %1))
-      (but 11/2 12/2 (partial where :duration inc))
+      (but 11/2 12/2 (partial where :duration (from 1/2)))
       (but 12/2 13/2 (partial where :time inc))
       (but 14/2 15/2 (partial where :duration (from 1/2))))
         two (->> one
@@ -71,9 +70,9 @@
 (def modified-theme
   (->> theme
     (but 0 2 (partial where :duration (is 3/2)))
-    (but 2 5 (partial where :time #(- % 1/2)))))
+    (but 2 5 (partial where :time (from -1/2)))))
 
-(def melody
+(def melodya
   (let [aaaaand [1 2] 
         rhythm [1/2 3/2 1/2 1 1 1 1] 
         there-are-only-two-feelings 
@@ -84,21 +83,28 @@
             (after -2) (then theme))
         love-and-fear
           (->> (phrase rhythm [9 9 8 7 6 4 6]) (after 1) (then theme))
-        there-are 
+        
+        ]
+  (->> there-are-only-two-feelings (then love-and-fear)
+    (where :part (is ::melody)))))
+
+(def melodyb
+ (let  [there-are 
           (->>
             (phrase
               [1/2 1/2 1/4 1/4 1 1/4 1/4 1/4 1/4 1 9/2]
               [2 3 4 3 2 4 3 4 3 2 2])
-            (after -1))
+            (after -1)) 
         only-two-activities 
           (->>
             (phrase
               [1/2 3/2 1/2 1/2 1 1/2 9/2]
               [2 3 4 3 2 1 2])
-            (after -1))]
-  (->> there-are-only-two-feelings (then love-and-fear)
-    (then (times 2 (->> there-are (then only-two-activities))))
+            (after -1))] 
+    (->> there-are (then only-two-activities) (times 2) 
     (where :part (is ::melody)))))
+
+(def melody (->> melodya (then melodyb)))
 
 (def two-motives
   (let [two
@@ -108,16 +114,17 @@
         procedures ( ->> two (then 
          (phrase [1/2 1 1/2 7/2] [-1 0 -1 -3])))
         results (->> two (then
-         (phrase [1/2 1 1/2 1 1 1 1 3/2 1/2 1 1/2 4]
+         (phrase [1/2 1 1/2 1 1 1 1 3/2 1/2 1 1/2 5]
                  [0 0 0 1 0 -1 0 0 -1 0 -1 -3])))] 
-    (->> motives (then procedures) (then results))))
+    (->> motives (then procedures) (then results) (after -1)
+      (where :part (is ::melody))
+      (with (->> chords (times 2) (where :part (is ::blurt)))))))
 
 ;(jam (bpm 120) (comp G aeolian) two-motives)
 ;(def two-motives nil)
 
 ; Arrangement
-
-(strings/gen-stringed-synth ektara 1 true)
+(strings/gen-stringed-synth ektara 3 true)
 
 (defn pick [distort amp  {midi :pitch, start :time, length :duration}]
   (let [synth-id  (overtone/at start
@@ -126,11 +133,11 @@
 
 (defmethod play-note ::melody [note] (pick 0.99 0.7 note))
 (defmethod play-note :default [note] (pick 0.99 0.3 note))
+(defmethod play-note ::blurt [note]
+  (pick 0.3 0.3 (-> note (update-in [:duration] (is 500)))))
 
 (def love-and-fear
-  (let [intro
-          (->> bassline 
-            (with arpeggios))
+  (let [intro (with bassline arpeggios)
         statement
           (->> melody
             (with (times 2 chords))         
@@ -146,7 +153,12 @@
                 (times 2)
                 (then (take 6 oh-love-and-fear)))]
 
-  (->> intro (then (times 2 statement)) (then outro) 
+  (->>
+    intro
+    (then (times 2 statement))
+    (then two-motives)
+    (then (->> melodyb (with (->> (times 2 chords) (where :part (is ::blurt))))))
+    (then outro) 
     (where :duration (bpm 80))
     (where :time (bpm 80))
     (where :pitch (comp G minor)))))
