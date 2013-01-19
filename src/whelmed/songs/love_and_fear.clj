@@ -68,6 +68,11 @@
     (canon (interval -2))
     (where :part (is ::melody))))
 
+(def modified-theme
+  (->> (phrase [3/2 2 9/2] [6 6 7])
+    (canon (interval -2))
+    (where :part (is ::melody))))
+
 (def melody
   (let [aaaaand [1 2] 
         rhythm [1/2 3/2 1/2 1 1 1 1] 
@@ -136,7 +141,7 @@
             (after -1)
             (canon (interval 7))) 
         outro (->> chords
-               (with (->> (after -1/2 theme) (with oh-love-and-fear)
+               (with (->> modified-theme (with oh-love-and-fear)
                        (times 2)))
                 (times 2)
                 (then (take 6 oh-love-and-fear)))]
