@@ -65,13 +65,13 @@
 
 (def theme
   (->> (phrase [2 2 9/2] [6 6 7])
-    (canon (interval -2))
+    (canon  (interval -2))
     (where :part (is ::melody))))
 
 (def modified-theme
-  (->> (phrase [3/2 2 9/2] [6 6 7])
-    (canon (interval -2))
-    (where :part (is ::melody))))
+  (->> theme
+    (but 0 2 (partial where :duration (is 3/2)))
+    (but 2 5 (partial where :time #(- % 1/2)))))
 
 (def melody
   (let [aaaaand [1 2] 
