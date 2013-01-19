@@ -5,6 +5,7 @@
     [whelmed.melody]
     [leipzig.scale]
     [leipzig.chord]
+    [whelmed.contrib.organ-cornet]
     [whelmed.instrument])
   (:require [overtone.live :as overtone]
             [overtone.synth.stringed :as strings]))
@@ -124,14 +125,16 @@
 ;(def two-motives nil)
 
 ; Arrangement
-(strings/gen-stringed-synth ektara 3 true)
+(strings/gen-stringed-synth ektara 1 true)
 
 (defn pick [distort amp  {midi :pitch, start :time, length :duration}]
-  (let [synth-id  (overtone/at start
-                    (ektara midi :distort distort :amp amp :gate 1))]
-    (overtone/at  (+ start length)  (overtone/ctl synth-id :gate 0))))
+  (let [synth-id (overtone/at start
+                   (ektara midi :distort distort :amp amp :gate 1))]
+    (overtone/at (+ start length)  (overtone/ctl synth-id :gate 0))))
 
 (defmethod play-note ::melody [note] (pick 0.99 0.7 note))
+(defmethod play-note ::chords [{midi :pitch, length :duration}]
+  (organ-cornet (overtone/midi->hz midi) length 0.2))
 (defmethod play-note :default [note] (pick 0.99 0.3 note))
 (defmethod play-note ::blurt [note]
   (pick 0.3 0.3 (-> note (update-in [:duration] (is 500)))))
@@ -157,7 +160,8 @@
     intro
     (then (times 2 statement))
     (then two-motives)
-    (then (->> melodyb (with (->> (times 2 chords) (where :part (is ::blurt))))))
+    (then (->> melodyb (where :pitch low)
+            (with (->> (times 2 chords) (where :part (is ::blurt))))))
     (then outro) 
     (where :duration (bpm 80))
     (where :time (bpm 80))
