@@ -11,30 +11,23 @@
             [overtone.inst.drum :as drums]
             [overtone.synth.stringed :as strings]))
 
-(defn tap [drum times] (map #(zipmap [:time :drum] [%1 drum]) times))
+(defn tap [drum times length]
+  (map #(zipmap [:time :duration :drum] [%1 (- length %1) drum]) times))
 
 (def beata 
   (->>
     (reduce with
-      [(tap :tock [1 3 5 7]) 
-      (tap :tick [15/4 30/4]) 
-      (tap :kick [0 3/4 6/4 10/4 14/4 16/4 19/4 22/4 26/4])])
-    (where :part (is ::beat))
-    (where :duration (is 0))))
+      [(tap :tock [1 3 5 7] 8) 
+      (tap :tick [15/4 30/4] 8) 
+      (tap :kick [0 3/4 6/4 10/4 14/4 16/4 19/4 22/4 26/4] 8)])
+    (where :part (is ::beat))))
 
 (def beatb 
   (->>
     (reduce with
-      [(tap :tick [4/4 6/4 12/4 20/4 22/4 28/4]) 
-       (tap :kick [0 1/4 2/4 3/4 8/4 9/4 10/4 11/4 16/4 19/4 24/4 27/4])])
-   (where :duration (is 0))
+      [(tap :tick [4/4 6/4 12/4 20/4 22/4 28/4] 8) 
+       (tap :kick [0 1/4 2/4 3/4 8/4 9/4 10/4 11/4 16/4 19/4 24/4 27/4] 8)])
    (where :part (is ::beat))))
-
-(defn beat-times [shift times beat]
-  (with beat
-    (if (= 1 times)
-      []
-      (beat-times shift (dec times) (->> beat (where :time (from shift)))))))
 
 (def kit {:kick drums/kick2 
           :tick drums/closed-hat,
@@ -113,9 +106,7 @@
               [4 6 6 6 6 7 6 5 6])
             (after -2) (then theme))
         love-and-fear
-          (->> (phrase rhythm [9 9 8 7 6 4 6]) (after 1) (then theme))
-        
-        ]
+          (->> (phrase rhythm [9 9 8 7 6 4 6]) (after 1) (then theme))]
   (->> there-are-only-two-feelings (then love-and-fear)
     (where :part (is ::melody)))))
 
@@ -171,12 +162,12 @@
   (let [intro (with bassline arpeggios)
         statement
           (->> melody
-            (with (beat-times 8 4 beata))
+            (with (times 4 beata))
             (with (times 2 chords))         
             (with (after 32
                          (->> arpeggios
                            (with bassline)
-                           (with (beat-times 8 4 beatb))))))
+                           (with (times 4 beatb))))))
         oh-love-and-fear 
           (->> (phrase [1/2 1/2 1 1/2 1/2 1 1/2 1/2 4]
                        [2 1 0 0 -1 0 2 3 2])
@@ -187,7 +178,7 @@
                (with (->> modified-theme (with oh-love-and-fear)
                        (times 2)))
                 (times 2)
-                (with (beat-times 8 4 beata))
+                (with (times 4 beata))
                 (then (take 6 oh-love-and-fear)))]
 
   (->>
