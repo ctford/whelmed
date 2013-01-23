@@ -186,6 +186,7 @@
     (then (times 2 statement))
     (then two-motives)
     (then (->> melodyb (where :pitch low)
+            (with (times 4 beatb))
             (with (->> (times 2 chords) (where :part (is ::blurt))))))
     (then outro) 
     (where :duration (when-present (bpm 80)))
