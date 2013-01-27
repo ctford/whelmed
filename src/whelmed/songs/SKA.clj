@@ -167,10 +167,12 @@
     (in-time (bpm 180))))
 
 (defmethod play-note ::bass [{midi :pitch}] (-> midi midi->hz harpsichord))
-(defmethod play-note ::rhythm [{midi :pitch}]
-  (organ-cornet (midi->hz midi) 150 8.0))   
+(defmethod play-note ::rhythm [{midi :pitch, ms :duration}]
+  (organ-cornet (midi->hz midi) ms))   
 (defmethod play-note ::default [note]
-  (-> note (assoc :part ::rhythm)))
+  (-> note (assoc :part ::rhythm) play-note))
+(defmethod play-note ::melody [note]
+  (-> note (assoc :part ::rhythm) play-note))
 
 (comment
   (play ska)
