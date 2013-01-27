@@ -163,11 +163,14 @@
     (then (where :pitch (comp low B flat major) mid-section))
     (then fallback)
     (then (->> first-section (in-time #(* % 4/3))))
+    (where :part (fnil identity ::default))
     (in-time (bpm 180))))
 
 (defmethod play-note ::bass [{midi :pitch}] (-> midi midi->hz harpsichord))
 (defmethod play-note ::rhythm [{midi :pitch}]
-  (organ-cornet (midi->hz midi) 150 2/3))   
+  (organ-cornet (midi->hz midi) 150 8.0))   
+(defmethod play-note ::default [note]
+  (-> note (assoc :part ::rhythm)))
 
 (comment
   (play ska)
