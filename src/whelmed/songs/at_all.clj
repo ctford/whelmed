@@ -3,6 +3,8 @@
     leipzig.scale
     leipzig.melody
     leipzig.chord
+    [overtone.live :only [midi->hz]]
+    whelmed.contrib.organ-cornet
     whelmed.melody
     whelmed.instrument))
 
@@ -73,9 +75,13 @@
             (where :time #( * % 2/3))
             (where :duration #( * % 2/3)))))
     (then finale)
+    (where :part (fnil identity ::default))
     (where :time (bpm 160))
     (where :duration (is 200))
     (where :pitch (comp low G major))))
+
+(defmethod play-note ::default [{midi :pitch}]
+  (organ-cornet (midi->hz midi) 150 8.0)) 
 
 (comment
   (play at-all)
