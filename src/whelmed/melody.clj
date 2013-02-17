@@ -41,13 +41,11 @@
     (= n 2)
       (-> chord (inversion 1) (raise :iii 7))))
 
-(defn- forever [it] (->> @it (then (lazy-seq (forever it)))))
-(defn jam-on [timing key it]
- (->> it
-   forever
-   (where :time timing)
-   (where :duration timing)
-   (where :pitch key)
-   play)) 
+(defn- forever [riff]
+  (let [{final :time, duration :duration} (last @riff)]
+    (concat
+      @riff
+      (lazy-seq (->> (forever riff) (where :time #(+ % final duration)))))))
 
-(defmacro jam [timing key it] `(jam-on ~timing ~key (var ~it)))
+(defn jam-on [it] (->> it forever play)) 
+(defmacro jam [it] `(jam-on (var ~it)))

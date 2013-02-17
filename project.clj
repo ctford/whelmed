@@ -5,5 +5,5 @@
   :dependencies	[
     [org.clojure/clojure "1.4.0"]
     [overtone "0.8.0"]
-    [leipzig "0.3.0" :exclusions [seesaw]]
+    [leipzig "0.4.0-SNAPSHOT" :exclusions [seesaw]]
     [org.clojure/math.numeric-tower "0.0.1"]])
