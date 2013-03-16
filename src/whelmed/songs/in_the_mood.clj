@@ -38,7 +38,7 @@
 (def beat
   (->>
     (tap :tick [1 3 5 7] 8)
-    (with (tap :kick [0 3/4 6/4 10/4 14/4 16/4 19/4 22/4 26/4] 8))
+    (with (tap :kick [0 1/2 3/2 5/2 7/2 8/2 10/2 11/2 13/2] 8))
     (where :part (is ::beat))))
 
 (def riff
