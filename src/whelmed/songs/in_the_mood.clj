@@ -35,40 +35,41 @@
 (defn tap [drum times length]
   (map #(zipmap [:time :duration :drum] [%1 (- length %1) drum]) times))
 
-(def beat
-  (->>
-    (tap :tick [1 3 5 7] 8)
-    (with (tap :kick [0 1/2 3/2 5/2 7/2 8/2 10/2 11/2 13/2] 8))
-    (where :part (is ::beat))))
-
 (def riff
   (let [melody (->>
-                 (phrase (cycle [1/2]) (cycle [2 4 7]))
-                 (take 11)
-                 (then (phrase [5/2] [7]))
-                 (with (phrase [7 1] [0 0]))
-                 (with (->> (phrase (repeat 1) [0 1 2 3 4 3 2 1])
-                         (where :pitch #(- % 7)))) 
-                 (with beat))]
+          (phrase (cycle [1/2]) (cycle [2 4 7]))
+          (take 11)
+          (then (phrase [5/2] [7]))
+          (with (phrase [7 1] [0 0]))
+          (where :part (is ::melody))) 
+        extra (->>
+          (phrase (repeat 1) [0 1 2 3 4 3 2 1])
+          (where :pitch #(- % 7)) 
+          (where :part (is ::chords))) 
+        beat (->>
+          (tap :tick [1 3 5 7] 8)
+          (with (tap :kick [0 1/2 3/2 5/2 7/2 8/2 10/2 11/2 13/2] 8))
+          (where :part (is ::beat)))
+        chords (->>
+          (phrase (cycle [7 1]) [0 0 0 0 3 3 0 0 -3 -3 0 0])
+          (where :pitch low)
+          (canon (comp (interval 2) (partial canon (interval 2))))
+          (where :part (is ::chords)))]
   (->>
     (times 4 melody)
-    (then (->> melody (wherever :pitch, :pitch inc)))
+    (then (->> melody (where :pitch inc)))
     (then melody)
-    (with (->>
-            (phrase (cycle [7 1]) 
-                    [0 0 0 0 3 3 0 0 -3 -3 0 0])
-            (where :pitch low)
-            (canon (comp (interval 2) (partial canon (interval 2))))))
+    (with chords)
+    (with (->> beat (with extra) (times 6)))
     swing
     (in-time (bpm 180))
-    (wherever (comp not :part), :part (is ::melody))
     (wherever :pitch, :pitch (comp G major)))))
 
 (def kit {:kick drums/kick2
           :tick drums/closed-hat,
           :tock drums/open-hat})
 
-(defmethod play-note ::melody [note] (pick 0.99 0.3 note))
+(defmethod play-note ::chords [note] (pick 0.90 0.3 note))
 (defmethod play-note ::melody [{midi :pitch}] (sampled-piano midi))
 (defmethod play-note ::beat [note] ((-> note :drum kit)))
 
