@@ -5,6 +5,7 @@
     [leipzig.scale] 
     [leipzig.canon] 
     [overtone.inst.sampled-piano]
+    [whelmed.contrib.organ-cornet]
     [whelmed.instrument]) 
   (:require
     [overtone.live :as overtone]
@@ -45,7 +46,7 @@
         extra (->>
           (phrase (repeat 1) [0 1 2 3 4 3 2 1])
           (where :pitch #(- % 7)) 
-          (where :part (is ::chords))) 
+          (where :part (is ::harmony))) 
         beat (->>
           (tap :tick [1 3 5 7] 8)
           (with (tap :kick [0 1/2 3/2 5/2 7/2 8/2 10/2 11/2 13/2] 8))
@@ -54,11 +55,10 @@
           (phrase (cycle [7 1]) [0 0 0 0 3 3 0 0 -3 -3 0 0])
           (where :pitch low)
           (canon (comp (interval 2) (partial canon (interval 2))))
+          (canon (interval 7))
           (where :part (is ::chords)))]
   (->>
-    (times 4 melody)
-    (then (->> melody (where :pitch inc)))
-    (then melody)
+    (->> melody (times 4) (then (->> melody (where :pitch inc))) (then melody))
     (with chords)
     (with (->> beat (with extra) (times 6)))
     swing
@@ -69,9 +69,11 @@
           :tick drums/closed-hat,
           :tock drums/open-hat})
 
-(defmethod play-note ::chords [note] (pick 0.90 0.3 note))
+(defmethod play-note ::harmony [note] (pick 0.90 0.3 note))
 (defmethod play-note ::melody [{midi :pitch}] (sampled-piano midi))
 (defmethod play-note ::beat [note] ((-> note :drum kit)))
+(defmethod play-note ::chords [{midi :pitch, length :duration}]
+  (organ-cornet (overtone/midi->hz midi) length 0.1))
 
 (comment
   (def riff nil) 
