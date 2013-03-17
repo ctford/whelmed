@@ -63,7 +63,7 @@
     (with (->> (map chords progression) (reduce #(then %2 %1))))
     (with (->> beat (times 6)))
     swing
-;    (filter (comp #(= % ::chords) :part))
+    ;(filter (comp #(= % ::beat) :part))
     (in-time (bpm 180))
     (wherever :pitch, :pitch (comp G major)))))
 
@@ -73,7 +73,10 @@
 
 (defmethod play-note ::bassline [note] (pick 0.40 0.3 note))
 (defmethod play-note ::melody [note] (pick 0.90 0.3 note))
-(defmethod play-note ::chords [{midi :pitch}] (sampled-piano midi 0.5))
+(defmethod play-note ::chords [{midi :pitch, duration :duration, start :time}]
+  (let [id (sampled-piano midi 0.5)]
+    (overtone/at (+ start duration) (overtone/ctl id :gate 0))
+                                                ))
 (defmethod play-note ::beat [note] ((-> note :drum kit)))
 ;(defmethod play-note ::melody [{midi :pitch, length :duration}]
 ;  (organ-cornet (overtone/midi->hz midi) length 0.1))
