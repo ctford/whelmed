@@ -26,13 +26,19 @@
       play)))
 
 (defn mapthen [f notes] (->> notes (map f) (reduce #(then %2 %1))))
-(defn strum [durations pitches] (mapthen #(cluster % pitches) durations))
+(defn strum [chord durations] (mapthen #(cluster % (vals chord)) durations))
 (defn cluster [duration pitches]
   (map
     #(zipmap
       [:time :duration :pitch]
       [0 duration %])
     pitches))
+
+(defn- sum-n [series n] (reduce + (take n series)))
+(defn rhythm 
+  [durations]
+  (let [timings (map (partial sum-n durations) (range))]
+    (map #(zipmap [:time :duration] [%1 %2]) timings durations)))
 
 (defn raise [chord k n] (update-in chord [k] (from n)))
 
