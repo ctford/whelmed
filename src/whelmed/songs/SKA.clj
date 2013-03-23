@@ -149,11 +149,6 @@
 
 (def intro (->> bass (times 2) (where :pitch (comp E minor))))
 
-(defn in-time [signature notes]
-  (->> notes
-    (where :time signature)
-    (where :duration signature)))
-
 (def ska
   (->>
     intro

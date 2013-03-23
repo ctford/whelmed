@@ -49,3 +49,11 @@
 
 (defn jam-on [it] (->> it forever play)) 
 (defmacro jam [it] `(jam-on (var ~it)))
+
+(defn in-time  [timing notes]
+  (->> notes
+    (map
+      (fn [{time :time, duration :duration :as note}]
+        (let [relative-timing #(-> % (- time) timing (+  (timing time)))]
+          (update-in note [:duration] relative-timing))))
+          (where :time timing)))
