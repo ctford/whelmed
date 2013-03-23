@@ -1,7 +1,6 @@
 (ns whelmed.instrument
   (:use
     [leipzig.melody]
-    [overtone.inst.sampled-piano]
     [whelmed.contrib.organ-cornet]
     [overtone.live])
   (:require [overtone.synth.stringed :as strings])) 
