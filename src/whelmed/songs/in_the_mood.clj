@@ -13,20 +13,13 @@
     [overtone.inst.drum :as drums]
     [overtone.synth.stringed :as strings])) 
 
-(defn lilt [beat] ((scale [2/3 1/3]) (* 2 beat)))
+(defn swing [beat] ((scale [2/3 1/3]) (* 2 beat)))
 
-(defn swing [notes]
-  (map
-    (fn [{time :time, duration :duration, :as note}]
-      (-> note
-        (assoc :time (lilt time))
-        (assoc :duration (- (lilt (+ time duration)) (lilt time)))))
-    notes))
-
-(defn in-time [speed notes]
+(defn in-time [timing notes]
   (->> notes
-    (where :time speed)
-    (where :duration speed)))
+    (map (fn [{time :time duration :duration :as note}]
+           (assoc note :duration (- (timing (+ time duration)) (timing time)))))
+    (where :time timing)))
 
 (defn tap [drum times length]
   (map #(zipmap [:time :duration :drum] [%1 (- length %1) drum]) times))
@@ -59,7 +52,7 @@
     (with (->> (map bassline progression) (reduce #(then %2 %1))))
     (with (->> (map chords progression) (reduce #(then %2 %1))))
     (with (->> beat (times 6)))
-    swing
+    (in-time swing)
     ;(filter (comp #(= % ::chords) :part))
     (in-time (bpm 180))
     (wherever :pitch, :pitch (comp G major)))))
