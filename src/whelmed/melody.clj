@@ -25,6 +25,8 @@
       (where :pitch (comp C scale))
       play)))
 
+(defn mapthen [f notes] (->> notes (map f) (reduce #(then %2 %1))))
+(defn strum [durations pitches] (mapthen #(cluster % pitches) durations))
 (defn cluster [duration pitches]
   (map
     #(zipmap
