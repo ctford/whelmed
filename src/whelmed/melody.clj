@@ -34,26 +34,19 @@
 
 (defn raise [chord k n] (update-in chord [k] (from n)))
 
-(defn inversion [chord n]
-  (cond
-    (= n 1)
-      (-> chord (root -7) (raise :i 7))
-    (= n 2)
-      (-> chord (inversion 1) (raise :iii 7))))
-
 (defn- forever [riff]
   (let [{final :time, duration :duration} (last @riff)]
     (concat
       @riff
-      (lazy-seq (->> (forever riff) (where :time #(+ % final duration)))))))
+      (lazy-seq (->> (forever riff) (where :time (from (+ final duration))))))))
 
-(defn jam-on [it] (->> it forever play)) 
-(defmacro jam [it] `(jam-on (var ~it)))
+(defn jam* [riff] (->> riff forever play)) 
+(defmacro jam [riff] `(jam* (var ~riff)))
 
-(defn in-time  [timing notes]
+(defn in-time [timing notes]
   (->> notes
     (map
       (fn [{time :time, duration :duration :as note}]
-        (let [relative-timing #(-> % (- time) timing (+  (timing time)))]
+        (let [relative-timing #(-> % (- time) timing (+ (timing time)))]
           (update-in note [:duration] relative-timing))))
-          (where :time timing)))
+    (where :time timing)))

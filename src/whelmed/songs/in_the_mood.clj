@@ -1,7 +1,9 @@
 (ns whelmed.songs.in-the-mood
   (:use
     [leipzig.melody]
+    [leipzig.canon]
     [whelmed.melody]
+    [whelmed.instrument]
     [leipzig.scale])
   (:require
     [overtone.live :as overtone]
@@ -29,7 +31,7 @@
           (with (tap :kick [0 1/2 3/2 5/2 7/2 8/2 10/2 11/2 13/2] 8))
           (where :part (is ::beat)))
         chords (fn [root]
-          (let [bass (phrase (cycle [7 1]) (repeat root))]
+          (let [bass (phrase [7 1] (repeat root))]
             (->> bass
               (with ((interval 2) bass)) 
               (with ((interval 4) bass)) 
