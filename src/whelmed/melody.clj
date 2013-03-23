@@ -16,15 +16,6 @@
                (filter #(not (late? %))))] 
     (with apple (f core))))
 
-(defn demo
-  ([notes] (demo major notes))
-  ([scale notes]
-    (->> notes
-      (where :time (bpm 90))
-      (where :duration (bpm 90))
-      (where :pitch (comp C scale))
-      play)))
-
 (defn mapthen [f notes] (->> notes (map f) (reduce #(then %2 %1))))
 (defn strum [chord durations] (mapthen #(cluster % (vals chord)) durations))
 (defn cluster [duration pitches]
@@ -58,3 +49,11 @@
         (let [relative-timing #(-> % (- time) timing (+ (timing time)))]
           (update-in note [:duration] relative-timing))))
     (where :time timing)))
+
+(defn demo
+  ([notes] (demo major notes))
+  ([scale notes]
+    (->> notes
+      (in-time (bpm 90))
+      (where :pitch (comp C scale))
+      play)))
