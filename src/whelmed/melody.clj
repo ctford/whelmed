@@ -8,8 +8,7 @@
 
 (defn between? [from to]
   (fn [note] 
-    (and (< (:time note) from)
-         (>= (:time note) to))))
+    (and (> (:time note) from) (<= (:time note) to))))
 
 (defn but [from to f notes]
   (let [apple (->> notes (filter (comp not (between? from to))))
