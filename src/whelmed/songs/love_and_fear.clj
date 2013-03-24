@@ -76,14 +76,13 @@
             [:v- :i :iii :v] 
             [:i :v :vii :ix :iii :vii]])
       (reduce #(then %2 %1))
-      (but 11/2 12/2 (partial where :duration (from 1/2)))
-      (but 12/2 13/2 (partial where :time inc))
-      (but 14/2 15/2 (partial where :duration (from 1/2))))
+      (wherever (between? 11/2 12/2), :duration (from 1/2))
+      (wherever (between? 12/2 13/2), :time inc)
+      (wherever (between? 14/2 15/2), :duration (from 1/2)))
         two (->> one
-             (but 2 8 (is (after 2
-               (phrase [1/2 1/2 1/2 1/2 4] [5 4 2 -1 0])))))]
+             (but 2 8 (phrase [1/2 1/2 1/2 1/2 4] [5 4 2 -1 0])))]
     (->> one (then two) (times 2)  
-      (but 27 32 (is (->> (phrase [1 4] [7 6]) (after 27))))
+      (but 27 32 (phrase [1 4] [7 6]))
       (where :part (is ::arpeggios)))))
 
 (def theme
@@ -93,8 +92,8 @@
 
 (def modified-theme
   (->> theme
-    (but 0 2 (partial where :duration (is 3/2)))
-    (but 2 5 (partial where :time (from -1/2)))))
+    (wherever (between? 0 2), :duration (is 3/2))
+    (wherever (between? 2 5), :time (from -1/2))))
 
 (def melodya
   (let [aaaaand [1 2] 

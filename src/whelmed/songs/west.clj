@@ -31,7 +31,7 @@
 
 (def ill-get-away
   (->> ill-run-away
-    (but 1/4 1/2 (partial where :pitch (from 3)))))
+    (wherever (between? 1/4 1/2), :pitch (from 3))))
 
 (def my-heart-will-go-west-with-the-sun
   (after -1/2
@@ -105,7 +105,7 @@
 
 (def consider-that
   (->> consider-this
-    (but 0 1/2 (partial where :pitch dec))))
+    (wherever (between? 0 1/2), :pitch dec)))
 
 (def consider-everything
   (->>

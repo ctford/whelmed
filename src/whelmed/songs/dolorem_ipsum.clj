@@ -24,9 +24,7 @@
       [1/2 1/2 1/2 1/4 1/4 1/2 1/2 1/2 1/4 1/4]
       [4 4 5 4 5 6 8 5 4 5])
     (times 2)
-    (but 3.5 4 (is
-                 (->> (phrase [1/8 1/8 1/8 1/8] [4 5 4 5])
-                   (after 3.5))))
+    (but 3.5 4 (phrase [1/8 1/8 1/8 1/8] [4 5 4 5]))
     (where :part (is ::melody))))
 
 (def sit-amet 
@@ -75,7 +73,7 @@
       (arpeggiate (-> triad (root 2))
         [:iii :i :iii :v] 1/4)
       (times 4)
-      (but 15/4 16/4 #(where :pitch inc %))
+      (wherever (between? 15/4 16/4), :pitch inc)
     (then
       (->> (arpeggiate (-> sixth (root 2))
              [:v :iii :i :vi] 1/4)
@@ -144,7 +142,7 @@
           (with it ends)]
     (->> lorem
       (then intro) (then development)
-      (then (->> theme (but 4 8 (partial where :pitch high))))
+      (then (->> theme (wherever (between? 4 8), :pitch high)))
       (then (->> theme (with neque)))
       (then oooh-aaah)
       (then (->> intro (with la-la-la-la)

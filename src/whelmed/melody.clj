@@ -8,12 +8,12 @@
 
 (defn between? [from to]
   (fn [note] 
-    (and (> (:time note) from) (<= (:time note) to))))
+    (and (>= (:time note) from) (< (:time note) to))))
 
-(defn but [from to f notes]
-  (let [apple (->> notes (filter (comp not (between? from to))))
-        core (->> notes (filter (between? from to)))]
-    (with apple (f core))))
+(defn but [from to replacement notes]
+  (->> notes
+    (filter (comp not (between? from to)))
+    (with (after from replacement))))
 
 (defn mapthen [f notes] (->> notes (map f) (reduce #(then %2 %1))))
 (defn cluster [duration pitches]
