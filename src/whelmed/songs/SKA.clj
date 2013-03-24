@@ -42,7 +42,7 @@
 (defn chord [degree duration]
   (->> (-> triad (root degree)) vals (cluster duration)))
 
-(def rhythm
+(def rhythm-section
   (->>
     (->> (chord 0 1)
       (after 1)
@@ -54,7 +54,7 @@
     (where :part (is ::rhythm))))
 
 (def fallchords
-  (->> (take 6 rhythm)
+  (->> (take 6 rhythm-section)
     (then
       (->>
         (-> triad (root 3.5) (raise :iii 1/2) vals)
@@ -140,7 +140,7 @@
 
 (def first-section
   (->> 
-    (->> bass (with rhythm) (times 2)
+    (->> bass (with rhythm-section) (times 2)
          (with wish-you-were-here-again)
          (times 2))
     (then (with oooh suns-on-the-rise))

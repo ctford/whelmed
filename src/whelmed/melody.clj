@@ -6,24 +6,24 @@
 
 (defn from [base] (partial + base))
 
+(defn between? [from to]
+  (fn [note] 
+    (and (< (:time note) from)
+         (>= (:time note) to))))
+
 (defn but [from to f notes]
-  (let [early? #(< (:time %) from)
-        late? #(>= (:time %) to)
-        apple (->> notes
-                (filter #(or (early? %) (late? %)))) 
-        core (->> notes
-               (filter #(not (early? %))) 
-               (filter #(not (late? %))))] 
+  (let [apple (->> notes (filter (comp not (between? from to))))
+        core (->> notes (filter (between? from to)))]
     (with apple (f core))))
 
 (defn mapthen [f notes] (->> notes (map f) (reduce #(then %2 %1))))
-(defn strum [chord durations] (mapthen #(cluster % (vals chord)) durations))
 (defn cluster [duration pitches]
   (map
     #(zipmap
       [:time :duration :pitch]
       [0 duration %])
     pitches))
+(defn strum [chord durations] (mapthen #(cluster % (vals chord)) durations))
 
 (defn- sum-n [series n] (reduce + (take n series)))
 (defn rhythm 
