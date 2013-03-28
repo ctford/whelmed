@@ -65,7 +65,21 @@
       (saw (+ freq (* depth (lf-saw:kr 0.1 0.2)))))))
 
 (strings/gen-stringed-synth ektara 1 true)
-(defn pick [distort amp  {midi :pitch, start :time, length :duration}]
+(defn pick [distort amp {midi :pitch, start :time, length :duration}]
   (let [synth-id (at start
          (ektara midi :distort distort :amp amp :gate 1))]
     (at (+ start length) (ctl synth-id :gate 0))))
+
+(definst brassy [freq 440 dur 1000 vol 1 growl 1]
+  (lpf
+    (* vol
+    (+
+      (* 1/1 (sin-osc (* 1 freq)) 
+         (env-gen (adsr 0.2 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1000)) :action FREE))
+      (* 1/2 (sin-osc (* 3 freq)) 
+         (env-gen (adsr 0.4 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1000)) :action FREE))
+      (* 1/3 (sin-osc (* 5 freq)) 
+         (env-gen (adsr 0.4 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1000)) :action FREE))
+      (* 1/4 (sin-osc (* 7 freq)) 
+         (env-gen (adsr 0.4 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1000)) :action FREE)))) 
+     (+ (* 4 freq) (* (line:kr (* growl 4) 1 0.5) freq (sin-osc 50)))))
