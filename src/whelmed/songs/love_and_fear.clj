@@ -75,11 +75,11 @@
       (map #(arpeggiate %2 %1 1/2)
            [[:i :iii :v :vii] 
             [:v- :i :iii :v] 
-            [:i :v :vii :ix :iii :vii]])
+            [:i :v :vii :ix :vii :iii]])
       (reduce #(then %2 %1))
-      (wherever (between? 11/2 12/2), :duration (from 1/2))
-      (wherever (between? 12/2 13/2), :time inc)
-      (wherever (between? 14/2 15/2), :duration (from 1/2)))
+      (wherever #(-> % :time (= 11/2)), :duration (is 1))
+      (wherever #(-> % :time (> 11/2)), :time (from 1/2))
+      (wherever #(-> % :time ( = 7)), :duration (is 1))) 
         two (->> one
              (but 2 8 (phrase [1/2 1/2 1/2 1/2 4] [5 4 2 -1 0])))]
     (->> one (then two) (times 2)  
@@ -152,10 +152,7 @@
   (pick 0.3 0.1 (-> note (update-in [:duration] (is 500)))))
 (defmethod play-note ::bass [note] (pick 0.99 0.1 note))
 (defmethod play-note ::arpeggios [note] (pick 0.99 0.1 note))
-(defmethod play-note ::beat [note]
-  ((-> note :drum kit)))
-
-(defn when-present [f] (fn [attribute] (when attribute (f attribute))))
+(defmethod play-note ::beat [note] ((-> note :drum kit)))
 
 (def love-and-fear
   (let [intro (with bassline arpeggios)
@@ -188,10 +185,11 @@
             (with (times 4 beatb))
             (with (->> (times 2 chords) (where :part (is ::blurt))))))
     (then outro) 
-    (where :duration (when-present (bpm 80)))
-    (where :time (when-present (bpm 80)))
-    (where :pitch (when-present (comp G minor))))))
+    (wherever :time, :time (bpm 80))
+    (wherever :duration, :duration (bpm 80))
+    (wherever :pitch, :pitch (comp G minor)))))
 
 (comment
- (play love-and-fear)
+  (jam love-and-fear)
+  (play love-and-fear)
 )
