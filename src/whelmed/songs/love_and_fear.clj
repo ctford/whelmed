@@ -1,6 +1,7 @@
 (ns whelmed.songs.love-and-fear
   (:use
     [leipzig.melody]
+    [leipzig.live]
     [leipzig.canon]
     [whelmed.melody]
     [leipzig.scale]
@@ -141,7 +142,6 @@
       (where :part (is ::melody))
       (with (->> chords (times 2) (where :part (is ::blurt)))))))
 
-;(jam (bpm 120) (comp G aeolian) two-motives)
 ;(def two-motives nil)
 
 ; Arrangement

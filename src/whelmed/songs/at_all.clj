@@ -2,6 +2,7 @@
   (:use
     leipzig.scale
     leipzig.melody
+    leipzig.live
     leipzig.chord
     [overtone.live :only [midi->hz]]
     whelmed.contrib.organ-cornet

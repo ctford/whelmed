@@ -1,7 +1,8 @@
 (ns whelmed.play
   (:use
     [overtone.live :only [recording-start recording-stop kill-server]]
-    [leipzig.melody :only [play then after]]
+    [leipzig.melody :only [then after]]
+    [leipzig.live :only [play]]
     [whelmed.songs.west :only [west-with-the-sun]]
     [whelmed.songs.dolorem-ipsum :only [dolorem-ipsum]]
     [whelmed.songs.love-and-fear :only [love-and-fear]]

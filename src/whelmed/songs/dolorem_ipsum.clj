@@ -1,6 +1,7 @@
 (ns whelmed.songs.dolorem-ipsum
   (:use
     [leipzig.melody]
+    [leipzig.live]
     [whelmed.melody]
     [leipzig.scale]
     [leipzig.chord]

@@ -1,6 +1,8 @@
 (ns whelmed.songs.west
   (:use
     [leipzig.melody]
+    [leipzig.live]
+    [leipzig.temperament]
     [whelmed.melody]
     [leipzig.scale]
     [leipzig.chord]
@@ -163,15 +165,17 @@
       (then variation)
       (then (->> response (with (->> break (after 16)))))
       (then fadeout)
-      (where :pitch (comp E minor))
+      (where :pitch (comp (pythagorean 69) A minor))
       (where :time (bpm 80))
       (where :duration (bpm 80)))))
 
 ; Arrangement
-(defmethod play-note ::bass [{midi :pitch}] (-> midi midi->hz groan))
-(defmethod play-note ::accompaniment [{midi :pitch}] (-> midi midi->hz shudder))
-(defmethod play-note ::lead [{midi :pitch}] (-> midi midi->hz sawish))
-(defmethod play-note ::response [{midi :pitch}] (-> midi midi->hz sinish))
-(defmethod play-note ::break [{midi :pitch}] (-> midi midi->hz sinish))
+(defmethod play-note ::bass [{midi :pitch}] (-> midi groan))
+(defmethod play-note ::accompaniment [{midi :pitch}] (-> midi shudder))
+(defmethod play-note ::lead [{midi :pitch}] (-> midi sawish))
+(defmethod play-note ::response [{midi :pitch}] (-> midi sinish))
+(defmethod play-note ::break [{midi :pitch}] (-> midi sinish))
 
-;(->> west-with-the-sun play)
+(comment
+  (->> west-with-the-sun play)
+) 

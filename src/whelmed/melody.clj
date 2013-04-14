@@ -1,6 +1,7 @@
 (ns whelmed.melody
   (:use
     [leipzig.melody]
+    [leipzig.live]
     [leipzig.chord]
     [leipzig.scale]))
 
@@ -31,15 +32,6 @@
     (map #(zipmap [:time :duration] [%1 %2]) timings durations)))
 
 (defn raise [chord k n] (update-in chord [k] (from n)))
-
-(defn- forever [riff]
-  (let [{final :time, duration :duration} (last @riff)]
-    (concat
-      @riff
-      (lazy-seq (->> (forever riff) (where :time (from (+ final duration))))))))
-
-(defn jam* [riff] (->> riff forever play)) 
-(defmacro jam [riff] `(jam* (var ~riff)))
 
 (defn in-time [timing notes]
   (->> notes
