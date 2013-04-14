@@ -22,7 +22,7 @@
         bassline (fn [base] (->>
           (phrase [1 1 1 1/2 1/2 1 1 1 1]  [0 2 4 5 4 7 5 4 2])
           (where :pitch (from base))
-          (where :pitch (comp low low))
+          (where :pitch (comp lower lower))
           (where :part (is ::bassline)))) 
         beat (->>
           (after 1 (rhythm [2 2 2 1])) 

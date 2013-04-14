@@ -10,13 +10,13 @@
     whelmed.instrument))
 
 (defn with-bass [chord]
-  (-> chord (assoc :bass (low (:i chord)))))
+  (-> chord (assoc :bass (lower (:i chord)))))
 
 (def I (-> triad (root 0) with-bass))
 (def II (-> triad (root 1) with-bass))
 (def V (-> triad (root 4) with-bass))
 
-(def progression [I I II II II V I (update-in V [:bass] low)])
+(def progression [I I II II II V I (update-in V [:bass] lower)])
 
 (def rhythm-n-bass
   (let [bass (fn [chord]
@@ -63,7 +63,7 @@
 
 (def finale
   (->> (phrase [1/2 1/2 1/2] [11 13 14])
-    (then (after -1/2 (->> (update-in I [:i] high)
+    (then (after -1/2 (->> (update-in I [:i] raise)
             vals
             (cluster 13/2))))))
 

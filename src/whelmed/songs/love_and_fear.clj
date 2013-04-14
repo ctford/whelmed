@@ -35,7 +35,7 @@
           :tock drums/open-hat})
 
 (defn bass [chord element]
-  (-> chord (assoc :bass (-> chord element low))))
+  (-> chord (assoc :bass (-> chord element lower))))
 
 (defn arpeggiate [chord ks duration]
   (map
@@ -57,7 +57,7 @@
         two
           (phrase [1 1/2 1/2 1 1/2 9/2] [0 0 2 -1 -3 -2])] 
     (->> one (then two) (times 2) 
-      (where :pitch low)
+      (where :pitch lower)
       (where :part (is ::bass)))))
 
 (def chords
@@ -65,8 +65,8 @@
     (map #(cluster %1 (vals %2)) [2 2 4])
     (reduce #(then %2 %1))
     (times 2)
-    (with (->> (phrase [2 2 4] [6 6 7]) (where :pitch high) (after 8)))
-    (where :pitch low)
+    (with (->> (phrase [2 2 4] [6 6 7]) (where :pitch raise) (after 8)))
+    (where :pitch lower)
     (where :part (is ::chords))))
 
 (def arpeggios 
@@ -181,7 +181,7 @@
     intro
     (then (times 2 statement))
     (then two-motives)
-    (then (->> melodyb (where :pitch low)
+    (then (->> melodyb (where :pitch lower)
             (with (times 4 beatb))
             (with (->> (times 2 chords) (where :part (is ::blurt))))))
     (then outro) 

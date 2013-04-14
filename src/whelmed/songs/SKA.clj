@@ -20,13 +20,13 @@
         [3/2 1 1/2 1]
         [5   5   4 2]))
     (where :part (is ::bass))
-    (where :pitch (comp low low))))
+    (where :pitch (comp lower lower))))
 
 (def fallbass
   (->>
       (take 4 bass)
     (then
-      (phrase [4] [(low -3.5)]))))
+      (phrase [4] [(lower -3.5)]))))
 
 (def wish-you-were-here-again 
   (->>
@@ -37,7 +37,7 @@
       (phrase
         [2/3 1/3 3/3 3/3 3/3 2/3 1/3 2/3 3/3 4/3]
         [0 1 0 4 0 2 3 2 1 0]))
-    (where :pitch high)
+    (where :pitch raise)
     (where :part (is ::melody))))
 
 (defn chord [degree duration]
@@ -100,7 +100,7 @@
     (phrase
       [3 1/3 2/3 3 2/3 1/3 3]
       [3 4 3 2 0 -1 0]) 
-    (where :pitch high)
+    (where :pitch raise)
     (where :part (is ::melody))))
 
 (def and-if-you-lived-here

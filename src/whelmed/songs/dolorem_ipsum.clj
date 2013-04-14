@@ -143,7 +143,7 @@
           (with it ends)]
     (->> lorem
       (then intro) (then development)
-      (then (->> theme (wherever (between? 4 8), :pitch high)))
+      (then (->> theme (wherever (between? 4 8), :pitch raise)))
       (then (->> theme (with neque)))
       (then oooh-aaah)
       (then (->> intro (with la-la-la-la)

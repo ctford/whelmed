@@ -10,7 +10,7 @@
     [overtone.live :only [stop midi->hz]]))
 
 (def progression
-  (map (partial root seventh) [0 (low 4) (low 5) (low 2)]))
+  (map (partial root seventh) [0 (lower 4) (lower 5) (lower 2)]))
 
 ; Accompaniment
 (def backing
@@ -123,7 +123,7 @@
    (then consider-that)
    (then consider-everything)))
 
-(def breakup (->> breakdown (where :pitch low)))
+(def breakup (->> breakdown (where :pitch lower)))
 (def break
   (->>
     (with breakup breakdown)
@@ -133,7 +133,7 @@
 (def light-bass
   (->> (map :i progression)
     (phrase (repeat 4))
-    (where :pitch low)
+    (where :pitch lower)
     (where :part (is ::bass))))
 
 (def bass
@@ -165,7 +165,7 @@
       (then variation)
       (then (->> response (with (->> break (after 16)))))
       (then fadeout)
-      (where :pitch (comp (pythagorean 69) A minor))
+      (where :pitch (comp equal A minor))
       (where :time (bpm 80))
       (where :duration (bpm 80)))))
 
