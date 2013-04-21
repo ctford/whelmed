@@ -1,6 +1,7 @@
 (ns whelmed.songs.in-the-mood
   (:use
     [leipzig.melody]
+    [leipzig.live]
     [leipzig.canon]
     [leipzig.chord]
     [leipzig.temperament]

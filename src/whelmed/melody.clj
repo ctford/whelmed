@@ -5,8 +5,6 @@
     [leipzig.chord]
     [leipzig.scale]))
 
-(defn from [base] (partial + base))
-
 (defn between? [from to]
   (fn [note] 
     (and (>= (:time note) from) (< (:time note) to))))
@@ -31,7 +29,7 @@
   (let [timings (map (partial sum-n durations) (range))]
     (map #(zipmap [:time :duration] [%1 %2]) timings durations)))
 
-(defn raise [chord k n] (update-in chord [k] (from n)))
+(defn augment [chord k n] (update-in chord [k] (from n)))
 
 (defn in-time [timing notes]
   (->> notes

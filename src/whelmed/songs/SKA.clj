@@ -58,7 +58,7 @@
   (->> (take 6 rhythm-section)
     (then
       (->>
-        (-> triad (root 3.5) (raise :iii 1/2) vals)
+        (-> triad (root 3.5) (augment :iii 1/2) vals)
         (cluster 2)
         (after 2)))))
 
@@ -90,7 +90,7 @@
 
 (def suns-on-the-rise 
   (->>
-    (-> triad (root 1) (raise :i 1/2) (raise :v 1/2) vals)
+    (-> triad (root 1) (augment :i 1/2) (augment :v 1/2) vals)
     (cluster 4)
     (then (chord -2 4))
     (then (chord 0 4))))
@@ -109,10 +109,10 @@
     (then (chord -3 4))
     (then
       (cluster 4
-        (-> triad (root 1) (raise :iii 1/2) vals)))
+        (-> triad (root 1) (augment :iii 1/2) vals)))
     (then
       (cluster 4
-        (-> triad (root -2) (raise :iii 1/2) vals)))))
+        (-> triad (root -2) (augment :iii 1/2) vals)))))
 
 (def youd-be-home-by-now
   (->>

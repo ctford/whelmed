@@ -49,7 +49,7 @@
 ; Arpeggios
 (def theme 
   (let [up
-          #(-> % (raise :iii 1) (raise :v 1))
+          #(-> % (augment :iii 1) (augment :v 1))
         chords
           [triad (up triad) (up (up triad)) (up triad)]]
     (->> chords
@@ -87,7 +87,7 @@
         (times 4)))
     (then
       (->> (arpeggiate
-             (-> triad (root 4) (inversion 2) (raise :i -3/2))
+             (-> triad (root 4) (inversion 2) (augment :i -3/2))
              [:i :v :i :iii] 1/4)
         (times 4)))
     (where :part (is ::arpeggios))))
