@@ -23,12 +23,6 @@
     pitches))
 (defn strum [chord durations] (mapthen #(cluster % (vals chord)) durations))
 
-(defn- sum-n [series n] (reduce + (take n series)))
-(defn rhythm 
-  [durations]
-  (let [timings (map (partial sum-n durations) (range))]
-    (map #(zipmap [:time :duration] [%1 %2]) timings durations)))
-
 (defn augment [chord k n] (update-in chord [k] (from n)))
 
 (defn in-time [timing notes]
