@@ -7,7 +7,7 @@
     [leipzig.chord]
     [leipzig.canon]
     [whelmed.instrument]
-    [overtone.live :only [stop midi->hz]]))
+    [overtone.live :only [midi->hz]]))
 
 ; Extra concepts
 (defn arpeggiate [chord ks duration]

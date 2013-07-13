@@ -8,7 +8,7 @@
         [whelmed.contrib.harpsichord]
         [whelmed.contrib.organ-cornet]
         [whelmed.melody]
-        [overtone.live :only [ctl at midi->hz now stop]]))
+        [overtone.live :only [ctl at midi->hz now]]))
 
 (def bass
   (->>
