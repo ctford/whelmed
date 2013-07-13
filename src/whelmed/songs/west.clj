@@ -6,8 +6,7 @@
     [whelmed.melody]
     [leipzig.scale]
     [leipzig.chord]
-    [whelmed.instrument]
-    [overtone.live :only [stop midi->hz]]))
+    [whelmed.instrument]))
 
 (def progression
   (map (partial root seventh) [0 (lower 4) (lower 5) (lower 2)]))
