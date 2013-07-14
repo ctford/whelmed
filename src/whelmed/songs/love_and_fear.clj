@@ -61,9 +61,8 @@
       (where :part (is ::bass)))))
 
 (def chords
-  (->> progression
-    (map #(cluster %1 (vals %2)) [2 2 4])
-    (reduce #(then %2 %1))
+  (->> 
+    (phrase [2 2 4] progression)
     (times 2)
     (with (->> (phrase [2 2 4] [6 6 7]) (where :pitch raise) (after 8)))
     (where :pitch lower)
@@ -72,11 +71,10 @@
 (def arpeggios 
   (let [one
     (->> progression
-      (map #(arpeggiate %2 %1 1/2)
+      (mapthen #(arpeggiate %2 %1 1/2)
            [[:i :iii :v :vii] 
             [:v- :i :iii :v] 
             [:i :v :vii :ix :vii :iii]])
-      (reduce #(then %2 %1))
       (wherever #(-> % :time (= 11/2)), :duration (is 1))
       (wherever #(-> % :time (> 11/2)), :time (from 1/2))
       (wherever #(-> % :time ( = 7)), :duration (is 1))) 
@@ -141,8 +139,6 @@
     (->> motives (then procedures) (then results) (after -1)
       (where :part (is ::melody))
       (with (->> chords (times 2) (where :part (is ::blurt)))))))
-
-;(def two-motives nil)
 
 ; Arrangement
 (defmethod play-note ::melody [note] (pick 0.99 0.3 note))
