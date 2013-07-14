@@ -40,15 +40,12 @@
     (where :pitch raise)
     (where :part (is ::melody))))
 
-(defn chord [degree duration]
-  (->> (-> triad (root degree)) vals (cluster duration)))
-
 (def rhythm-section
   (->>
-    (->> (chord 0 1)
+    (->> (phrase [1] [triad])
       (after 1)
       (times 2))
-    (with (->> (chord -2 1)
+    (with (->> (phrase [1] [(-> triad (root -2))])
       (after 1)
       (times 2)
       (after 4)))
@@ -56,11 +53,10 @@
 
 (def fallchords
   (->> (take 6 rhythm-section)
-    (then
-      (->>
-        (-> triad (root 3.5) (augment :iii 1/2) vals)
-        (cluster 2)
-        (after 2)))))
+       (then
+         (->>
+           (phrase [2] [(-> triad (root 3.5) (augment :iii 1/2))])
+           (after 2)))))
 
 (def falla
   (phrase
@@ -75,7 +71,6 @@
 (def fallback
   (->> fallbass
     (with fallchords)
-    (with (after 6 falla))
     (then
       (->> fallbass
         (with fallchords)
@@ -90,10 +85,11 @@
 
 (def suns-on-the-rise 
   (->>
-    (-> triad (root 1) (augment :i 1/2) (augment :v 1/2) vals)
-    (cluster 4)
-    (then (chord -2 4))
-    (then (chord 0 4))))
+    (phrase
+      [4]
+      [(-> triad (root 1) (augment :i 1/2) (augment :v 1/2))])
+    (then (phrase [4] [(-> triad (root -2))]))
+    (then (phrase [4] [triad]))))
 
 (def oooh
   (->>
@@ -104,15 +100,12 @@
     (where :part (is ::melody))))
 
 (def and-if-you-lived-here
-  (->>
-    (chord 0 4)
-    (then (chord -3 4))
-    (then
-      (cluster 4
-        (-> triad (root 1) (augment :iii 1/2) vals)))
-    (then
-      (cluster 4
-        (-> triad (root -2) (augment :iii 1/2) vals)))))
+  (phrase
+    (repeat 4)
+    [triad
+     (-> triad (root -3))
+     (-> triad (root 1) (augment :iii 1/2))
+     (-> triad (root -2) (augment :iii 1/2))]))
 
 (def youd-be-home-by-now
   (->>
@@ -158,7 +151,7 @@
     (then first-section)
     (then (where :pitch (comp low B flat major) mid-section))
     (then fallback)
-    (then (->> first-section (in-time #(* % 4/3))))
+    (then (in-time #(* 4/3 %) first-section))
     (where :part (fnil identity ::default))
     (in-time (bpm 180))))
 
