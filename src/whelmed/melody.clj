@@ -19,14 +19,6 @@
        (apply map f)
        (reduce #(then %2 %1))))
 
-(defn cluster [duration pitches]
-  (map
-    #(zipmap
-      [:time :duration :pitch]
-      [0 duration %])
-    pitches))
-(defn strum [chord durations] (mapthen #(cluster % (vals chord)) durations))
-
 (defn augment [chord k n] (update-in chord [k] (from n)))
 
 (defn in-time [timing notes]
