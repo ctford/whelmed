@@ -20,24 +20,17 @@
 
 (def rhythm-n-bass
   (let [bass (fn [chord]
-              (->> chord
-                :bass
-                (repeat 2)
-                (phrase [3 1])))
-        
+               (phrase [3 1] (repeat (:bass chord))))
         rhythm (fn [chord]
-                 (->> (dissoc chord :bass)
-                   vals
-                   (cluster 2)
+                 (->> [(dissoc chord :bass)]
+                   (phrase [2])
                    (after 2)))
         once #(with (rhythm %) (bass %))]
-    (->> progression
-      (map once)
-      (reduce #(then %2 %1)))))
+    (mapthen once progression)))
 
 (def intro
-  (->> (take 32 (cycle [5 4]))
-    (phrase (repeat 1))
+  (->> (phrase (repeat 1) (cycle [5 4]))
+    (take 32)
     (with rhythm-n-bass)))
 
 (def melody
@@ -63,9 +56,7 @@
 
 (def finale
   (->> (phrase [1/2 1/2 1/2] [11 13 14])
-    (then (after -1/2 (->> (update-in I [:i] raise)
-            vals
-            (cluster 13/2))))))
+    (then (after -1/2 (phrase [13/2] [(update-in I [:i] raise)])))))
 
 (def at-all
   (->>
@@ -76,7 +67,7 @@
             (where :time #( * % 2/3))
             (where :duration #( * % 2/3)))))
     (then finale)
-    (where :part (fnil identity ::default))
+    (wherever (comp not :part), :part (is ::default))
     (where :time (bpm 160))
     (where :duration (is 200))
     (where :pitch (comp low G major))))
