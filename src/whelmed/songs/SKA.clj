@@ -152,7 +152,7 @@
     (then (where :pitch (comp low B flat major) mid-section))
     (then fallback)
     (then (in-time #(* 4/3 %) first-section))
-    (where :part (fnil identity ::default))
+    (wherever (comp not :part) :part (is ::default))
     (in-time (bpm 180))))
 
 (defmethod play-note ::bass [{midi :pitch}] (-> midi midi->hz harpsichord))
