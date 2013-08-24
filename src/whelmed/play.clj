@@ -16,33 +16,30 @@
    ["love" love-and-fear]
    ["at-all" at-all]])
 
-(def track-map (reduce #(assoc %1 (first %2) (second %2)) {} tracks))
+(def lookup-track
+  (reduce #(assoc %1 (first %2) (second %2)) {} tracks))
 
-(defn run [music]
-  (play music)
-  (->>
-    music
-    last
-    ((fn [{:keys [time duration]}] (+ time duration)))
-    Thread/sleep))
+(defn play-n-wait [music]
+  (->> music play deref))
+
+(defn record [music file-name]
+   (recording-start file-name)
+   (play-n-wait music) 
+   (recording-stop))
 
 (defn finish []
+  (Thread/sleep 2000)
   (kill-server)
   (System/exit 0))
 
 (defn -main
 
   ([track-name file-name]
-   (recording-start file-name)
-   (-main track-name)
-   (recording-stop)
+   (-> track-name lookup-track (record file-name))
    (finish))
 
   ([track-name]
-   (->>
-     track-name
-     track-map
-     run)
+   (-> track-name lookup-track play-n-wait)
    (finish))
 
   ([]
@@ -50,5 +47,5 @@
       tracks
       (map second)
       (reduce #(then (after 2000 %2) %1))
-       run)
+       play-n-wait)
    (finish)))
