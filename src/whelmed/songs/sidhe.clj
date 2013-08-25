@@ -48,8 +48,8 @@
 (def melody
   (->>
     (phrase
-      [1/2 7/2 1/2 1 1/2 5/2 1/2 1/2 1 1 1/2 4]
-      [-4 0 2 4 5 4 4 3 2 2 3 4]) 
+      [1/2 1 1/2 2 1/2 1 1/2 2 1/2 1/2 1/2 1 1 1/2 4]
+      [-4 0 0 0 2 4 5 4 4 4 3 2 2 3 4])
     (then
       (phrase
         [1/2 1/2 1 2 1/2 1/2 1 2]
@@ -59,6 +59,14 @@
         [1/2 3/2 1/2 3/2 1/2 7/2]
         [2 1 2 1 -1 0]))
     (after -1/2)
+    (where :part (is ::default))))
+
+(def lead-in
+  (->>
+    (phrase
+      (repeat 1/2)
+      [-3 0 2 1 0])
+    (after -3)
     (where :part (is ::default))))
 
 (def chords
@@ -86,10 +94,10 @@
 
 (def sidhe
   (->>
-    bassline
+    (with bassline (drop 4 harmony))
     (then (reduce with [bassline harmony flourishes]))
     (then (reduce with [beat bassline harmony flourishes chords]))
-    (then (reduce with [bassline harmony melody]))
+    (then (reduce with [bassline harmony lead-in melody]))
     (then (reduce with [bassline harmony melody beat]))
     (wherever :pitch, :pitch (comp C minor))
     (where :time (bpm 100))
