@@ -26,6 +26,19 @@
     (where :pitch lower)
     (where :part (is ::default))))
 
+(def flourishes 
+  (let [first-flourish (phrase
+                         [1/4 1/4 3/2 1 1 9/2]
+                         [1 2 3 4 2 1])
+        second-flourish (phrase (map :duration first-flourish)
+                                [1 2 3 2 1 0])]
+    (->>
+      (phrase [5/2 1/2 1/2 8/2] [4 3 2 4])
+      (then first-flourish)
+      (then (phrase [5/2 1/4 1/4 9/2] [4 2 3 4]))
+      (then second-flourish) 
+      (where :part (is ::default)))))
+
 (def harmony
   (->> bassline
        (where :pitch (from 9))
@@ -74,8 +87,8 @@
 (def sidhe
   (->>
     bassline
-    (then (with bassline harmony))
-    (then (reduce with [beat bassline harmony chords]))
+    (then (reduce with [bassline harmony flourishes]))
+    (then (reduce with [beat bassline harmony flourishes chords]))
     (then (reduce with [bassline harmony melody]))
     (then (reduce with [bassline harmony melody beat]))
     (wherever :pitch, :pitch (comp C minor))
