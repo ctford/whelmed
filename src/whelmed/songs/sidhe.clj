@@ -83,6 +83,29 @@
     (where :pitch raise)
     (where :part (is ::chords))))
 
+(def fall-down
+  (->>
+    (phrase (cycle [4 4 8])
+            [0 -3 -4 -1 -3/2 1])
+    (where :pitch lower)
+    (with (->>
+            (phrase [1 3 1 3 1 7 1 3 1 3 1 8]
+                    [0
+                     (-> triad (inversion 2)) 3
+                     (-> triad (root -3)) -1
+                     (-> triad (root -4)) 0
+                     (-> triad (root -1) (inversion 2)) -1
+                     (-> triad (root -3/2) (inversion 2)) -3/2
+                     (-> triad (root 1) (inversion 1) (update-in [:v] (from 1/2)))])
+            (after -1)))
+    (where :part (is ::default))))
+
+(def emphasis
+  (->> fall-down
+       (filter #(-> % :time (>= 16)))
+       (after -16)
+       (times 4)))
+
 (def kit {:kick drums/kick2 
           :tick drums/closed-hat,
           :tock drums/open-hat})
@@ -99,6 +122,8 @@
     (then (reduce with [beat bassline harmony flourishes chords]))
     (then (reduce with [bassline harmony lead-in melody]))
     (then (reduce with [bassline harmony melody beat]))
+    (then fall-down)
+    (then emphasis)
     (wherever :pitch, :pitch (comp C minor))
     (where :time (bpm 100))
     (where :duration (bpm 100))))
