@@ -79,13 +79,15 @@
     (-> triad (root 2))
     (-> seventh (root 4))
     (-> seventh (root 0))]
-   :bridge
+   :transition
    [(-> triad (inversion 2))
     (-> triad (root -3))
-    (-> triad (root -4))
-    (-> triad (root -1) (inversion 2))
+    (-> triad (root -4))]
+   :emphasis
+   [(-> triad (root -1) (inversion 2))
     (-> triad (root -3/2) (inversion 2))
-    (-> triad (root 1) (inversion 1) (update-in [:v] (from 1/2)))]})
+    (-> triad (root 1) (inversion 1) (update-in [:v] (from 1/2)))]
+   })
 
 (def chords
   (->>
@@ -101,15 +103,15 @@
     (where :pitch lower)
     (with (->>
             (phrase [1 3 1 3 1 7 1 3 1 3 1 8]
-                   (interleave [0 3 -1 0 -1 -3/2] (:bridge progression)))
+                   (interleave [0 3 -1 0 -1 -3/2]
+                               (concat (:transition progression) (:emphasis progression))))
             (after -1)))
     (where :part (is ::default))))
 
 (def emphasis
   (let [melody
-        (->> (phrase [3 1/2 1/2 2 2 2 2 4] [3 4 3 2.5 0.5 5.5 4 3]))]
-    (->> (:bridge progression)
-         (take-last 3)
+        (phrase [3 1/2 1/2 2 2 2 2 4] [3 4 3 2.5 0.5 5.5 4 3])]
+    (->> (:emphasis progression)
          (phrase [4 4 8])
          (times 2)
          (where :part (is ::chords))
