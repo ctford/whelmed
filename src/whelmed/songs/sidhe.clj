@@ -104,7 +104,7 @@
   (->> fall-down
        (filter #(-> % :time (>= 16)))
        (after -16)
-       (times 4)))
+       (times 2)))
 
 (def kit {:kick drums/kick2 
           :tick drums/closed-hat,
@@ -115,7 +115,7 @@
 (defmethod play-note ::chords [{midi :pitch, length :duration}]
   (organ-cornet (overtone/midi->hz midi) length 0.1))
 
-(def sidhe
+(def piece 
   (->>
     (with bassline (drop 4 harmony))
     (then (reduce with [bassline harmony flourishes]))
@@ -127,3 +127,8 @@
     (wherever :pitch, :pitch (comp C minor))
     (where :time (bpm 100))
     (where :duration (bpm 100))))
+
+(def sidhe
+  (mapthen
+    (fn [round] (wherever :pitch, :pitch #(+ % (* 2 round)) piece))
+    (range 0 2)))
