@@ -5,6 +5,7 @@
     [leipzig.live :only [play]]
     [whelmed.songs.west :only [west-with-the-sun]]
     [whelmed.songs.dolorem-ipsum :only [dolorem-ipsum]]
+    [whelmed.songs.sidhe :only [sidhe]]
     [whelmed.songs.love-and-fear :only [love-and-fear]]
     [whelmed.songs.at-all :only [at-all]]
     [whelmed.songs.SKA :only [ska]]))
@@ -14,7 +15,8 @@
    ["west" west-with-the-sun]
    ["dolorem" dolorem-ipsum]
    ["love" love-and-fear]
-   ["at-all" at-all]])
+   ["at-all" at-all]
+   ["sidhe" sidhe]])
 
 (def lookup-track
   (reduce #(assoc %1 (first %2) (second %2)) {} tracks))
