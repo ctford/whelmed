@@ -152,6 +152,32 @@
          (times 2)
          (with beat))))
 
+(def breakdown
+  (let [dux-a
+        (phrase
+          (mapcat repeat [8 1 1 4 1] [1 3/2 1/2 1 3/2])
+          [0 1 2 0 1 2 3 1 3 3 2 1 0 -1/2 1])
+        dux-b
+        (phrase
+          [1/2 3/2 1/2 1 1 1 1 3/2 1/2 3/2 1/2 3/2 1/2 1 1 2]
+          [2 3 3 2 1 0 -1 -3 -1 -3 -1 -3 -1 -3 -5 -7])
+        comes-a
+        (after 4
+               (phrase
+                 [1 1 1 1 3/2 1/2 1/2 1/2 1/2 1/2 7/2]
+                 [-1 0 1 -1 -2 -3 -4 -2 0 3 1]))
+        comes-b
+        (phrase (concat (repeat 25 1/2) [1 1 1/2 1/2 1/2 1/2])
+                [1 -4 -2 0 3 -4 -2 0 3 -5 -3 -1 2 -5 -3 -1 2 -3 -1 1 -3 1 2 1 -1 0 2 1 0 -1 -3])
+        ]
+    (->>
+      dux-a
+      (then dux-b)
+      (with (->> comes-a (then comes-b)) )
+      (times 2)
+      (with (after 32 bassline))
+      (where :part (is ::melody)))))
+
 (def kit {:kick kick 
           :tick #(open 150 0.5),
           :tock #(open 1000 0.5)
@@ -163,12 +189,15 @@
   (-> note (assoc :part ::default) play-note))
 (defmethod play-note ::intro [note]
   (-> note (assoc :part ::default) play-note))
+(defmethod play-note ::melody [note]
+  (-> note (assoc :part ::default) play-note))
 (defmethod play-note ::chords [{midi :pitch, length :duration}]
   (organ-cornet (overtone/midi->hz midi) length 0.1))
 
 (def piece 
   (->>
-    (reduce with [intro bassline])
+    breakdown
+    (then (reduce with [intro bassline]))
     (then (reduce with [bassline harmony flourishes]))
     (then (reduce with [beat bassline harmony flourishes chords]))
     (then (reduce with [bassline harmony lead-in melody]))
