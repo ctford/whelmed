@@ -9,7 +9,6 @@
     [whelmed.contrib.organ-cornet]
     [whelmed.instrument])
   (:require [overtone.live :as overtone]
-            [overtone.inst.drum :as drums]
             [overtone.synth.stringed :as strings]))
 (def beat 
   (->>
@@ -47,7 +46,7 @@
                (twiddle (-> triad (root -5) (inversion 2) (assoc :extra -4) vectorise))
                (twiddle (-> triad (root -3) (inversion 1) (assoc :extra -4) vectorise))
                (strum (-> triad (inversion 2) (root -7)))])
-      (where :part (is ::default)))))
+      (where :part (is ::intro)))))
 
 (def flourishes 
   (let [first-flourish (phrase
@@ -121,7 +120,7 @@
 (def fall-down
   (let [beat (->>
                (rhythm (repeat 32 1/2))
-               (having :drum (cycle [:kick :tick :tick]))
+               (having :drum (cycle [:kick :click :click]))
                (where :part (is ::beat))
                (after 16))]
     (->>
@@ -155,11 +154,14 @@
 
 (def kit {:kick kick 
           :tick #(open 150 0.5),
-          :tock #(open 1000 0.5)})
+          :tock #(open 1000 0.5)
+          :click click})
 
 (defmethod play-note ::beat [note] ((-> note :drum kit)))
 (defmethod play-note ::default [note] (pick 0.99 0.1 note))
 (defmethod play-note ::bass [note]
+  (-> note (assoc :part ::default) play-note))
+(defmethod play-note ::intro [note]
   (-> note (assoc :part ::default) play-note))
 (defmethod play-note ::chords [{midi :pitch, length :duration}]
   (organ-cornet (overtone/midi->hz midi) length 0.1))

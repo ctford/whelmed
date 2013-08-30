@@ -90,7 +90,7 @@
   (let [low (lpf (brown-noise) 5000)
         hi (hpf low 3000)
         env (line 1 0 (/ duration 1000) :action FREE)
-        dive (rlpf hi (* env 8000) 0.5)]
+        dive (lpf hi (* env 8000))]
     (* 3 volume env dive)))
 
 (definst kick [volume 1.0]
@@ -98,3 +98,12 @@
         fenv (* (env-gen (envelope [3 1] [0.02] :exp)) freq)
         aenv (env-gen (perc 0.005 0.5) :action FREE)]
     (* volume (sin-osc fenv (* 0.5 Math/PI)) aenv))) 
+
+(definst woah [freq 440 duration 1000 volume 1.0]
+  (let [fenv (* (env-gen (perc 0.1 (/ duration 1000))) freq)
+        aenv (env-gen (perc 0.005 (/ duration 1000)) :action FREE)]
+    (* volume (sin-osc fenv (* 0.5 Math/PI)) aenv)))
+
+(definst click [volume 1.0]
+  (let [envelope (env-gen (perc 0.05 0.2) :action FREE)]
+    (* volume envelope (pulse 5000 100))))
