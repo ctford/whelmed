@@ -6,7 +6,6 @@
         [leipzig.chord]
         [whelmed.instrument]
         [whelmed.contrib.harpsichord]
-        [whelmed.contrib.organ-cornet]
         [whelmed.melody]
         [overtone.live :only [ctl at midi->hz now]]))
 
@@ -155,9 +154,9 @@
     (wherever (comp not :part) :part (is ::default))
     (in-time (bpm 180))))
 
-(defmethod play-note ::bass [{midi :pitch}] (-> midi midi->hz harpsichord))
+(defmethod play-note ::bass [{midi :pitch}] (-> midi midi->hz (harpsichord 0.3)))
 (defmethod play-note ::rhythm [{midi :pitch, ms :duration}]
-  (organ-cornet (midi->hz midi) ms))   
+  (organ (midi->hz midi) ms))   
 (defmethod play-note ::default [note]
   (-> note (assoc :part ::rhythm) play-note))
 (defmethod play-note ::melody [note]

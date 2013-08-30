@@ -1,7 +1,6 @@
 (ns whelmed.instrument
   (:use
     [leipzig.melody]
-    [whelmed.contrib.organ-cornet]
     [overtone.live])
   (:require [overtone.synth.stringed :as strings])) 
 
@@ -107,3 +106,10 @@
 (definst click [volume 1.0]
   (let [envelope (env-gen (perc 0.05 0.2) :action FREE)]
     (* volume envelope (pulse 5000 100))))
+
+(definst organ [freq 440 dur 1000 vol 1.0]
+  (* 1/6 vol
+     (env-gen (asr 0.1 1.0 0.5)
+       (line:kr 1.0 0.0 (/ dur 1000))
+       :action FREE)
+     (mix (map #(sin-osc (* freq %)) (range 1 5)))))

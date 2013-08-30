@@ -6,7 +6,6 @@
     [whelmed.melody]
     [leipzig.scale]
     [leipzig.chord]
-    [whelmed.contrib.organ-cornet]
     [whelmed.instrument])
   (:require [overtone.live :as overtone]
             [overtone.inst.drum :as drums]
@@ -143,7 +142,7 @@
 ; Arrangement
 (defmethod play-note ::melody [note] (pick 0.99 0.3 note))
 (defmethod play-note ::chords [{midi :pitch, length :duration}]
-  (organ-cornet (overtone/midi->hz midi) length 0.1))
+  (organ (overtone/midi->hz midi) length 0.1))
 (defmethod play-note ::blurt [note]
   (pick 0.3 0.1 (-> note (update-in [:duration] (is 500)))))
 (defmethod play-note ::bass [note] (pick 0.99 0.1 note))

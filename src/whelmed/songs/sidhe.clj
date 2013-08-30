@@ -6,7 +6,6 @@
     [whelmed.melody]
     [leipzig.scale]
     [leipzig.chord]
-    [whelmed.contrib.organ-cornet]
     [whelmed.instrument])
   (:require [overtone.live :as overtone]
             [overtone.synth.stringed :as strings]))
@@ -192,7 +191,7 @@
 (defmethod play-note ::melody [note]
   (-> note (assoc :part ::default) play-note))
 (defmethod play-note ::chords [{midi :pitch, length :duration}]
-  (organ-cornet (overtone/midi->hz midi) length 0.1))
+  (organ (overtone/midi->hz midi) length 0.1))
 
 (def piece 
   (->>
