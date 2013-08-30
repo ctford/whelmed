@@ -173,7 +173,7 @@
     (then (reduce with [bassline harmony melody beat]))
     (then fall-down)
     (then emphasis)
-    (wherever :pitch, :pitch (comp (from (rand 12)) C minor))
+    (wherever :pitch, :pitch (comp (from (rand 4)) C minor))
     (in-time (bpm (+ 80 (rand 30))))))
 
 (def sidhe
