@@ -53,6 +53,21 @@
     (then
       (after 11/2 (phrase (repeat 1/2) [11 11 12 11 8])))))
 
+(def chorus
+  (let [doesnt (phrase (concat (repeat 4 1/2) [6]) [-3 0 0 -3 0])
+        doesnt-at-all (->> doesnt
+                           (times 3)
+                           (then
+                             (->> doesnt drop-last
+                                  (then (phrase [1/2 1/2 1/2 9/2] [0 1 0 -1]))))
+                           (with rhythm-n-bass)
+                           )
+        bada (->> (phrase [1/2 1/2 3/2 2/2 9/2] [0 4 5 4 0])
+                  (where :pitch raise))]
+    (->>
+      doesnt-at-all 
+      (then (with doesnt-at-all (after 9/2 (times 3 bada)))))))
+
 (def finale
   (->> (phrase [1/2 1/2 1/2] [11 13 14])
     (then (after -1/2 (phrase [13/2] [(update-in I [:i] raise)])))))
@@ -62,13 +77,14 @@
     intro
     (then melody)
     (then (->> melody (with answer)))
+    (then chorus)
+    (then (->> melody (with answer)))
     (then (after 3/2 (->> melody (with answer)
-            (where :time #( * % 2/3))
-            (where :duration #( * % 2/3)))))
+                          (then chorus)
+                          (in-time #(* % 2/3)))))
     (then finale)
-    (wherever (comp not :part), :part (is ::default))
-    (where :time (bpm 160))
-    (where :duration (is 200))
+    (where :part (is ::default))
+    (in-time (bpm 160))
     (where :pitch (comp low G major))))
 
 (defmethod play-note ::default [{midi :pitch}]
