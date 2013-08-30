@@ -26,6 +26,27 @@
     (where :pitch lower)
     (where :part (is ::bass))))
 
+(def intro
+  (let [vectorise (fn [chord] (-> chord vals sort vec))
+        twiddle
+        (fn [chord]
+          (->> (phrase (repeat 5 1/4) (repeat chord))
+               (then (phrase (mapcat repeat [3 4] [1/4 1/2])
+                             (map chord [0 1 2 3 2 1 0])))))
+        strum (fn [chord] (phrase (repeat 4 1) (repeat chord)))
+        ]
+    (->>
+      (reduce #(then %2 %1)
+              [(twiddle (-> triad (inversion 2) (assoc :extra 1) vectorise))
+               (strum (-> triad (root -3)))
+               (twiddle (-> triad (root -4) (assoc :extra -1) vectorise))
+               (strum (-> triad (root -3) (inversion 2) (augment :iii 1/2)))
+               (twiddle (-> triad (root -4) (inversion 2) (assoc :extra -3) vectorise))
+               (twiddle (-> triad (root -5) (inversion 2) (assoc :extra -4) vectorise))
+               (twiddle (-> triad (root -3) (inversion 1) (assoc :extra -4) vectorise))
+               (strum (-> triad (inversion 2) (root -7)))])
+      (where :part (is ::default)))))
+
 (def flourishes 
   (let [first-flourish (phrase
                          [1/4 1/4 3/2 1 1 9/2]
@@ -136,14 +157,15 @@
 
 (defmethod play-note ::beat [note] ((-> note :drum kit)))
 (defmethod play-note ::default [note] (pick 0.99 0.1 note))
-(defmethod play-note ::bass [{midi :pitch, length :duration}]
-  (groan (overtone/midi->hz midi) length 1/4 0.3))
+(defmethod play-note ::bass [note]
+  (-> note (assoc :part ::default) play-note))
 (defmethod play-note ::chords [{midi :pitch, length :duration}]
   (organ-cornet (overtone/midi->hz midi) length 0.1))
 
 (def piece 
   (->>
-    (reduce with [bassline harmony flourishes])
+    (reduce with [intro bassline])
+    (then (reduce with [bassline harmony flourishes]))
     (then (reduce with [beat bassline harmony flourishes chords]))
     (then (reduce with [bassline harmony lead-in melody]))
     (then (reduce with [bassline harmony melody beat]))
