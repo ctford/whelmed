@@ -130,14 +130,14 @@
          (times 2)
          (with beat))))
 
-(def kit {:kick drums/kick2 
-          :tick drums/closed-hat,
-          :tock drums/open-hat})
+(def kit {:kick kick 
+          :tick #(open 150 0.5),
+          :tock #(open 1000 0.5)})
 
 (defmethod play-note ::beat [note] ((-> note :drum kit)))
 (defmethod play-note ::default [note] (pick 0.99 0.1 note))
 (defmethod play-note ::bass [{midi :pitch, length :duration}]
-  (brassy (overtone/midi->hz midi) length 0.1))
+  (groan (overtone/midi->hz midi) length 1/4 0.3))
 (defmethod play-note ::chords [{midi :pitch, length :duration}]
   (organ-cornet (overtone/midi->hz midi) length 0.1))
 

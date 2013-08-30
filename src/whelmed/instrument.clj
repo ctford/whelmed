@@ -27,17 +27,18 @@
       envelope
       (sin-osc freq))))
 
-(definst groan [freq 440 duration 10000 vibrato 8/3]
+(definst groan [freq 440 duration 10000 vibrato 8/3 volume 1.0]
   (let [length (/ duration 1000)
         envelope (* (sin-osc vibrato)
                     (env-gen (perc 0.1 length) :action FREE))]
     (*
-      0.7
-      envelope
-      (+
-        (* (sin-osc 0.5) (+ 0.1 (saw freq)))
-        (* (sin-osc 0.8) (+ -0.03 (square freq)))
-        (+ -0.04 (sin-osc freq))))))
+     0.7
+     volume
+     envelope
+     (+
+      (* (sin-osc 0.5) (+ 0.1 (saw freq)))
+      (* (sin-osc 0.8) (+ -0.03 (square freq)))
+      (+ -0.04 (sin-osc freq))))))
 
 (definst bell [frequency 440 duration 1000
   h0 1 h1 0.6 h2 0.4 h3 0.25 h4 0.2 h5 0.15]
@@ -83,3 +84,17 @@
       (* 1/4 (sin-osc (* 7 freq)) 
          (env-gen (adsr 0.4 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1000)) :action FREE)))) 
      (+ (* 4 freq) (* (line:kr (* growl 4) 1 0.5) freq (sin-osc 50)))))
+
+
+(definst open [duration 1000 volume 1.0]
+  (let [low (lpf (brown-noise) 5000)
+        hi (hpf low 3000)
+        env (line 1 0 (/ duration 1000) :action FREE)
+        dive (rlpf hi (* env 8000) 0.5)]
+    (* 3 volume env dive)))
+
+(definst kick [volume 1.0]
+  (let [freq 50
+        fenv (* (env-gen (envelope [3 1] [0.02] :exp)) freq)
+        aenv (env-gen (perc 0.005 0.5) :action FREE)]
+    (* volume (sin-osc fenv (* 0.5 Math/PI)) aenv))) 
