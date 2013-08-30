@@ -74,7 +74,7 @@
    [(-> ninth (root 0))
     (-> seventh (root 4))
     (-> seventh (root 3))
-    (-> triad (root 4) (update-in [:iii] (from 1/2)))
+    (-> triad (root 4) (augment :iii 1/2))
     (-> seventh (root 3))
     (-> triad (root 2))
     (-> seventh (root 4))
@@ -86,7 +86,7 @@
    :emphasis
    [(-> triad (root -1) (inversion 2))
     (-> triad (root -3/2) (inversion 2))
-    (-> triad (root 1) (inversion 1) (update-in [:v] (from 1/2)))]
+    (-> triad (root 1) (inversion 1) (augment :v 1/2))]
    })
 
 (def chords
@@ -97,27 +97,38 @@
     (where :part (is ::chords))))
 
 (def fall-down
-  (->>
-    (phrase (cycle [4 4 8])
-            [0 -3 -4 -1 -3/2 1])
-    (where :pitch lower)
-    (with (->>
-            (phrase [1 3 1 3 1 7 1 3 1 3 1 8]
-                   (interleave [0 3 -1 0 -1 -3/2]
-                               (concat (:transition progression) (:emphasis progression))))
-            (after -1)))
-    (where :part (is ::default))))
+  (let [beat (->>
+               (rhythm (repeat 32 1/2))
+               (having :drum (cycle [:kick :tick :tick]))
+               (where :part (is ::beat))
+               (after 16))]
+    (->>
+      (phrase (cycle [4 4 8])
+              [0 -3 -4 -1 -3/2 1])
+      (where :pitch lower)
+      (with (->>
+              (phrase [1 3 1 3 1 7 1 3 1 3 1 8]
+                      (interleave [0 3 -1 0 -1 -3/2]
+                                  (concat (:transition progression) (:emphasis progression))))
+              (after -1)))
+      (where :part (is ::default))
+      (with beat) 
+      )))
 
 (def emphasis
   (let [melody
-        (phrase [3 1/2 1/2 2 2 2 2 4] [3 4 3 2.5 0.5 5.5 4 3])]
+        (phrase [3 1/2 1/2 2 2 2 2 4] [3 4 3 2.5 0.5 5.5 4 3])
+        beat (->> (cycle [1/2 7 1/2]) rhythm (where :drum (is :kick))
+                  (where :part (is ::beat))
+                  (take 23))]
     (->> (:emphasis progression)
          (phrase [4 4 8])
          (times 2)
          (where :part (is ::chords))
          (with (->> melody (then (->> melody (drop-last 3) (then (phrase [4] [1]))))
                     (where :part (is ::default))))
-         (times 2))))
+         (times 2)
+         (with beat))))
 
 (def kit {:kick drums/kick2 
           :tick drums/closed-hat,
@@ -130,16 +141,14 @@
 
 (def piece 
   (->>
-    (with bassline (drop 4 harmony))
-    (then (reduce with [bassline harmony flourishes]))
+    (reduce with [bassline harmony flourishes])
     (then (reduce with [beat bassline harmony flourishes chords]))
     (then (reduce with [bassline harmony lead-in melody]))
     (then (reduce with [bassline harmony melody beat]))
     (then fall-down)
     (then emphasis)
     (wherever :pitch, :pitch (comp C minor))
-    (where :time (bpm 100))
-    (where :duration (bpm 100))))
+    (in-time (bpm 100))))
 
 (def sidhe
   (mapthen
