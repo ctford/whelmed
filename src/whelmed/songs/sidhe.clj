@@ -34,13 +34,15 @@
                (then (phrase (mapcat repeat [3 4] [1/4 1/2])
                              (map chord [0 1 2 3 2 1 0])))))
         strum (fn [chord] (phrase (repeat 4 1) (repeat chord)))
+        bonus (-> triad (root -3) (inversion 2) (augment :iii 1/2))
         ]
     (->>
       (reduce #(then %2 %1)
               [(twiddle (-> triad (inversion 2) (assoc :extra 1) vectorise))
                (strum (-> triad (root -3)))
                (twiddle (-> triad (root -4) (assoc :extra -1) vectorise))
-               (strum (-> triad (root -3) (inversion 2) (augment :iii 1/2)))
+               (phrase (mapcat repeat [2 8] [1 1/4])
+                       (mapcat repeat [2 4 4] [bonus (augment bonus :iii 1/2) bonus]))
                (twiddle (-> triad (root -4) (inversion 2) (assoc :extra -3) vectorise))
                (twiddle (-> triad (root -5) (inversion 2) (assoc :extra -4) vectorise))
                (twiddle (-> triad (root -3) (inversion 1) (assoc :extra -4) vectorise))
