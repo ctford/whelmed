@@ -24,7 +24,7 @@
   (->>
     (phrase (repeat 4) (range 0 -8 -1))
     (where :pitch lower)
-    (where :part (is ::default))))
+    (where :part (is ::bass))))
 
 (def flourishes 
   (let [first-flourish (phrase
@@ -43,7 +43,7 @@
   (->> bassline
        (where :pitch (from 9))
        (wherever #(-> % :time (= 12)) :pitch (from 1/2))
-       (where :part (is ::default))))
+       (where :part (is ::bass))))
 
 (def melody
   (->>
@@ -86,8 +86,7 @@
    :emphasis
    [(-> triad (root -1) (inversion 2))
     (-> triad (root -3/2) (inversion 2))
-    (-> triad (root 1) (inversion 1) (augment :v 1/2))]
-   })
+    (-> triad (root 1) (inversion 1) (augment :v 1/2))]})
 
 (def chords
   (->>
@@ -106,6 +105,7 @@
       (phrase (cycle [4 4 8])
               [0 -3 -4 -1 -3/2 1])
       (where :pitch lower)
+      (where :part (is ::bass))
       (with (->>
               (phrase [1 3 1 3 1 7 1 3 1 3 1 8]
                       (interleave [0 3 -1 0 -1 -3/2]
@@ -136,6 +136,8 @@
 
 (defmethod play-note ::beat [note] ((-> note :drum kit)))
 (defmethod play-note ::default [note] (pick 0.99 0.1 note))
+(defmethod play-note ::bass [{midi :pitch, length :duration}]
+  (brassy (overtone/midi->hz midi) length 0.1))
 (defmethod play-note ::chords [{midi :pitch, length :duration}]
   (organ-cornet (overtone/midi->hz midi) length 0.1))
 
