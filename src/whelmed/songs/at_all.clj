@@ -85,7 +85,7 @@
     (then finale)
     (where :part (is ::default))
     (in-time (bpm 160))
-    (where :pitch (comp low G major))))
+    (where :pitch (comp low D major))))
 
 (defmethod play-note ::default [{midi :pitch}]
   (organ (midi->hz midi) 150 8.0)) 

@@ -196,17 +196,26 @@
 (def piece 
   (->>
     breakdown
-    (then (reduce with [intro bassline]))
     (then (reduce with [bassline harmony flourishes]))
     (then (reduce with [beat bassline harmony flourishes chords]))
     (then (reduce with [bassline harmony lead-in melody]))
     (then (reduce with [bassline harmony melody beat]))
     (then fall-down)
     (then emphasis)
-    (wherever :pitch, :pitch (comp (from (rand 4)) C minor))
-    (in-time (bpm (+ 80 (rand 30))))))
+    (wherever :pitch, :pitch (comp C minor))
+    (in-time (bpm 105))))
 
 (def sidhe
   (mapthen
     (fn [round] (wherever :pitch, :pitch #(+ % (* 2 round)) piece))
     (range 0 2)))
+
+(def sidhe-sparse
+  (->> 
+    (reduce with [intro bassline])
+    (then (reduce with [intro bassline beat]))
+    (then fall-down)
+    (then emphasis)
+    (wherever :pitch, :pitch (comp B flat minor))
+    (then (->> breakdown (where :pitch (comp C minor))))
+    (in-time (bpm 80))))
