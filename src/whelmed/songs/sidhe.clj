@@ -120,7 +120,9 @@
 (def fall-down
   (let [beat (->>
                (rhythm (repeat 32 1/2))
-               (having :drum (cycle [:kick :click :click]))
+               (having :drum (cycle [:kick :click :click
+                                     :kick :click :click
+                                     :kick :click]))
                (where :part (is ::beat))
                (after 16))]
     (->>
