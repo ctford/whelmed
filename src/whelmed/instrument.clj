@@ -86,8 +86,11 @@
     (* volume envelope (pulse 5000 100))))
 
 (definst organ [freq 440 dur 1000 vol 1.0]
-  (* 1/6 vol
-     (env-gen (asr 0.1 1.0 0.5)
-       (line:kr 1.0 0.0 (/ dur 1000))
-       :action FREE)
-     (mix (map #(sin-osc (* freq %)) (range 1 5)))))
+  (->
+    (map #(sin-osc (* freq %)) (range 1 5))
+    mix
+    (* 1/6 vol)
+    (* (env-gen (asr 0.1 1.0 0.5)
+         (line:kr 1.0 0.0 (/ dur 1000))
+         :action FREE))
+    (lpf (mul-add (sin-osc 5) freq (* freq 5)))))
