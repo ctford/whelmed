@@ -84,20 +84,6 @@
          (env-gen (adsr 0.4 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1000)) :action FREE)))) 
      (+ (* 4 freq) (* (line:kr (* growl 4) 1 0.5) freq (sin-osc 50)))))
 
-
-(definst open [duration 1000 volume 1.0]
-  (let [low (lpf (pink-noise) 5000)
-        hi (hpf low 3000)
-        env (line 1 0 (/ duration 1000) :action FREE)
-        dive (lpf hi (* env 8000))]
-    (* 3 volume env dive)))
-
-(definst kick [volume 1.0]
-  (let [freq 50
-        fenv (* (env-gen (envelope [3 1] [0.02] :exp)) freq)
-        aenv (env-gen (perc 0.005 0.5) :action FREE)]
-    (* volume (sin-osc fenv (* 0.5 Math/PI)) aenv))) 
-
 (definst woah [freq 440 duration 1000 volume 1.0]
   (let [fenv (* (env-gen (perc 0.1 (/ duration 1000))) freq)
         aenv (env-gen (perc 0.005 (/ duration 1000)) :action FREE)]

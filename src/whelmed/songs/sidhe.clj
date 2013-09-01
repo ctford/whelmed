@@ -8,6 +8,7 @@
     [leipzig.chord]
     [whelmed.instrument])
   (:require [overtone.live :as overtone]
+            [overtone.inst.drum :as drums]
             [overtone.synth.stringed :as strings]))
 (def beat 
   (->>
@@ -177,9 +178,9 @@
       (with (after 32 bassline))
       (where :part (is ::melody)))))
 
-(def kit {:kick kick 
-          :tick #(open 150 0.5),
-          :tock #(open 1000 0.5)
+(def kit {:kick drums/kick2 
+          :tick drums/closed-hat,
+          :tock drums/open-hat
           :click click})
 
 (defmethod play-note ::beat [note] ((-> note :drum kit)))
