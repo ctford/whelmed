@@ -140,12 +140,14 @@
       (with (->> chords (times 2) (where :part (is ::blurt)))))))
 
 ; Arrangement
-(defmethod play-note ::melody [note] (pick 0.99 0.3 note))
+(defmethod play-note ::melody [{midi :pitch ms :duration}]
+  (sawish (overtone/midi->hz midi) ms 15 2))
 (defmethod play-note ::chords [{midi :pitch, length :duration}]
   (organ (overtone/midi->hz midi) length 0.8))
 (defmethod play-note ::blurt [note]
   (pick 0.3 0.1 (-> note (update-in [:duration] (is 500)))))
-(defmethod play-note ::bass [note] (pick 0.99 0.1 note))
+(defmethod play-note ::bass [note]
+  (-> note (assoc :part ::chords) play-note))
 (defmethod play-note ::arpeggios [note] (pick 0.99 0.1 note))
 (defmethod play-note ::beat [note] ((-> note :drum kit)))
 
