@@ -19,11 +19,21 @@
    ["at-all" at-all] ; D major
    ["sidhe-sparse" sidhe-sparse]]) ; B flat minor
 
-(def lookup-track
-  (reduce #(assoc %1 (first %2) (second %2)) {} tracks))
+(defn lookup [track-name]
+  (if (= track-name "all")
+    (->>
+      tracks
+      (map second)
+      (reduce #(then (after 2000 %2) %1)))
+    (get
+      (->>
+        tracks
+        (reduce concat)
+        (apply hash-map))
+      track-name)))
 
 (defn play-n-wait [music]
-  (->> music play deref))
+  (-> music play deref))
 
 (defn record [music file-name]
    (recording-start file-name)
@@ -38,17 +48,12 @@
 (defn -main
 
   ([track-name file-name]
-   (-> track-name lookup-track (record file-name))
+   (-> track-name lookup (record file-name))
    (finish))
 
   ([track-name]
-   (-> track-name lookup-track play-n-wait)
+   (-> track-name lookup play-n-wait)
    (finish))
 
   ([]
-    (->>
-      tracks
-      (map second)
-      (reduce #(then (after 2000 %2) %1))
-       play-n-wait)
-   (finish)))
+   (-main "all")))
