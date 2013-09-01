@@ -11,20 +11,12 @@
       (square freq)
       (sin-osc freq))))
 
-(definst sawish [freq 440]
-  (let [envelope (env-gen (perc 0.2 1.5) :action FREE)]
-    (*
-      0.7
-      envelope
-      (+
-        (square (* freq 0.99))
-        (square freq)))))
-
-(definst sinish [freq 440]
-  (let [envelope (env-gen (perc 0.1 1.1) :action FREE)]
-    (*
-      envelope
-      (sin-osc freq))))
+(definst sawish [freq 440 duration 1500 vibrato 8 depth 1 volume 1.0]
+  (let [envelope (env-gen (perc 0.2 (/ duration 1000)) :action FREE)]
+    (-> (square freq)
+        (* 0.7 volume) 
+        (* envelope)
+        (rlpf (mul-add (sin-osc vibrato) (* freq depth) (* 2 freq))))))
 
 (definst groan [freq 440 duration 10000 vibrato 8/3 volume 1.0]
   (let [length (/ duration 1000)
@@ -39,14 +31,14 @@
       (* (sin-osc 0.8) (+ -0.03 (square freq)))
       (+ -0.04 (sin-osc freq))))))
 
-(definst bell [frequency 440 duration 1000
+(definst bell [frequency 440 duration 1000 volume 1.0
   h0 1 h1 0.6 h2 0.4 h3 0.25 h4 0.2 h5 0.15]
   (let [harmonics   [ 1  2  3  4.2  5.4 6.8]
         proportions [h0 h1 h2   h3   h4  h5]
         proportional-partial
           (fn [harmonic proportion]
             (let [envelope
-                    (env-gen (perc 0.01 (* proportion (/ duration 1000))))
+                    (* volume 1/5 (env-gen (perc 0.01 (* proportion (/ duration 1000)))))
                   overtone
                     (* harmonic frequency)]
               (* 1/2 proportion envelope (sin-osc overtone))))

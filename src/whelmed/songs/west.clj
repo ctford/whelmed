@@ -169,11 +169,11 @@
       (where :duration (bpm 80)))))
 
 ; Arrangement
-(defmethod play-note ::bass [{midi :pitch}] (-> midi groan))
-(defmethod play-note ::accompaniment [{midi :pitch}] (-> midi shudder))
-(defmethod play-note ::lead [{midi :pitch}] (-> midi sawish))
-(defmethod play-note ::response [{midi :pitch}] (-> midi sinish))
-(defmethod play-note ::break [{midi :pitch}] (-> midi sinish))
+(defmethod play-note ::bass [{freq :pitch}] (-> freq groan))
+(defmethod play-note ::accompaniment [{freq :pitch}] (-> freq shudder))
+(defmethod play-note ::lead [{freq :pitch}] (-> freq sawish))
+(defmethod play-note ::response [{freq :pitch ms :duration}] (-> freq (organ ms 3)))
+(defmethod play-note ::break [{freq :pitch}] (-> freq (bell 2000 8)))
 
 (comment
   (->> west-with-the-sun play)
