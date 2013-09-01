@@ -31,7 +31,8 @@
         (fn [chord]
           (->> (phrase (repeat 5 1/4) (repeat chord))
                (then (phrase (mapcat repeat [3 4] [1/4 1/2])
-                             (map chord [0 1 2 3 2 1 0])))))
+                             (map chord [0 1 2 3 2 1 0]))) 
+               (where :part (is ::melody))))
         strum (fn [chord] (phrase (repeat 4 1) (repeat chord)))
         bonus (-> triad (root -3) (inversion 2) (augment :iii 1/2))
         ]
@@ -46,7 +47,7 @@
                (twiddle (-> triad (root -5) (inversion 2) (assoc :extra -4) vectorise))
                (twiddle (-> triad (root -3) (inversion 1) (assoc :extra -4) vectorise))
                (strum (-> triad (inversion 2) (root -7)))])
-      (where :part (is ::intro)))))
+      (wherever (comp not :part) :part (is ::intro)))))
 
 (def flourishes 
   (let [first-flourish (phrase
@@ -187,12 +188,12 @@
 
 (defmethod play-note ::beat [note] ((-> note :drum kit)))
 (defmethod play-note ::default [note] (pick 0.99 0.1 note))
-(defmethod play-note ::bass [{midi :pitch, ms :duration}]
+(defmethod play-note ::intro [{midi :pitch, ms :duration}]
   (organ (overtone/midi->hz midi) ms 0.7))
-(defmethod play-note ::intro [note]
-  (-> note (assoc :part ::default) play-note))
-(defmethod play-note ::melody [note]
-  (-> note (assoc :part ::default) play-note))
+(defmethod play-note ::bass [{midi :pitch ms :duration}]
+  (-> midi overtone/midi->hz (sawish ms 10)))
+(defmethod play-note ::melody [{midi :pitch ms :duration}]
+  (-> midi overtone/midi->hz (sawish ms 2)))
 (defmethod play-note ::chords [{midi :pitch, ms :duration}]
   (organ (overtone/midi->hz midi) ms 0.5))
 
