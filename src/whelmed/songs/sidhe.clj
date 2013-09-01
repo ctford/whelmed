@@ -184,14 +184,14 @@
 
 (defmethod play-note ::beat [note] ((-> note :drum kit)))
 (defmethod play-note ::default [note] (pick 0.99 0.1 note))
-(defmethod play-note ::bass [note]
-  (-> note (assoc :part ::default) play-note))
+(defmethod play-note ::bass [{midi :pitch, ms :duration}]
+  (organ (overtone/midi->hz midi) ms 0.7))
 (defmethod play-note ::intro [note]
   (-> note (assoc :part ::default) play-note))
 (defmethod play-note ::melody [note]
   (-> note (assoc :part ::default) play-note))
-(defmethod play-note ::chords [{midi :pitch, length :duration}]
-  (organ (overtone/midi->hz midi) length 0.1))
+(defmethod play-note ::chords [{midi :pitch, ms :duration}]
+  (organ (overtone/midi->hz midi) ms 0.5))
 
 (def piece 
   (->>

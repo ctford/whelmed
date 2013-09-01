@@ -86,7 +86,7 @@
 
 
 (definst open [duration 1000 volume 1.0]
-  (let [low (lpf (brown-noise) 5000)
+  (let [low (lpf (pink-noise) 5000)
         hi (hpf low 3000)
         env (line 1 0 (/ duration 1000) :action FREE)
         dive (lpf hi (* env 8000))]
