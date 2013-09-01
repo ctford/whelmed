@@ -151,6 +151,9 @@
     (then (where :pitch (comp low B flat major) mid-section))
     (then fallback)
     (then (in-time #(* 4/3 %) first-section))
+    (then (->> (phrase [8] [-7])
+               (where :part (is ::bass))
+               (where :pitch (comp E minor))))
     (wherever (comp not :part) :part (is ::default))
     (in-time (bpm 180))))
 
