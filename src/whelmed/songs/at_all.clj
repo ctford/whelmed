@@ -88,7 +88,7 @@
     (where :pitch (comp low D major))))
 
 (defmethod play-note ::default [{midi :pitch}]
-  (organ (midi->hz midi) 150 8.0)) 
+  (organ (midi->hz midi) 150 6.0)) 
 
 (comment
   (play at-all)
