@@ -94,3 +94,16 @@
          (line:kr 1.0 0.0 (/ dur 1000))
          :action FREE))
     (lpf (mul-add (sin-osc 5) freq (* freq 5)))))
+
+(definst kraft-bass [freq 440 dur 1000 vol 1.0]
+  (let [envelope (env-gen (asr 0 1 1)
+                          (line:kr 1.0 0.0  (/ dur 1000))
+                          :action FREE)
+        level (+ 100 (env-gen (perc 0 3)
+                              :level-scale 6000))
+        osc (mix [(saw freq)
+                  (saw (* freq 1.005))
+                  (pulse (/ freq 2) 0.5)])]
+    (-> osc (lpf level) (* vol envelope))))
+
+
