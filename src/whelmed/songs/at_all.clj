@@ -63,10 +63,15 @@
                            (with rhythm-n-bass)
                            )
         bada (->> (phrase [1/2 1/2 3/2 2/2 9/2] [0 4 5 4 0])
-                  (where :pitch raise))]
+                  (times 3)
+                  drop-last
+                  (then (phrase [5/2 1/2 1/2 10/2] [0 1 0 -1]))
+                  (after 9/2)
+                  (where :pitch raise)
+                  (where :part (is ::long)))]
     (->>
       doesnt-at-all 
-      (then (with doesnt-at-all (after 9/2 (times 3 bada)))))))
+      (then (with doesnt-at-all bada)))))
 
 (def finale
   (->> (phrase [1/2 1/2 1/2] [11 13 14])
@@ -83,12 +88,14 @@
                           (then chorus)
                           (in-time #(* % 2/3)))))
     (then finale)
-    (where :part (is ::default))
+    (wherever (comp not :part), :part (is ::default))
     (in-time (bpm 160))
     (where :pitch (comp low D major))))
 
+(defmethod play-note ::long [{midi :pitch ms :duration}]
+  (organ (midi->hz midi) ms 2)) 
 (defmethod play-note ::default [{midi :pitch}]
-  (organ (midi->hz midi) 150 6.0)) 
+  (organ (midi->hz midi) 150 3)) 
 
 (comment
   (play at-all)
