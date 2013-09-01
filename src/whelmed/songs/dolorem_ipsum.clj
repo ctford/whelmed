@@ -155,11 +155,13 @@
 
 ; The arrangement
 (defmethod play-note ::melody [{:keys [pitch duration]}]
-  (bell (midi->hz pitch) (* 7 duration)))
+  (bell (midi->hz pitch) (* 7 duration) 4))
 (defmethod play-note ::arpeggios [{:keys [pitch]}]
   (sawnoff (midi->hz (- pitch 24))))
+(defmethod play-note ::arpeggios [{:keys [pitch duration]}]
+  (brassy (midi->hz (- pitch 24)) duration 0.3 0.1))
 (defmethod play-note ::oooh [{:keys [pitch duration]}]
-  (groan (midi->hz pitch) (* 2 duration) 1/4))
+  (groan (midi->hz pitch) (* 2 duration) 1/7))
 
 (comment
   (->> dolorem-ipsum play)

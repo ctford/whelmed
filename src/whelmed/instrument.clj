@@ -66,15 +66,15 @@
   (lpf
     (* vol
     (+
-      (* 1/1 (sin-osc (* 1 freq)) 
-         (env-gen (adsr 0.2 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1000)) :action FREE))
-      (* 1/2 (sin-osc (* 3 freq)) 
-         (env-gen (adsr 0.4 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1000)) :action FREE))
-      (* 1/3 (sin-osc (* 5 freq)) 
-         (env-gen (adsr 0.4 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1000)) :action FREE))
-      (* 1/4 (sin-osc (* 7 freq)) 
-         (env-gen (adsr 0.4 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1000)) :action FREE)))) 
-     (+ (* 4 freq) (* (line:kr (* growl 4) 1 0.5) freq (sin-osc 50)))))
+      (* 1/2 (sin-osc (* 1 freq)) 
+         (env-gen (adsr 0.15 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1000)) :action FREE))
+      (* 1/3 (sin-osc (* 3 freq))
+         (env-gen (adsr 0.3 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1300)) :action FREE))
+      (* 1/4 (sin-osc (* 5 freq))
+         (env-gen (adsr 0.3 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1500)) :action FREE))
+      (* 1/7 (sin-osc (* 7 freq))
+         (env-gen (adsr 0.4 0.3 0.2) (line:kr 1.0 0.0 (/ dur 2000)) :action FREE)))) 
+     (+ (* 5 freq) (* (line:kr (* growl 6) 1 0.1) freq (sin-osc 50)))))
 
 (definst woah [freq 440 duration 1000 volume 1.0]
   (let [fenv (* (env-gen (perc 0.1 (/ duration 1000))) freq)

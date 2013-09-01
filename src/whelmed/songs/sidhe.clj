@@ -191,7 +191,7 @@
 (defmethod play-note ::intro [{midi :pitch, ms :duration}]
   (organ (overtone/midi->hz midi) ms 0.7))
 (defmethod play-note ::bass [{midi :pitch ms :duration}]
-  (-> midi overtone/midi->hz (sawish ms 10)))
+  (-> midi overtone/midi->hz (sawish ms 3)))
 (defmethod play-note ::melody [{midi :pitch ms :duration}]
   (-> midi overtone/midi->hz (sawish ms 2)))
 (defmethod play-note ::chords [{midi :pitch, ms :duration}]
