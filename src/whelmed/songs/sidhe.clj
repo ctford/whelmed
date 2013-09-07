@@ -190,10 +190,10 @@
 (defmethod play-note ::default [note] (pick 0.99 0.1 note))
 (defmethod play-note ::intro [{midi :pitch, ms :duration}]
   (organ (overtone/midi->hz midi) ms 0.7))
-(defmethod play-note ::bass [{midi :pitch ms :duration}]
-  (-> midi overtone/midi->hz (sawish ms 3)))
-(defmethod play-note ::melody [{midi :pitch ms :duration}]
-  (-> midi overtone/midi->hz (sawish ms 2)))
+(defmethod play-note ::bass [note]
+  (-> note (assoc :part ::default) play-note))
+(defmethod play-note ::melody [note]
+  (-> note (assoc :part ::default) play-note))
 (defmethod play-note ::chords [{midi :pitch, ms :duration}]
   (organ (overtone/midi->hz midi) ms 0.5))
 
@@ -221,5 +221,7 @@
     (then fall-down)
     (then emphasis)
     (wherever :pitch, :pitch (comp B flat minor))
-    (then (->> breakdown (where :pitch (comp C minor))))
+    (then (->> breakdown (then (phrase [64] [0]))
+               (where :pitch (comp C minor))
+               (where :part (is ::melody))))
     (in-time (bpm 80))))
