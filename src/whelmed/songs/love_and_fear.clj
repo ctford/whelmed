@@ -141,7 +141,7 @@
 
 ; Arrangement
 (defmethod play-note ::melody [{midi :pitch ms :duration}]
-  (sawish (overtone/midi->hz midi) ms 15 2))
+  (sawish (overtone/midi->hz midi) ms 4 0.9))
 (defmethod play-note ::chords [{midi :pitch, length :duration}]
   (organ (overtone/midi->hz midi) length 0.8))
 (defmethod play-note ::blurt [note]
@@ -187,6 +187,6 @@
     (wherever :pitch, :pitch (comp G minor)))))
 
 (comment
-  (jam love-and-fear)
+  (jam (var love-and-fear))
   (play love-and-fear)
 )
