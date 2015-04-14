@@ -4,49 +4,58 @@
     [overtone.live])
   (:require [overtone.synth.stringed :as strings])) 
 
-(definst shudder [freq 440 vibrato 6]
-  (let [envelope (env-gen (perc 2 1.5) :action FREE)]
-    (*
-      (* envelope (sin-osc vibrato))
-      (square freq)
-      (sin-osc freq))))
+(defsynth shudder [freq 440 vibrato 6 pan 0 wet 0.5 volume 1.0]
+  (out 0
+       (-> (square freq)
+           (* (sin-osc freq))
+           (* (env-gen (perc 2 1.5) :action FREE))
+           (* (sin-osc vibrato))
+           (* volume)
+           (free-verb :mix wet)
+           (pan2 (line:ar pan (- pan) 3.5)))))
 
-(definst sawish [freq 440 duration 1500 vibrato 8 depth 1 volume 1.0]
-  (let [envelope (env-gen (perc 0.2 (/ duration 1000)) :action FREE)]
-    (-> (square freq)
-        (* 0.7 volume) 
-        (* envelope)
-        (rlpf (mul-add (sin-osc vibrato) (* freq depth) (* 2 freq))))))
+(defsynth sawish [freq 440 duration 1500 vibrato 8/3 depth 1 volume 1.0 pan 0.0 wet 0.5]
+  (let [envelope (env-gen (perc 0.01 (/ duration 1000)) :action FREE)]
+    (out 0
+         (-> (saw freq)
+             (+ (saw (* freq 1.01)))
+             (* 1/2)
+             (+ (* 9 (sin-osc (* freq 1.98))))
+             (clip2 0.5)
+             (* 2)
+             (* volume envelope)
+             (rlpf (mul-add (sin-osc vibrato) (* freq depth) (* 2 freq)) 1/3)
+             (free-verb :mix wet)
+             (pan2 pan)))))
 
-(definst groan [freq 440 duration 10000 vibrato 8/3 volume 1.0]
+(defsynth groan [freq 440 duration 10000 vibrato 8/3 volume 1.0 position 0 wet 0.5 low 0.25]
   (let [length (/ duration 1000)
         envelope (* (sin-osc vibrato)
                     (env-gen (perc 0.1 length) :action FREE))]
-    (*
-     0.7
-     volume
-     envelope
-     (+
-      (* (sin-osc 0.5) (+ 0.1 (saw freq)))
-      (* (sin-osc 0.8) (+ -0.03 (square freq)))
-      (+ -0.04 (sin-osc freq))))))
+    (out 0
+         (-> (+
+              (* low (sin-osc (* freq 1/2)))
+              (* (sin-osc 0.5) (+ 0.1 (saw freq)))
+              (* (sin-osc 0.8) (+ -0.03 (square freq)))
+              (+ -0.04 (sin-osc freq)))
+             (* 0.7 volume envelope)
+             (free-verb :mix wet)
+             (pan2 position)))))
 
-(definst bell [frequency 440 duration 1000 volume 1.0
-  h0 1 h1 0.6 h2 0.4 h3 0.25 h4 0.2 h5 0.15]
+(defsynth bell [frequency 440 duration 1000 volume 1.0 position 0 wet 0.5
+                h0 1 h1 0.6 h2 0.4 h3 0.25 h4 0.2 h5 0.15]
   (let [harmonics   [ 1  2  3  4.2  5.4 6.8]
         proportions [h0 h1 h2   h3   h4  h5]
         proportional-partial
-          (fn [harmonic proportion]
-            (let [envelope
-                    (* volume 1/5 (env-gen (perc 0.01 (* proportion (/ duration 1000)))))
-                  overtone
-                    (* harmonic frequency)]
-              (* 1/2 proportion envelope (sin-osc overtone))))
+        (fn [harmonic proportion]
+          (let [envelope (* 1/5 (env-gen (perc 0.01 (* proportion (/ duration 1000)))))
+                overtone (* harmonic frequency)]
+            (* 1/2 proportion envelope (sin-osc overtone))))
         partials
-          (map proportional-partial harmonics proportions)
-        whole (mix partials)]
-      (detect-silence whole :action FREE)
-      whole))
+        (map proportional-partial harmonics proportions)
+        whole (-> partials mix (* 10) (free-verb :mix wet) (pan2 position))]
+    (detect-silence whole :action FREE)
+    (out 0 whole)))
 
 (definst sawnoff [freq 440 depth 10]
   (let [envelope (env-gen (perc 0.1 0.9) :action FREE)] 
@@ -85,15 +94,18 @@
   (let [envelope (env-gen (perc 0.05 0.2) :action FREE)]
     (* volume envelope (pulse 5000 100))))
 
-(definst organ [freq 440 dur 1000 vol 1.0]
-  (->
-    (map #(sin-osc (* freq %)) (range 1 5))
-    mix
-    (* 1/6 vol)
-    (* (env-gen (asr 0.1 1.0 0.5)
-         (line:kr 1.0 0.0 (/ dur 1000))
-         :action FREE))
-    (lpf (mul-add (sin-osc 5) freq (* freq 5)))))
+(defsynth organ [freq 440 dur 1000 vol 1.0 pan 0.0 wet 0.5]
+  (out 0
+       (->
+         (map #(sin-osc (* freq %)) (range 1 5))
+         mix
+         (free-verb :mix wet)
+         (pan2 pan)
+         (* vol)
+         (* (env-gen (asr 0.1 1.0 0.5)
+              (line:kr 1.0 0.0 (/ dur 1000))
+              :action FREE))
+         (lpf (mul-add (sin-osc 5) freq (* freq 5))))))
 
 (definst kraft-bass [freq 440 dur 1000 vol 1.0]
   (let [envelope (env-gen (asr 0 1 1)
@@ -105,5 +117,3 @@
                   (saw (* freq 1.005))
                   (pulse (/ freq 2) 0.5)])]
     (-> osc (lpf level) (* vol envelope))))
-
-
