@@ -17,10 +17,8 @@
 (defsynth sawish [freq 440 duration 1500 vibrato 8/3 depth 1 volume 1.0 pan 0.0 wet 0.5]
   (let [envelope (env-gen (perc 0.01 (/ duration 1000)) :action FREE)]
     (out 0
-         (-> (saw freq)
-             (+ (saw (* freq 1.01)))
-             (* 1/2)
-             (+ (* 9 (sin-osc (* freq 1.98))))
+         (-> (sin-osc (* freq 0.51))
+             (+ (* 3 (sin-osc freq)))
              (clip2 0.5)
              (* 2)
              (* volume envelope)
