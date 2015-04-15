@@ -12,7 +12,7 @@
     [overtone.live :as overtone]))
 
 (def progression
-  (map (partial chord/root chord/seventh) [0 (lower 4) (lower 5) (lower 2)]))
+  (map (partial chord/root chord/seventh) [0 (scale/lower 4) (scale/lower 5) (scale/lower 2)]))
 
 ; Accompaniment
 (def backing
@@ -120,7 +120,7 @@
   (->> progression
        (map :i progression)
        (phrase (repeat 4))
-       (where :pitch lower)
+       (where :pitch scale/lower)
        (all :part ::bass)))
 
 (def bass
