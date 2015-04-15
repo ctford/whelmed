@@ -192,27 +192,27 @@
 (defmethod play-note ::bass
   [{freq :pitch position :position left? :left?}]
   (let [[position low] (if left? [-1/3 0.3] [1/5 2])]
-    (groan freq :volume 0.5 :position position :wet 0.3 :low low)))
+    (some-> freq (groan :volume 0.5 :position position :wet 0.3 :low low))))
 
 (defmethod play-note ::accompaniment
   [{freq :pitch left? :left?}]
-  (-> freq (shudder :volume 1 :pan (if left? 1/2 -1/2) :wet 0.8)))
+  (some-> freq (shudder :volume 1 :pan (if left? 1/2 -1/2) :wet 0.8)))
 
 (defmethod play-note ::lead
   [{freq :pitch}]
-  (-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.7 :volume 1)))
+  (some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.7 :volume 1)))
 
 (defmethod play-note ::response
   [{freq :pitch seconds :duration}]
-  (-> freq (organ seconds 3 :vol 1.5 :pan -1/4 :wet 0.6)))
+  (some-> freq (organ seconds 3 :vol 1.5 :pan -1/4 :wet 0.6)))
 
 (defmethod play-note ::break
   [{freq :pitch}]
-  (-> freq (bell 2 8 :vol 1.5 :position -1/6 :wet 0.3)))
+  (some-> freq (bell 2 8 :vol 1.5 :position -1/6 :wet 0.3)))
 
 (defmethod play-note ::kick
   [{freq :pitch}]
-  (-> freq drums/kick2))
+  (some-> freq drums/kick2))
 
 (comment
   (overtone/fx-freeverb)
