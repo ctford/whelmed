@@ -193,7 +193,7 @@
 ; Arrangement
 (defmethod play-note ::bass
   [{freq :pitch position :position left? :left?}]
-  (let [[position low] (if left? [-1/3 0.5] [1/5 2])]
+  (let [[position low] (if left? [-1/3 0.3] [1/5 2])]
     (groan freq :volume 0.5 :position position :wet 0.3 :low low)))
 
 (defmethod play-note ::accompaniment
@@ -218,11 +218,8 @@
 
 (comment
   (overtone/fx-freeverb)
-  (overtone/fx-reverb)
-  (overtone/fx-chorus)
-  (overtone/fx-distortion-tubescreamer)
-  (overtone/fx-distortion2)
-  (overtone/fx-limiter)
-  (->> west-with-the-sun play)
   (->> west-with-the-sun var jam)
+  (->> west-with-the-sun play)
+  (overtone/recording-start "west-with-the-sun.wav")
+  (overtone/recording-stop)
 ) 
