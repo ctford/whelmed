@@ -14,11 +14,6 @@
     (filter (comp not (between? from to)))
     (with (after from replacement))))
 
-(defn mapthen  [f & args]
-  (->> args
-       (apply map f)
-       (reduce #(then %2 %1))))
-
 (defn augment [chord k n] (update-in chord [k] (from n)))
 
 (defn in-time [timing notes]

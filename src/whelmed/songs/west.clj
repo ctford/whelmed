@@ -17,9 +17,7 @@
 ; Accompaniment
 (def backing
   (let [render-chord
-        (fn [i chord]
-          (->> chord
-               vals (map #(zipmap [:time :duration :pitch :left?] [0 4 % (even? i)]))))]
+        (fn [i chord] (->> (phrase [4] [chord]) (all :left? (even? i))))]
     (->>
       progression
       (map-indexed render-chord)
@@ -205,12 +203,12 @@
   (-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.7 :volume 1)))
 
 (defmethod play-note ::response
-  [{freq :pitch ms :duration}]
-  (-> freq (organ ms 3 :vol 1.5 :pan -1/4 :wet 0.6)))
+  [{freq :pitch seconds :duration}]
+  (-> freq (organ seconds 3 :vol 1.5 :pan -1/4 :wet 0.6)))
 
 (defmethod play-note ::break
   [{freq :pitch}]
-  (-> freq (bell 2000 8 :vol 1.5 :position -1/6 :wet 0.3)))
+  (-> freq (bell 2 8 :vol 1.5 :position -1/6 :wet 0.3)))
 
 (defmethod play-note ::kick
   [{freq :pitch}]

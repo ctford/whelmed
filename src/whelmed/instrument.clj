@@ -14,8 +14,8 @@
            (free-verb :mix wet)
            (pan2 (line:ar pan (- pan) 3.5)))))
 
-(defsynth sawish [freq 440 duration 1500 vibrato 8/3 depth 1 volume 1.0 pan 0.0 wet 0.5]
-  (let [envelope (env-gen (perc 0.01 (/ duration 1000)) :action FREE)]
+(defsynth sawish [freq 440 duration 1.5 vibrato 8/3 depth 1 volume 1.0 pan 0.0 wet 0.5]
+  (let [envelope (env-gen (perc 0.01 duration) :action FREE)]
     (out 0
          (-> (sin-osc (* freq 0.51))
              (+ (* 3 (sin-osc freq)))
@@ -26,10 +26,9 @@
              (free-verb :mix wet)
              (pan2 pan)))))
 
-(defsynth groan [freq 440 duration 10000 vibrato 8/3 volume 1.0 position 0 wet 0.5 low 0.25]
-  (let [length (/ duration 1000)
-        envelope (* (sin-osc vibrato)
-                    (env-gen (perc 0.1 length) :action FREE))]
+(defsynth groan [freq 440 duration 10 vibrato 8/3 volume 1.0 position 0 wet 0.5 low 0.25]
+  (let [envelope (* (sin-osc vibrato)
+                    (env-gen (perc 0.1 duration) :action FREE))]
     (out 0
          (-> (+
               (* low (sin-osc (* freq 1/2)))
@@ -40,13 +39,13 @@
              (free-verb :mix wet)
              (pan2 position)))))
 
-(defsynth bell [frequency 440 duration 1000 volume 1.0 position 0 wet 0.5
+(defsynth bell [frequency 440 duration 1.0 volume 1.0 position 0 wet 0.5
                 h0 1 h1 0.6 h2 0.4 h3 0.25 h4 0.2 h5 0.15]
   (let [harmonics   [ 1  2  3  4.2  5.4 6.8]
         proportions [h0 h1 h2   h3   h4  h5]
         proportional-partial
         (fn [harmonic proportion]
-          (let [envelope (* 1/5 (env-gen (perc 0.01 (* proportion (/ duration 1000)))))
+          (let [envelope (* 1/5 (env-gen (perc 0.01 (* proportion duration))))
                 overtone (* harmonic frequency)]
             (* 1/2 proportion envelope (sin-osc overtone))))
         partials
@@ -64,35 +63,35 @@
       (saw (+ freq (* depth (lf-saw:kr 0.1 0.2)))))))
 
 (strings/gen-stringed-synth ektara 1 true)
-(defn pick [distort amp {midi :pitch, start :time, length :duration}]
+(defn pick [distort amp {midi :pitch, start :time, duration :duration}]
   (let [synth-id (at start
          (ektara midi :distort distort :amp amp :gate 1))]
-    (at (+ start length) (ctl synth-id :gate 0))))
+    (at (+ start (* 1000 duration)) (ctl synth-id :gate 0))))
 
-(definst brassy [freq 440 dur 1000 vol 1 growl 1]
+(definst brassy [freq 440 dur 1.0 vol 1 growl 1]
   (lpf
     (* vol
     (+
       (* 1/2 (sin-osc (* 1 freq)) 
-         (env-gen (adsr 0.15 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1000)) :action FREE))
+         (env-gen (adsr 0.15 0.3 0.2) (line:kr 1.0 0.0 dur) :action FREE))
       (* 1/3 (sin-osc (* 3 freq))
-         (env-gen (adsr 0.3 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1300)) :action FREE))
+         (env-gen (adsr 0.3 0.3 0.2) (line:kr 1.0 0.0 dur) :action FREE))
       (* 1/4 (sin-osc (* 5 freq))
-         (env-gen (adsr 0.3 0.3 0.2) (line:kr 1.0 0.0 (/ dur 1500)) :action FREE))
+         (env-gen (adsr 0.3 0.3 0.2) (line:kr 1.0 0.0 dur) :action FREE))
       (* 1/7 (sin-osc (* 7 freq))
-         (env-gen (adsr 0.4 0.3 0.2) (line:kr 1.0 0.0 (/ dur 2000)) :action FREE)))) 
+         (env-gen (adsr 0.4 0.3 0.2) (line:kr 1.0 0.0 dur) :action FREE)))) 
      (+ (* 5 freq) (* (line:kr (* growl 6) 1 0.1) freq (sin-osc 50)))))
 
-(definst woah [freq 440 duration 1000 volume 1.0]
-  (let [fenv (* (env-gen (perc 0.1 (/ duration 1000))) freq)
-        aenv (env-gen (perc 0.005 (/ duration 1000)) :action FREE)]
+(definst woah [freq 440 duration 1 volume 1.0]
+  (let [fenv (* (env-gen (perc 0.1 duration)) freq)
+        aenv (env-gen (perc 0.005 duration) :action FREE)]
     (* volume (sin-osc fenv (* 0.5 Math/PI)) aenv)))
 
 (definst click [volume 1.0]
   (let [envelope (env-gen (perc 0.05 0.2) :action FREE)]
     (* volume envelope (pulse 5000 100))))
 
-(defsynth organ [freq 440 dur 1000 vol 1.0 pan 0.0 wet 0.5]
+(defsynth organ [freq 440 dur 1.0 vol 1.0 pan 0.0 wet 0.5]
   (out 0
        (->
          (map #(sin-osc (* freq %)) (range 1 5))
@@ -101,13 +100,13 @@
          (pan2 pan)
          (* vol)
          (* (env-gen (asr 0.1 1.0 0.5)
-              (line:kr 1.0 0.0 (/ dur 1000))
+              (line:kr 1.0 0.0 dur)
               :action FREE))
          (lpf (mul-add (sin-osc 5) freq (* freq 5))))))
 
-(definst kraft-bass [freq 440 dur 1000 vol 1.0]
+(definst kraft-bass [freq 440 dur 1.0 vol 1.0]
   (let [envelope (env-gen (asr 0 1 1)
-                          (line:kr 1.0 0.0  (/ dur 1000))
+                          (line:kr 1.0 0.0 dur)
                           :action FREE)
         level (+ 100 (env-gen (perc 0 3)
                               :level-scale 6000))
