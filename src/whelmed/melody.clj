@@ -9,11 +9,6 @@
   (fn [note] 
     (and (>= (:time note) from) (< (:time note) to))))
 
-(defn but [from to replacement notes]
-  (->> notes
-    (filter (comp not (between? from to)))
-    (with (after from replacement))))
-
 (defn augment [chord k n] (update-in chord [k] (from n)))
 
 (defn in-time [timing notes]

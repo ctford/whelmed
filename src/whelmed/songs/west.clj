@@ -55,7 +55,7 @@
     ill-run-away
     (then (after 3 ill-get-away))
     (then (after 3 my-heart-will-go-west-with-the-sun))
-    (where :part (is ::lead))))
+    (all :part ::lead)))
 
 (def half-theme
   (let [crippled-theme
@@ -64,14 +64,14 @@
     (->>
       (after 1/2 crippled-theme)
       (then (after 3 crippled-theme))
-      (where :part (is ::lead)))))
+      (all :part ::lead))))
 
 (def spilling-theme
   (->>
     ill-run-away
     (then (after 3 ill-get-away))
     (then (after 3 west-with-the-west-with-the))
-    (where :part (is ::lead))))
+    (all :part ::lead)))
 
 ; Response
 (def a-parting-kiss
@@ -96,7 +96,7 @@
    (then like-fairy-floss)
    (then dissolves-on-the-tip-of-my-tongue) 
    (then dissolves-on-the-tip-of-my-tongue)
-   (where :part (is ::response))))
+   (all :part ::response)))
 
 ; Break
 (def consider-this
@@ -127,7 +127,7 @@
 (def break
   (->>
     (with breakup breakdown)
-    (where :part (is ::break))))
+    (all :part ::break)))
 
 ; Bass
 (def light-bass
@@ -147,7 +147,7 @@
 
 (def beat
   (->> (times 4 (phrase [6/4 4/4 6/4] (repeat -14)))
-       (with (times 2 (->> (phrase [2 2 2 1/2 1/2] (repeat -10)) (after 1))))
+       (with (->> (phrase [1 2 2 2 1/2 1/2] (cons nil (repeat -10))) (times 2)))
        (all :part ::kick)))
 
 (def flat-beat
@@ -156,8 +156,8 @@
        (all :part ::kick)))
 
 (def beat2
-  (->> (phrase [1 1 1/4 3/4 1 1/4 1/4 1/2 1/2 1/4 1/4 1 1] (cycle [-7 -3]))
-       (with (after 4 (phrase (cycle [3/2]) [-8 -10 -12])))
+  (->> (phrase [1 1 1/4 3/4 1 1/4 1/4 1/2 1/2 1/4 1/4 1 1/2] (cycle [-7 -3]))
+       (with (after 4 (phrase [3/2 3/2 1] [-8 -10 -12])))
        (times 2)
        (with beat)
        (all :part ::kick)))
