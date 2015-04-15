@@ -195,7 +195,7 @@
 
 (defmethod play-note ::break
   [{freq :pitch}]
-  (some-> freq (bell 2 8 :vol 1.5 :position -1/6 :wet 0.3)))
+  (some-> freq (bell 2 :duration 10 :vol 1.5 :position -1/6 :wet 0.8)))
 
 (defmethod play-note ::kick
   [{freq :pitch}]
