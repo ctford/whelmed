@@ -10,7 +10,7 @@
            (* (sin-osc freq))
            (* (env-gen (perc 2 1.5) :action FREE))
            (* (sin-osc vibrato))
-           (* volume)
+           (* 2/3 volume)
            (free-verb :mix wet)
            (pan2 (line:ar pan (- pan) 3.5)))))
 
@@ -21,7 +21,7 @@
              (+ (* 3 (sin-osc freq)))
              (clip2 0.5)
              (* 2)
-             (* volume envelope)
+             (* 2/3 volume envelope)
              (rlpf (mul-add (sin-osc vibrato) (* freq depth) (* 2 freq)) 1/3)
              (free-verb :mix wet)
              (pan2 pan)))))
