@@ -1,19 +1,18 @@
 (ns whelmed.songs.west
-  (:use
-    [leipzig.melody]
-    [leipzig.live]
-    [leipzig.temperament]
-    [whelmed.melody]
-    [leipzig.scale]
-    [leipzig.chord]
-    [whelmed.instrument])
   (:require 
+    [leipzig.melody :refer :all]
+    [leipzig.live :as live]
+    [leipzig.temperament :as temperament]
+    [whelmed.melody :refer :all]
+    [leipzig.scale :as scale]
+    [leipzig.chord :as chord]
+    [whelmed.instrument :refer :all]
     [leipzig.canon :as canon]
     [overtone.inst.drum :as drums]
     [overtone.live :as overtone]))
 
 (def progression
-  (map (partial root seventh) [0 (lower 4) (lower 5) (lower 2)]))
+  (map (partial chord/root chord/seventh) [0 (lower 4) (lower 5) (lower 2)]))
 
 ; Accompaniment
 (def backing
@@ -171,7 +170,7 @@
       (then variation)
       (then (->> response (with (->> break (after 16)))))
       (then fadeout)
-      (where :pitch (comp equal A minor))
+      (where :pitch (comp temperament/equal scale/A scale/minor))
       (where :time (bpm 80))
       (where :duration (bpm 80)))))
 
@@ -203,8 +202,8 @@
 
 (comment
   (overtone/fx-freeverb)
-  (->> west-with-the-sun var jam)
-  (->> west-with-the-sun play)
+  (->> west-with-the-sun var live/jam)
+  (->> west-with-the-sun live/play)
   (overtone/recording-start "west-with-the-sun.wav")
   (overtone/recording-stop)
 ) 
