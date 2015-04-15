@@ -8,6 +8,7 @@
     [leipzig.chord]
     [whelmed.instrument])
   (:require 
+    [leipzig.canon :as canon]
     [overtone.inst.drum :as drums]
     [overtone.live :as overtone]))
 
@@ -16,13 +17,12 @@
 
 ; Accompaniment
 (def backing
-  (let [render-chord
-        (fn [i chord] (->> (phrase [4] [chord]) (all :left? (even? i))))]
+  (let [render-chord (fn [[left? chord]] (->> (phrase [4] [chord]) (all :left? left?)))]
     (->>
       progression
-      (map-indexed render-chord)
-      (reduce #(then %2 %1))
-      (where :part (is ::accompaniment)))))
+      (map vector [true false true false])
+      (mapthen render-chord)
+      (all :part ::accompaniment))))
 
 ; Lead
 (def ill-run-away
@@ -131,36 +131,36 @@
 
 ; Bass
 (def light-bass
-  (->> (map :i progression)
-    (phrase (repeat 4))
-    (where :pitch lower)
-    (where :part (is ::bass))))
+  (->> progression
+       (map :i progression)
+       (phrase (repeat 4))
+       (where :pitch lower)
+       (all :part ::bass)))
 
 (def bass
   (->> light-bass
-    (with (->> light-bass
-            (where :pitch (from 6))
-            (where :time inc)
-            (where :duration dec)
-            (where :left? (is true))
-            (where :position (is -1/3))))))
+       (canon/canon
+         (comp (canon/simple 1)
+               (canon/interval 6)
+               (partial where :duration dec)
+               (partial all :left? true)))))
 
 (def beat
   (->> (times 4 (phrase [6/4 4/4 6/4] (repeat -14)))
        (with (times 2 (->> (phrase [2 2 2 1/2 1/2] (repeat -10)) (after 1))))
-       (where :part (is ::kick))))
+       (all :part ::kick)))
 
 (def flat-beat
   (->> (phrase (repeat 4 1) (repeat -14))
        (times 4)
-       (where :part (is ::kick))))
+       (all :part ::kick)))
 
 (def beat2
   (->> (phrase [1 1 1/4 3/4 1 1/4 1/4 1/2 1/2 1/4 1/4 1 1] (cycle [-7 -3]))
        (with (after 4 (phrase (cycle [3/2]) [-8 -10 -12])))
        (times 2)
        (with beat)
-       (where :part (is ::kick))))
+       (all :part ::kick)))
 
 ; Body
 (def west-with-the-sun
@@ -190,7 +190,7 @@
 
 ; Arrangement
 (defmethod play-note ::bass
-  [{freq :pitch position :position left? :left?}]
+  [{freq :pitch left? :left?}]
   (let [[position low] (if left? [-1/3 0.3] [1/5 2])]
     (some-> freq (groan :volume 0.5 :position position :wet 0.3 :low low))))
 
