@@ -69,18 +69,18 @@
     (at (+ start (* 1000 duration)) (ctl synth-id :gate 0))))
 
 (definst brassy [freq 440 dur 1.0 vol 1 growl 1]
-  (lpf
-    (* vol
-    (+
-      (* 1/2 (sin-osc (* 1 freq)) 
-         (env-gen (adsr 0.15 0.3 0.2) (line:kr 1.0 0.0 dur) :action FREE))
-      (* 1/3 (sin-osc (* 3 freq))
-         (env-gen (adsr 0.3 0.3 0.2) (line:kr 1.0 0.0 dur) :action FREE))
-      (* 1/4 (sin-osc (* 5 freq))
-         (env-gen (adsr 0.3 0.3 0.2) (line:kr 1.0 0.0 dur) :action FREE))
-      (* 1/7 (sin-osc (* 7 freq))
-         (env-gen (adsr 0.4 0.3 0.2) (line:kr 1.0 0.0 dur) :action FREE)))) 
-     (+ (* 5 freq) (* (line:kr (* growl 6) 1 0.1) freq (sin-osc 50)))))
+  (let [cutoff (line:kr 1.0 0.0 dur)]
+    (-> (+
+         (* (sin-osc freq)
+            (env-gen (adsr 0.15 0.3 0.3) cutoff :action FREE))
+         (* 1/3 (sin-osc (* 3.01 freq))
+            (env-gen (adsr 0.3 0.3 0.2) cutoff))
+         (* 1/4 (sin-osc (* 5.03 freq))
+            (env-gen (adsr 0.3 0.3 0.2) cutoff))
+         (* 1/7 (sin-osc (* 7.04 freq))
+            (env-gen (adsr 0.4 0.3 0.2) cutoff)))
+        (* vol)
+        (lpf (+ (* 5 freq) (* (line:kr (* growl 6) 1 0.1) freq (sin-osc 50)))))))
 
 (definst woah [freq 440 duration 1 volume 1.0]
   (let [fenv (* (env-gen (perc 0.1 duration)) freq)
