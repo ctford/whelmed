@@ -191,7 +191,7 @@
 
 (defmethod play-note ::response
   [{freq :pitch seconds :duration}]
-  (some-> freq (organ seconds 3 :vol 1.5 :pan -1/4 :wet 0.6)))
+  (some-> freq (organ seconds 3 :vol 1.0 :pan -1/4 :wet 0.8)))
 
 (defmethod play-note ::break
   [{freq :pitch}]
