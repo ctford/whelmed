@@ -60,7 +60,7 @@
       (then second-flourish))))
 
 (def beat 
-  (->> (phrase [3/2 1/2 1/2 3/2] (repeat -21))
+  (->> (phrase [3/2 1/2 1/2 3/2] (repeat -14))
        (times 8)))
 
 (def beatback
@@ -190,3 +190,8 @@
            (then finale)
            (where :pitch (comp E minor))))
     (in-time (bpm 105))))
+
+(comment
+  (overtone/recording-start "sidhe.wav")
+  (play sidhe)
+  (overtone/recording-stop))
