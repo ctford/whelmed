@@ -160,10 +160,10 @@
 
 ; Arrangement
 (defmethod play-note ::port [{midi :pitch seconds :duration direction :direction}]
-  (some-> midi overtone/midi->hz (corgan seconds :vol 0.7 :pan -1/2 :wet 0.4 :room 0.9 :vibrato 105/60)))
+  (some-> midi overtone/midi->hz (corgan seconds :vol 0.7 :pan -1/2 :wet 0.3 :room 0.9 :vibrato 105/60)))
 
 (defmethod play-note ::starboard [{midi :pitch seconds :duration direction :direction}]
-  (some-> midi overtone/midi->hz (corgan seconds :vol 0.7 :pan 1/2 :wet 0.4 :room 0.9 :vibrato 105/15)))
+  (some-> midi overtone/midi->hz (corgan seconds :vol 0.7 :pan 1/2 :wet 0.5 :room 0.9 :vibrato 105/15)))
 
 (defmethod play-note ::fore [{midi :pitch seconds :duration direction :direction}]
   (some-> midi overtone/midi->hz (kraft-bass :vol 3.0 :dur seconds :pan 0 :wet 0.7 :room 0.9)))

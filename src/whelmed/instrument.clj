@@ -75,33 +75,25 @@
          (ektara midi :distort distort :amp amp :gate 1))]
     (at (+ start (* 1000 duration)) (ctl synth-id :gate 0))))
 
-(defsynth brassy [freq 440 dur 1.0 vol 1 growl 1 noise 1.0 position 0.0]
+(defsynth brassy [freq 440 dur 1.0 vol 1 wet 0.5 room 0.5 noise 1.0 position 0.0 limit 3000 p 1]
   (let [cutoff (line:kr 1.0 0.0 dur)
         whole (-> (+
                    (* (sin-osc freq) (env-gen (adsr 0.0 0.3 0.3) cutoff))
-                   (* 1/3 (sin-osc (* 2.01 freq)) (env-gen (adsr 0.15 0.2 0.4) cutoff))
-                   (-> (brown-noise) (* 1/2 noise) (* (env-gen (perc 0.0 0.1))))
-                   (* 1/2 (sin-osc (* 2 freq)) (env-gen (adsr 0.1 0.3 0.2) (line:kr 1.0 0.0 dur))))
-                  (* vol 5)
-                  (clip2 0.5)
-                  (* 3)
-                  (lpf (+ (* 3 freq) (* (line:kr (* growl 2) 1 0.1) freq (sin-osc 40))))
-                  (lpf 1500)
-                  (pan2 position)
-                  (free-verb :room 0.5 :mix 0.6))]
+                   (-> (white-noise) (* noise) (* (env-gen (perc 0.0 0.01)))))
+                  (* vol 4)
+                  (rlpf (* 5 freq) 1/10)
+                  (* (pulse p 2/3))
+                  (clip2 0.3)
+                  (pan2 (line:kr -1 1 dur))
+                  (free-verb :room room :mix wet))]
     (detect-silence whole :action FREE)
     (out 0 whole)))
-
-(definst woah [freq 440 duration 1 volume 1.0]
-  (let [fenv (* (env-gen (perc 0.1 duration)) freq)
-        aenv (env-gen (perc 0.005 duration) :action FREE)]
-    (* volume (sin-osc fenv (* 0.5 Math/PI)) aenv)))
 
 (definst click [volume 1.0]
   (let [envelope (env-gen (perc 0.05 0.2) :action FREE)]
     (* volume envelope (pulse 5000 100))))
 
-(defsynth organ [freq 440 dur 1.0 vol 1.0 pan 0.0 wet 0.5 room 0.5]
+(defsynth organ [freq 440 dur 1.0 vol 1.0 pan 0.0 wet 0.5 room 0.5 limit 99999 attack 0.1]
   (out 0
        (->
          (map #(sin-osc (* freq %)) (range 1 5))
@@ -109,8 +101,9 @@
          (free-verb :mix wet :room room)
          (pan2 pan)
          (* vol)
-         (* (env-gen (asr 0.1 1.0 0.5) (line:kr 1.0 0.0 dur) :action FREE))
-         (lpf (mul-add (sin-osc 5) freq (* freq 5))))))
+         (* (env-gen (asr attack 1.0 0.5) (line:kr 1.0 0.0 dur) :action FREE))
+         (lpf (mul-add (sin-osc 5) freq (* freq 5)))
+         (lpf limit))))
 
 (defonce random-walk (audio-bus))
 
@@ -123,7 +116,7 @@
 
 (defonce walk (walker [:tail inputs] random-walk))
 
-(defsynth corgan [freq 440 dur 1.0 vol 1.0 pan 0.0 wet 0.5 room 0.5 vibrato 3]
+(defsynth corgan [freq 440 dur 1.0 walk 1 attack 0.01 under-attack 0.3 vol 1.0 pan 0.0 wet 0.5 room 0.5 vibrato 3 limit 99999]
   (out 0
        (->
          (saw freq)
@@ -131,10 +124,11 @@
          (rlpf (mul-add (sin-osc vibrato) (line:kr 0 (in:kr random-walk) 10) (* freq 4)) 1/20)
          (clip2 0.4)
          (* vol)
-         (* (env-gen (asr 0.01 1.0 0.5) (line:kr 1.0 0.0 dur)))
-         (+ (* 1/4 (sin-osc (* 1.002 freq)) (env-gen (perc 0.3 dur))))
-         (rlpf (in:kr random-walk) 1/5)
+         (* (env-gen (adsr attack 1.0 0.5) (line:kr 1.0 0.0 dur)))
+         (+ (* 1/4 (sin-osc (* 1.002 freq)) (env-gen (perc under-attack dur))))
+         (rlpf (* walk (in:kr random-walk)) 1/5)
          (free-verb :mix wet :room 0.5)
+         (lpf limit)
          (pan2 pan)
          cut-out)))
 
