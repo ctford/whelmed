@@ -7,13 +7,13 @@
         [whelmed.instrument]
         [whelmed.contrib.harpsichord]
         [whelmed.melody]
-        [overtone.live :only [ctl at midi->hz now]]))
+        [overtone.live :only [recording-start recording-stop ctl at midi->hz now]]))
 
 ; Introduction
 (def once
   (->> (phrase (cycle [5/3 1 1/3 1])
-               [0 0 2 4 4 4 4 2])
-       (having :open (concat (repeat 7 false) [true]))
+               [0 0 2 4 5 5 4 2])
+       (having :open (cycle [false false false true]))
        (all :part ::bass)
        (where :pitch (comp lower lower))))
 
@@ -83,9 +83,9 @@
 (def youd-be-home-by-now
   (->>
     (phrase
-      [1/3 2/3 1 1 1 1 1 10/3 2/3 4]
-      [-3 2 2 1 -1 -2 -1 -2 -3 -2])
-    (after 5/3)
+      [1/3 1/3 1/3 2/3 1 1 1 1 1 10/3 2/3 4]
+      [-5 -3 0 2 2 1 -1 -2 -1 -2 -3 -2])
+    (after 3/3)
     (all :part ::melody)))
 
 (def youd-be-home-right-now
@@ -107,10 +107,9 @@
 ; Return
 (def fallbass
   (->> (take 4 bass)
-    (then
-      (phrase [4] [(lower -3.5)]))
-
-    (all :part ::bass)))
+       (then
+         (phrase [4] [(lower -3.5)]))
+       (all :part ::bass)))
 
 (def fallchords
   (->> (take 6 rhythm-section)
@@ -160,14 +159,14 @@
     (then (->> mid-section
                (where :pitch (comp low B major))))
     (then (->> rise
-               (then (->> groove (where :time (partial * 3/2))))
-               (then (->> groove (filter #(-> % :part (= ::bass) (take 1)))))
+               (then (->> groove (in-time (partial * 3/2))))
+               (then (->> groove (phrase [4] [-14]) (all :part ::bass)))
                (where :pitch (comp F minor))))
     (in-time (bpm 180))))
 
 (defmethod play-note ::bass [{midi :pitch seconds :duration open? :open}]
   (some-> midi midi->hz
-          (corgan :vol (if open? 0.8 0.6) :under-attack 0.1 :attack 0.001 :dur (* 2/3 seconds) :wet 0.1 :room 0.4 :pan 1/3 :vibrato (if open? 9 1) :limit (if open? 7000 1500))))
+          (corgan :vol (if open? 0.8 0.6) :under-attack 0.1 :attack 0.001 :dur (* 2/3 seconds) :wet 0.1 :room 0.4 :pan 1/3 :vibrato (if open? 9 1) :limit (if open? 4000 1500))))
 
 (defmethod play-note ::rhythm [{midi :pitch, s :duration}]
   (some-> midi midi->hz (organ s :vol 4 :limit 2000 :attack 0 :pan -1/3 :room 0.4 :wet 0.9)))   
@@ -180,7 +179,10 @@
   (some-> midi midi->hz (brassy :walk 1/2 :pan 1/2 :attack 0.5 :vol 0.3 :dur s :wet 0.4 :room 0.9 :limit 5000 :p 2))
   (some-> midi midi->hz (brassy :walk 1/2 :pan 1/2 :attack 0.1 :vol 0.7 :dur s :wet 0.6 :room 0.4 :limit 4000)))
 
+
 (comment
+  (recording-start "ska.wav")
   (play ska)
+  (recording-stop)
   (jam (var ska))
 )
