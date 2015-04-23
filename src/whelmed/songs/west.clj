@@ -175,28 +175,28 @@
       (where :duration (bpm 80)))))
 
 ; Arrangement
-(defmethod play-note ::bass
+(defmethod live/play-note ::bass
   [{freq :pitch left? :left?}]
   (let [[position low] (if left? [-1/3 0.3] [1/5 2])]
     (some-> freq (groan :volume 0.5 :position position :wet 0.3 :low low))))
 
-(defmethod play-note ::accompaniment
+(defmethod live/play-note ::accompaniment
   [{freq :pitch left? :left?}]
   (some-> freq (shudder :volume 1 :pan (if left? 1/2 -1/2) :wet 0.8)))
 
-(defmethod play-note ::lead
+(defmethod live/play-note ::lead
   [{freq :pitch}]
   (some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.7 :volume 1)))
 
-(defmethod play-note ::response
+(defmethod live/play-note ::response
   [{freq :pitch seconds :duration}]
   (some-> freq (organ seconds 3 :vol 1.0 :pan -1/4 :wet 0.8)))
 
-(defmethod play-note ::break
+(defmethod live/play-note ::break
   [{freq :pitch}]
   (some-> freq (bell 2 :duration 10 :vol 1.5 :position -1/6 :wet 0.8)))
 
-(defmethod play-note ::kick
+(defmethod live/play-note ::kick
   [{freq :pitch}]
   (some-> freq drums/kick2))
 
