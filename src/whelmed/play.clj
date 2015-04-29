@@ -5,7 +5,7 @@
     [leipzig.live :only [play]]
     [whelmed.songs.west :only [west-with-the-sun]]
     [whelmed.songs.dolorem-ipsum :only [dolorem-ipsum]]
-    [whelmed.songs.sidhe :only [sidhe sidhe-sparse]]
+    [whelmed.songs.sidhe :only [sidhe]]
     [whelmed.songs.love-and-fear :only [love-and-fear]]
     [whelmed.songs.at-all :only [at-all]]
     [whelmed.songs.SKA :only [ska]]))
@@ -17,7 +17,7 @@
    ["dolorem" dolorem-ipsum] ; F lydian 
    ["love" love-and-fear] ; G minor
    ["at-all" at-all] ; D major
-   ["sidhe-sparse" sidhe-sparse]]) ; B flat minor
+   ])
 
 (defn lookup [track-name]
   (if (= track-name "all")
