@@ -11,12 +11,12 @@
     [whelmed.songs.SKA :only [ska]]))
 
 (def tracks
-  [["sidhe" sidhe] ; C minor
+  [["west" west-with-the-sun] ; A minor
    ["ska" ska] ; E minor
-   ["west" west-with-the-sun] ; A minor
-   ["dolorem" dolorem-ipsum] ; F lydian 
-   ["love" love-and-fear] ; G minor
-   ["at-all" at-all] ; D major
+   ["sidhe" sidhe] ; C minor
+   ;["dolorem" dolorem-ipsum] ; F lydian 
+   ;["love" love-and-fear] ; G minor
+   ;["at-all" at-all] ; D major
    ])
 
 (defn lookup [track-name]
@@ -24,7 +24,7 @@
     (->>
       tracks
       (map second)
-      (reduce #(then (after 2000 %2) %1)))
+      (reduce #(then (after 2 %2) %1)))
     (get
       (->>
         tracks
