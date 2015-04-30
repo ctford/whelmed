@@ -153,7 +153,7 @@
 
 (defn ring [rate]
   (->> (repeatedly #([-3 -1 2 4 6 7 9 11] (rand-int 7)))
-       (phrase (repeat (int (/ 32 rate)) rate))))
+       (phrase (repeat (int (/ 48 rate)) rate))))
 
 (def ringing
   (with
