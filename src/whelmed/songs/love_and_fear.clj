@@ -103,12 +103,12 @@
           (->>
             (phrase
               (concat aaaaand rhythm)
-              [4 6 6 6 6 7 6 5 6])
+              [4 6 [2 6] [2 6] [2 6] [2 7] [2 6] [2 5] [2 6]])
             (after -2)
             (all :part ::melody)
             (then theme))
         love-and-fear
-          (->> (phrase rhythm [9 9 8 7 6 4 6]) (after 1)
+          (->> (phrase rhythm [[2 9] [2 9] [2 8] [2 7] [2 6] [2 4] [2 6]]) (after 1)
                (all :part ::harmony)
                (then theme))]
   (->> there-are-only-two-feelings (then love-and-fear))))
@@ -118,7 +118,7 @@
           (->>
             (phrase
               [1/2 1/2 1/4 1/4 1 1/4 1/4 1/4 1/4 1 9/2]
-              [2 3 4 3 2 4 3 4 3 2 2])
+              [2 3 triad 3 2 4 3 (-> triad (root 2) (inversion 2)) 3 2 (-> triad (root -2))])
             (after -1)) 
         only-two-activities 
           (->>
@@ -151,7 +151,7 @@
   (some-> midi overtone/midi->hz (* 2) (bell 4 :volume 0.4 :position -1/7 :wet 0.9 :room 0.9 :volume 10)))
 
 (defmethod play-note ::harmony [{midi :pitch s :duration}]
-  (some-> midi overtone/midi->hz (* 2) (bell 7 :volume 0.5 :position 1/2 :wet 0.8 :room 0.9 :volume 10)))
+  (some-> midi overtone/midi->hz (bell 7 :volume 0.5 :position 1/2 :wet 0.8 :room 0.9 :volume 10)))
 
 (defmethod play-note ::chords [{midi :pitch, length :duration}]
   (some-> midi overtone/midi->hz (corgan length 0.8 :vol 0.4 :depth 0.1 :pan 1/4 :room 0.9)))
