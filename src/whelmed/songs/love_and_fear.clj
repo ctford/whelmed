@@ -11,6 +11,11 @@
             [overtone.inst.drum :as drums]
             [overtone.synth.stringed :as strings]))
 
+(defn harmonise [f notes]
+  (->> notes
+       (all :part ::melody)
+       (canon (comp (partial all :part ::harmony) f) )))
+
 (defn tap [drum times length]
   (map #(zipmap [:time :duration :drum] [%1 (- length %1) drum]) times))
 
@@ -89,7 +94,7 @@
 (def theme
   (->> (phrase [2 2 9/2] [6 6 7])
     (all :part ::melody)
-    (canon (comp (interval -2) (partial all :part ::harmony)))))
+    (harmonise (interval -2))))
 
 (def modified-theme
   (->> theme
@@ -100,18 +105,19 @@
   (let [aaaaand [1 2] 
         rhythm [1/2 3/2 1/2 1 1 1 1] 
         there-are-only-two-feelings 
-          (->>
-            (phrase
-              (concat aaaaand rhythm)
-              [4 6 [2 6] [2 6] [2 6] [2 7] [2 6] [2 5] [2 6]])
-            (after -2)
-            (all :part ::melody)
-            (then theme))
+        (->>
+          (phrase
+            (concat aaaaand rhythm)
+            [4 6 6 6 6 7 6 5 6])
+          (after -2)
+          (harmonise (partial all :pitch 2))
+          (then theme) )
         love-and-fear
-          (->> (phrase rhythm [[2 9] [2 9] [2 8] [2 7] [2 6] [2 4] [2 6]]) (after 1)
-               (all :part ::harmony)
-               (then theme))]
-  (->> there-are-only-two-feelings (then love-and-fear))))
+        (->> (phrase rhythm [9 9 8 7 6 4 6])
+             (after 1)
+             (harmonise (partial all :pitch 2))
+             (then theme))]
+    (->> there-are-only-two-feelings (then love-and-fear))))
 
 (def melodyb
  (let  [there-are 
@@ -181,8 +187,7 @@
           (->> (phrase [1/2 1/2 1 1/2 1/2 1 1/2 1/2 4]
                        [2 1 0 0 -1 0 2 3 2])
             (after -1)
-            (canon (interval 7))
-            (all :part ::melody)) 
+            (harmonise (interval 7)))
         outro (->> chords
                (with (->> modified-theme (with oh-love-and-fear)
                        (times 2)))
