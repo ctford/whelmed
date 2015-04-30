@@ -64,6 +64,12 @@
       (where :pitch lower)
       (all :part ::bass))))
 
+(def vanilla-bass
+  (->> (phrase [0 -1 -2] [4 4 8])
+       (where :pitch (comp lower lower))
+       (times 2)
+       (all :part ::bass)))
+
 (def chords
   (->> 
     (phrase [2 2 4] progression)
@@ -71,9 +77,7 @@
     (with (->> (phrase [2 2 4] [6 6 7]) (where :pitch raise) (after 8)))
     (where :pitch lower)
     (all :part ::chords)
-    (with (->> (phrase [2 2 4] [0 -1 -2])
-               (where :pitch (comp lower lower))
-               (all :part ::bass)))))
+    (with vanilla-bass)))
 
 (def arpeggios 
   (let [one
@@ -162,20 +166,20 @@
 
 ; Arrangement
 (defmethod play-note ::melody [{midi :pitch s :duration}]
-  (some-> midi overtone/midi->hz (bell s :volume 0.4 :position 1/9 :wet 0.4 :room 0.1 :volume 10))
-  (some-> midi overtone/midi->hz (* 2) (bell 4 :volume 0.4 :position 1/7 :wet 0.9 :room 0.9 :volume 10)))
+  (some-> midi overtone/midi->hz (bell s :volume 0.3 :position 1/9 :wet 0.4 :room 0.1 :volume 10))
+  (some-> midi overtone/midi->hz (* 2) (bell 4 :volume 0.2 :position 1/7 :wet 0.9 :room 0.9 :volume 10)))
 
 (defmethod play-note ::harmony [{midi :pitch s :duration}]
   (some-> midi overtone/midi->hz (bell 7 :volume 0.5 :position -1/2 :wet 0.8 :room 0.9 :volume 10)))
 
 (defmethod play-note ::chords [{midi :pitch, length :duration}]
-  (some-> midi overtone/midi->hz (corgan length 0.8 :vol 0.6 :depth 0.1 :pan 1/4 :room 0.9)))
+  (some-> midi overtone/midi->hz (corgan length 0.8 :vol 0.6 :vibrato 2/3 :depth 0.4 :pan 1/4 :room 0.9)))
 
 (defmethod play-note ::blurt [{:keys [pitch duration]}]
   (some-> pitch overtone/midi->hz (corgan duration :depth 1 :vibrato 4/3 :vol 0.7 :pan -1/2 :room 0.9)))
 
 (defmethod play-note ::bass [{:keys [duration pitch]}]
-  (some-> pitch overtone/midi->hz (corgan duration :depth 0 :pan -1/2 :depth 0 :vol 0.5 :room 0.9)))
+  (some-> pitch overtone/midi->hz (corgan duration :vibrato 2/3 :limit 1500 :depth 0 :pan -1/2 :depth 0 :vol 0.9 :room 0.9)))
 
 (defmethod play-note ::arpeggios [{:keys [pitch duration]}]
   (some-> pitch overtone/midi->hz (corgan duration :vibrato 4/3 :vol 0.9 :depth 0.2 :limit 2000 :pan 1/5 :room 0.9)))
