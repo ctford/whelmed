@@ -59,7 +59,7 @@
         (map proportional-partial harmonics proportions)
         whole (-> partials mix (* 10) (free-verb :mix wet) (pan2 position))]
     (detect-silence whole :action FREE)
-    (out 0 whole)))
+    (out 0 (* volume whole))))
 
 (definst sawnoff [freq 440 depth 10]
   (let [envelope (env-gen (perc 0.1 0.9) :action FREE)] 
@@ -116,12 +116,12 @@
 
 (defonce walk (walker [:tail inputs] random-walk))
 
-(defsynth corgan [freq 440 dur 1.0 walk 1 attack 0.01 under-attack 0.3 vol 1.0 pan 0.0 wet 0.5 room 0.5 vibrato 3 limit 99999]
+(defsynth corgan [freq 440 dur 1.0 depth 1 walk 1 attack 0.01 under-attack 0.3 vol 1.0 pan 0.0 wet 0.5 room 0.5 vibrato 3 limit 99999]
   (out 0
        (->
          (saw freq)
          (* 99)
-         (rlpf (mul-add (sin-osc vibrato) (line:kr 0 (in:kr random-walk) 10) (* freq 4)) 1/20)
+         (rlpf (mul-add (sin-osc vibrato) (line:kr 0 (* depth (in:kr random-walk)) 10) (* freq 4)) 1/20)
          (clip2 0.4)
          (* vol)
          (* (env-gen (adsr attack 1.0 0.5) (line:kr 1.0 0.0 dur)))

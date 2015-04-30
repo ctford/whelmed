@@ -20,14 +20,14 @@
       [(tap :tock [1 3 5 7] 8) 
       (tap :tick [15/4 30/4] 8) 
       (tap :kick [0 3/4 6/4 10/4 14/4 16/4 19/4 22/4 26/4] 8)])
-    (where :part (is ::beat))))
+    (all :part ::beat)))
 
 (def beatb 
   (->>
     (reduce with
       [(tap :tick [4/4 6/4 12/4 20/4 22/4 28/4] 8) 
        (tap :kick [0 1/4 2/4 3/4 8/4 9/4 10/4 11/4 16/4 19/4 24/4 27/4] 8)])
-   (where :part (is ::beat))))
+   (all :part ::beat)))
 
 (def kit {:kick drums/kick2 
           :tick drums/closed-hat,
@@ -57,7 +57,7 @@
           (phrase [1 1/2 1/2 1 1/2 9/2] [0 0 2 -1 -3 -2])] 
     (->> one (then two) (times 2) 
       (where :pitch lower)
-      (where :part (is ::bass)))))
+      (all :part ::bass))))
 
 (def chords
   (->> 
@@ -65,7 +65,10 @@
     (times 2)
     (with (->> (phrase [2 2 4] [6 6 7]) (where :pitch raise) (after 8)))
     (where :pitch lower)
-    (where :part (is ::chords))))
+    (all :part ::chords)
+    (with (->> (phrase [2 2 4] [0 -1 -2])
+               (where :pitch (comp lower lower))
+               (all :part ::bass)))))
 
 (def arpeggios 
   (let [one
@@ -81,12 +84,12 @@
              (but 2 8 (phrase [1/2 1/2 1/2 1/2 4] [5 4 2 -1 0])))]
     (->> one (then two) (times 2)  
       (but 27 32 (phrase [1 4] [7 6]))
-      (where :part (is ::arpeggios)))))
+      (all :part ::arpeggios))))
 
 (def theme
   (->> (phrase [2 2 9/2] [6 6 7])
-    (canon  (interval -2))
-    (where :part (is ::melody))))
+    (all :part ::melody)
+    (canon (comp (interval -2) (partial all :part ::harmony)))))
 
 (def modified-theme
   (->> theme
@@ -101,11 +104,14 @@
             (phrase
               (concat aaaaand rhythm)
               [4 6 6 6 6 7 6 5 6])
-            (after -2) (then theme))
+            (after -2)
+            (all :part ::melody)
+            (then theme))
         love-and-fear
-          (->> (phrase rhythm [9 9 8 7 6 4 6]) (after 1) (then theme))]
-  (->> there-are-only-two-feelings (then love-and-fear)
-    (where :part (is ::melody)))))
+          (->> (phrase rhythm [9 9 8 7 6 4 6]) (after 1)
+               (all :part ::harmony)
+               (then theme))]
+  (->> there-are-only-two-feelings (then love-and-fear))))
 
 (def melodyb
  (let  [there-are 
@@ -121,7 +127,7 @@
               [2 3 4 3 2 1 2])
             (after -1))] 
     (->> there-are (then only-two-activities) (times 2) 
-    (where :part (is ::melody)))))
+    (all :part ::melody))))
 
 (def melody (->> melodya (then melodyb)))
 
@@ -134,22 +140,32 @@
          (phrase [1/2 1 1/2 7/2] [-1 0 -1 -3])))
         results (->> two (then
          (phrase [1/2 1 1/2 1 1 1 1 3/2 1/2 1 1/2 5]
-                 [0 0 0 1 0 -1 0 0 -1 0 -1 -3])))] 
+                 [0 0 0 1 0 -1 0 0 -1 0 -1 -3])))]
     (->> motives (then procedures) (then results) (after -1)
-      (where :part (is ::melody))
-      (with (->> chords (times 2) (where :part (is ::blurt)))))))
+      (all :part ::melody)
+      (with (->> chords (times 2) (all :part ::blurt))))))
 
 ; Arrangement
-(defmethod play-note ::melody [{midi :pitch ms :duration}]
-  (sawish (overtone/midi->hz midi) ms 4 0.9))
+(defmethod play-note ::melody [{midi :pitch s :duration}]
+  (some-> midi overtone/midi->hz (bell s :volume 0.4 :position -1/9 :wet 0.4 :room 0.1 :volume 10))
+  (some-> midi overtone/midi->hz (* 2) (bell 4 :volume 0.4 :position -1/7 :wet 0.9 :room 0.9 :volume 10)))
+
+(defmethod play-note ::harmony [{midi :pitch s :duration}]
+  (some-> midi overtone/midi->hz (* 2) (bell 7 :volume 0.5 :position 1/2 :wet 0.8 :room 0.9 :volume 10)))
+
 (defmethod play-note ::chords [{midi :pitch, length :duration}]
-  (organ (overtone/midi->hz midi) length 0.8))
-(defmethod play-note ::blurt [note]
-  (pick 0.3 0.1 (-> note (update-in [:duration] (is 500)))))
-(defmethod play-note ::bass [note]
-  (-> note (assoc :part ::chords) play-note))
-(defmethod play-note ::arpeggios [note] (pick 0.99 0.1 note))
-(defmethod play-note ::beat [note] ((-> note :drum kit)))
+  (some-> midi overtone/midi->hz (corgan length 0.8 :vol 0.4 :depth 0.1 :pan 1/4 :room 0.9)))
+
+(defmethod play-note ::blurt [{:keys [pitch duration]}]
+  (some-> pitch overtone/midi->hz (corgan duration :depth 1 :vibrato 4/3 :vol 0.4 :pan -1/2 :room 0.9)))
+
+(defmethod play-note ::bass [{:keys [duration pitch]}]
+  (some-> pitch overtone/midi->hz (corgan duration :depth 0 :pan -1/2 :depth 0 :vol 0.4 :room 0.9)))
+
+(defmethod play-note ::arpeggios [{:keys [pitch duration]}]
+  (some-> pitch overtone/midi->hz (corgan duration :vibrato 4/3 :vol 0.6 :depth 0.2 :limit 2000 :pan 1/5 :room 0.9)))
+
+(defmethod play-note ::beat [note] ((-> note :drum kit) :amp 2))
 
 (def love-and-fear
   (let [intro (with bassline arpeggios)
@@ -166,7 +182,7 @@
                        [2 1 0 0 -1 0 2 3 2])
             (after -1)
             (canon (interval 7))
-            (where :part (is ::melody))) 
+            (all :part ::melody)) 
         outro (->> chords
                (with (->> modified-theme (with oh-love-and-fear)
                        (times 2)))
@@ -180,10 +196,9 @@
     (then two-motives)
     (then (->> melodyb (where :pitch lower)
             (with (times 4 beatb))
-            (with (->> (times 2 chords) (where :part (is ::blurt))))))
+            (with (->> (times 2 chords) (all :part ::blurt)))))
     (then outro) 
-    (wherever :time, :time (bpm 80))
-    (wherever :duration, :duration (bpm 80))
+    (in-time (bpm 80))
     (wherever :pitch, :pitch (comp G minor)))))
 
 (comment
