@@ -179,7 +179,7 @@
   (some-> pitch overtone/midi->hz (corgan duration :depth 1 :vibrato 4/3 :vol 0.7 :pan -1/2 :room 0.9)))
 
 (defmethod play-note ::bass [{:keys [duration pitch]}]
-  (some-> pitch overtone/midi->hz (corgan duration :vibrato 2/3 :limit 1500 :depth 0 :pan -1/2 :depth 0 :vol 0.9 :room 0.9)))
+  (some-> pitch overtone/midi->hz (corgan duration :vibrato 2/3 :limit 1000 :depth 0 :pan -1/2 :depth 0 :vol 0.9 :room 0.9)))
 
 (defmethod play-note ::arpeggios [{:keys [pitch duration]}]
   (some-> pitch overtone/midi->hz (corgan duration :vibrato 4/3 :vol 0.9 :depth 0.2 :limit 2000 :pan 1/5 :room 0.9)))
