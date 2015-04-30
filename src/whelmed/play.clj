@@ -15,7 +15,7 @@
    ["ska" ska] ; E minor
    ["sidhe" sidhe] ; C minor
    ;["dolorem" dolorem-ipsum] ; F lydian 
-   ;["love" love-and-fear] ; G minor
+   ["love" love-and-fear] ; G minor
    ;["at-all" at-all] ; D major
    ])
 
