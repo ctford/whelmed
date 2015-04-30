@@ -151,6 +151,15 @@
       (all :part ::melody)
       (with (->> chords (times 2) (all :part ::blurt))))))
 
+(defn ring [rate]
+  (->> (repeatedly #([-3 -1 2 4 6 7 9 11] (rand-int 7)))
+       (phrase (repeat (int (/ 32 rate)) rate))))
+
+(def ringing
+  (with
+    (all :part ::melody (ring 1))
+    (all :part ::harmony (ring 1/2))))
+
 ; Arrangement
 (defmethod play-note ::melody [{midi :pitch s :duration}]
   (some-> midi overtone/midi->hz (bell s :volume 0.4 :position 1/9 :wet 0.4 :room 0.1 :volume 10))
@@ -192,7 +201,7 @@
                (with (->> modified-theme (with oh-love-and-fear)
                        (times 2)))
                 (times 2)
-                (with (times 4 beata))
+                (with (times 4 beata) ringing)
                 (then (take 6 oh-love-and-fear)))]
 
   (->>
