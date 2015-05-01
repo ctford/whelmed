@@ -16,7 +16,6 @@
    ["sidhe" sidhe] ; C minor
    ;["dolorem" dolorem-ipsum] ; F lydian 
    ["love" love-and-fear] ; G minor
-   ;["at-all" at-all] ; D major
    ])
 
 (defn lookup [track-name]
@@ -24,7 +23,8 @@
     (->>
       tracks
       (map second)
-      (reduce #(then (after 2 %2) %1)))
+      (reduce #(then (after 2 %2) %1))
+      (then (after 60 at-all)))
     (get
       (->>
         tracks
