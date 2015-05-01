@@ -61,11 +61,10 @@
 
 (def fadeout
   (->>
-    (phrase (cycle [2/2 3/2 3/2])
-            [-1 0 4 3 2 1 -1 0 1 2])
-    (after -1)
+    (after -1/2 (phrase [1/2] [-1]))
+    (then (phrase (cycle [3/2 3/2 2/2]) [0 4 3 2 1 -1 0 1 2]))
     (then (phrase (repeat 4) [-1 0 4 -1]))
-    (all :part ::ex)))
+    (all :part ::break)))
 
 ; Response
 (def a-parting-kiss
@@ -113,7 +112,6 @@
    consider-this
    (then consider-that)
    (then consider-everything)
-   (canon/canon (canon/interval -7))
    (all :part ::break)))
 
 ; Bass
@@ -189,16 +187,13 @@
   [{freq :pitch}]
   (some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.7 :volume 1)))
 
-(defmethod live/play-note ::ex
-  [{freq :pitch seconds :duration}]
-  (some-> freq (corgan :walk 2 :pan 1/2 :depth 0.5 :dur seconds :vibrato 1/2 :wet 0.9 :vol 0.4)))
-
 (defmethod live/play-note ::response
   [{freq :pitch seconds :duration}]
   (some-> freq (organ seconds 3 :vol 1.0 :pan -1/4 :wet 0.8)))
 
 (defmethod live/play-note ::break
   [{freq :pitch}]
+  (some-> freq (/ 2) (bell :duration 7 :vol 0.5 :position -1/5 :wet 0.6))
   (some-> freq (bell :duration 7 :vol 1.5 :position -1/6 :wet 0.6)))
 
 (defmethod live/play-note ::kick
