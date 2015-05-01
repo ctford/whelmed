@@ -177,3 +177,23 @@
       (* 1/4 volume)
       (pan2 pan)
       (free-verb :mix wet :room room)))
+
+(definst kluck [freq 220 volume 1.0 wet 0.5 room 0.1 pan 0]
+  (-> (line:kr freq (* freq 1/2) 0.5)
+      sin-osc 
+      (+ (sin-osc freq))
+      (+ (sin-osc (/ freq 2) (sin-osc 1)))
+      (* (env-gen (perc 0.01 0.1) :action FREE))
+      (* volume)
+      (pan2 pan)
+      (free-verb :mix wet :room room)))
+
+(definst tip [freq 110 volume 1.0 wet 0.5 room 0.1 pan 0]
+  (-> (brown-noise)
+      (+ (sin-osc (* 1/4 freq)))
+      (rlpf (* 3 freq) 1/2)
+      (* (env-gen (perc 0.01 0.05) :action FREE))
+      (* volume)
+      (pan2 pan)
+      (free-verb :mix wet :room room)))
+ 

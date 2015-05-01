@@ -1,6 +1,6 @@
 (ns whelmed.songs.my-friend
   (:require [overtone.live :refer :all]
-            [whelmed.instrument :refer [bass organic sing]]
+            [whelmed.instrument :refer [bass organic sing tip kluck]]
             [leipzig.melody :refer :all]
             [leipzig.scale :as scale]
             [leipzig.canon :as canon]
@@ -10,25 +10,6 @@
 
 ; Instruments
 (def the-key (comp temperament/equal scale/F scale/major))
-
-(definst kick [freq 220 volume 1.0 wet 0.5 room 0.1 pan 0]
-  (-> (line:kr freq (* freq 1/2) 0.5)
-      sin-osc 
-      (+ (sin-osc freq))
-      (+ (sin-osc (/ freq 2) (sin-osc 1)))
-      (* (env-gen (perc 0.01 0.1) :action FREE))
-      (* volume)
-      (pan2 pan)
-      (free-verb :mix wet :room room)))
-
-(definst tip [freq 110 volume 1.0 wet 0.5 room 0.1 pan 0]
-  (-> (brown-noise)
-      (+ (sin-osc (* 1/4 freq)))
-      (rlpf (* 3 freq) 1/2)
-      (* (env-gen (perc 0.01 0.05) :action FREE))
-      (* volume)
-      (pan2 pan)
-      (free-verb :mix wet :room room)))
 
 ; Arrangement
 (defmethod live/play-note :bass
@@ -142,7 +123,7 @@
 
 (def beat1
   (let [k (->> (phrase [1 1 2/3 1/3 1/3 1/3 1/3 1 1 1 1] (repeat -14))
-                       (all :drum kick))
+                       (all :drum kluck))
         t (->> (phrase [2 2 2 1] (repeat 14)) (all :drum tip))]
     (->> (with k t)
          (all :part :beat)
@@ -150,7 +131,7 @@
 
 (def beat2
   (let [k (->> (phrase [1 1 1 1 1 1 1 1/2 1/2] (repeat -14))
-               (all :drum kick))
+               (all :drum kluck))
         t (->> (phrase [1 1 1 1/2 1/2 1 1 1 1/2]
                        (repeat 14))
                (all :drum tip)
