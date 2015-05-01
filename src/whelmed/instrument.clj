@@ -9,7 +9,6 @@
            input))
   (:default :kr))
 
-
 (defsynth shudder [freq 440 vibrato 6 pan 0 wet 0.5 volume 1.0 room 0.5]
   (out 0
        (-> (square freq)
@@ -154,5 +153,27 @@
       (rlpf res 1/7)
       (* (env-gen (adsr 0.02 0.2 0.1 0.1) (line:kr 1 0 dur) :action FREE))
       (* volume)
+      (pan2 pan)
+      (free-verb :mix wet :room room)))
+
+(definst organic [freq 440 dur 1 volume 0.6 pan 0 wet 0.5 room 0.5]
+  (-> (square freq)
+      (+ (sin-osc 9) (sin-osc (* 2 freq)))
+      (+ (sin-osc 9) (sin-osc (* 1.999 freq)))
+      (+ (sin-osc 6) (sin-osc (* 4.01 freq)))
+      (+ (sin-osc 3) (sin-osc (* 6 freq)))
+      (+ (sin-osc 3) (sin-osc (* 1/2 freq)))
+      (lpf 4000)
+      (* (env-gen (adsr 0.05 0.2 0.7 0.1) (line:kr 1 0 dur) :action FREE))
+      (* 1/10 volume)
+      (pan2 pan)
+      (free-verb :mix wet :room room)))
+
+(definst sing [freq 440 dur 1.0 volume 1.0 pan 0 wet 0.5 room 0.5]
+  (-> (saw freq)
+      (+ (saw (* freq 1.01)))
+      (rlpf (mul-add (sin-osc 8) 200 1500) 1/8)
+      (* (env-gen (asr 0.03 0.3 0.1) (line:kr 1 0 dur) :action FREE))
+      (* 1/4 volume)
       (pan2 pan)
       (free-verb :mix wet :room room)))
