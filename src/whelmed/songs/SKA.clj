@@ -107,10 +107,11 @@
 (def extra
   (->> (phrase (repeat 1/3)
                (interleave [0  -3  0  1 2 1 0 -1
-                            -2 -5 -2 -1 0 1 2  1]
+                            0  -3  0  1 2 3 4  5
+                            6 5 4 6  5 4 3 5 
+                            4 3 2 4  3 2 1 0]
                            (repeat -7)
                            (repeat -5)))  
-       (times 2)
        (then (phrase (repeat 12 1/3) (cycle [0.5 -2 -4])))
        (then (phrase (repeat 12 1/3) (cycle [0 -2 -5])))
        (then (phrase (repeat 24 1/3) (cycle [0 -3 -5])))
