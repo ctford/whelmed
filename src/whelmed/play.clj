@@ -16,15 +16,17 @@
    ["sidhe" sidhe] ; C minor
    ;["dolorem" dolorem-ipsum] ; F lydian 
    ["love" love-and-fear] ; G minor
+   ["at-all" at-all] ; D major
    ])
 
 (defn lookup [track-name]
   (if (= track-name "all")
     (->>
       tracks
+      drop-last
       (map second)
       (reduce #(then (after 2 %2) %1))
-      (then (after 60 at-all)))
+      (then (after (rand-int 900) at-all))) ; Secret track!
     (get
       (->>
         tracks
