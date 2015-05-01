@@ -1,4 +1,4 @@
-(ns my-friend.my-friend
+(ns whelmed.songs.my-friend
   (:require [overtone.live :refer :all]
             [leipzig.melody :refer :all]
             [leipzig.scale :as scale]
@@ -46,21 +46,28 @@
       (* (env-gen (perc 0.01 0.1) :action FREE))
       (* volume)))
 
-(definst tip [freq 110]
+(definst tip [freq 110 volume 1.0]
   (-> (white-noise)
       (rlpf (* 3 freq) 1/2)
       (* (env-gen (perc 0.01 0.05) :action FREE))
-      (* 1/5)))
+      (* 1/5 volume)))
 
 ; Arrangement
 (defmethod live/play-note :bass
-  [{hertz :pitch seconds :duration}] (bass hertz seconds))
+  [{hertz :pitch seconds :duration}]
+  (some-> hertz (bass seconds)))
+
 (defmethod live/play-note :accompaniment
-  [{hertz :pitch seconds :duration}] (organ hertz seconds))
+  [{hertz :pitch seconds :duration}]
+  (some-> hertz (organ seconds)))
+
 (defmethod live/play-note :melody
-  [{hertz :pitch seconds :duration}] (sing hertz seconds))
+  [{hertz :pitch seconds :duration}]
+  (some-> hertz (sing seconds)))
+
 (defmethod live/play-note :beat
-  [{hertz :pitch drum :drum}] (drum hertz))
+  [{hertz :pitch drum :drum}]
+  (some-> hertz drum))
 
 ; Composition
 (defn power-up [chord]
@@ -72,36 +79,34 @@
    (-> chord/triad (chord/root 2) power-up)
    (-> chord/triad (chord/root 1) power-up)])
 
-(defn maybe [f] #(if (nil? %) % (f %)))
-
 (def bassline
   (let [blat (phrase [2/2 1/2 5/2] [0 0 nil])
         walk (phrase [3/2 2/2 2/2 1/2] [1 -2 1 -2])]
     (->>
       blat
       (then walk)
-      (then (->> blat (where :pitch (maybe (scale/from 2)))))
+      (then (->> blat (where :pitch (scale/from 2))))
       (then walk)
       (then blat)
       (then walk)
-      (then (->> walk (where :pitch (maybe inc))))
+      (then (->> walk (where :pitch inc)))
       (then walk)
       (filter :pitch)
       (where :pitch (comp scale/lower scale/lower))
-      (where :part (is :bass)))))
+      (all :part :bass))))
 
 (def flatline
   (->>
     (phrase (cycle [4 1/2 1/2 3]) (repeat 0))
     (take-while #(-> % :time (< 32)))
     (where :pitch (comp scale/lower scale/lower))
-    (where :part (is :bass))))
+    (all :part :bass)))
 
 (def flock
   (->>
     (phrase (repeat 2) (mapcat repeat (repeat 2) chords))
     (times 2)
-    (where :part (is :accompaniment))))
+    (all :part :accompaniment)))
 
 (def accompaniment
   (->>
@@ -110,7 +115,7 @@
     (then (phrase [3/3 1/3 8/3] [(chords 2) (chords 2) nil]))
     (then (phrase [4] [(chords 1)]))
     (filter :pitch)
-    (where :part (is :accompaniment))
+    (all :part :accompaniment)
     (times 2)))
 
 (def core-med
@@ -120,7 +125,7 @@
     (after -1)
     (then (phrase [15 1 7 1 7 1] [7 8 9 8 7 8]))
     (where :pitch scale/raise)
-    (where :part (is :melody))))
+    (all :part :melody)))
 
 (def my-friend
   (let [i-know
@@ -139,7 +144,7 @@
          (then anyone-else)
          (times 2)
          (where :pitch scale/raise)
-         (where :part (is :melody)))))
+         (all :part :melody))))
 
 (def ba-da 
   (->> (phrase [1 1 1 1/2 1 1/2 1/2 1/2 1 1/2 1/2]
@@ -147,7 +152,7 @@
        (canon/canon (canon/interval -7))
        (times 8)
        (where :pitch scale/raise)
-       (where :part (is :melody))))
+       (all :part :melody)))
 
 (def twiddle
   (let [twid (fn [a b c] (phrase [1/2 1/2 1/2 3/2 1/2 1/2] [b a b c b a]))]
@@ -155,14 +160,14 @@
          (then (twid -2 1 2)) 
          (where :pitch scale/raise)
          (after 24)
-         (where :part (is :accompaniment)))))
+         (all :part :accompaniment))))
 
 (def beat1
   (let [k (->> (phrase [1 1 2/3 1/3 1/3 1/3 1/3 1 1 1 1] (repeat -14))
                        (where :drum (is kick)))
         t (->> (phrase [2 2 2 1] (cycle [7 14])) (where :drum (is tip)))]
     (->> (with k t)
-         (where :part (is :beat))
+         (all :part :beat)
          (times 4))))
 
 (def beat2
@@ -173,7 +178,7 @@
                (where :drum (is tip))
                (after 1/2))]
     (->> (with k t)
-         (where :part (is :beat))
+         (all :part :beat)
          (times 4))))
 
 ; Track
@@ -196,7 +201,7 @@
 (def bridge
   (let [bass (->> (phrase (repeat 4) (concat (range 0 7) [8])) 
                   (where :pitch (comp scale/lower scale/lower))
-                  (where :part (is :bass)))
+                  (all :part :bass))
         arpeggs (->> (phrase (cycle [2 1 1
                                      1 1 1 1])
                              [2 0 -3
@@ -204,7 +209,7 @@
                               4 2 -1
                               -2 0 1 0])
                      (times 2)
-                     (where :part (is :accompaniment)))]
+                     (all :part :accompaniment))]
     (->> (with bass arpeggs core-med)
          (then (with flatline flock arpeggs core-med)))))
 
@@ -216,7 +221,8 @@
     (then verse ) 
     (then bridge)
     (then (with chorus ba-da))
-    (wherever :pitch, :pitch the-key)
+    (filter #(-> % :part (not= :beat)))
+    (where :pitch the-key)
     (where :time (bpm 120))
     (where :duration (bpm 120))))
 
