@@ -30,20 +30,21 @@
          (all :part ::default))))
 
 (def intro
-  (->> (phrase (repeat 32 1) (cycle [5 4]))
+  (->> (phrase (repeat 32 1) (cycle [5 4]) (cycle [1 2/3]))
     (all :part ::default)
     (with rhythm-n-bass)))
 
 (def melody
-  (letfn [(rhyth [n] (concat (repeat n 1/2) [(- 9 (/ n 2))]))]
+  (let [rhyth (fn [n] (concat (repeat n 1/2) [(- 9 (/ n 2))]))
+        stresses (concat [3/4 3/4 5/4] (repeat 1))]
     (->>
-      (after -1 (phrase (rhyth 7) [2 4 5 4 4 2 4 nil]))
+      (after -1 (phrase (rhyth 7) [2 4 5 4 4 2 4 nil] stresses))
       (then
-        (after -1 (phrase (rhyth 7) [-2 1 2 1 1 -2 1 nil])))
+        (after -1 (phrase (rhyth 7) [-2 1 2 1 1 -2 1 nil] stresses)))
       (then
-        (after -1 (phrase (rhyth 10) [-2 1 2 1 1 -2 1 2 3 4 nil])))
+        (after -1 (phrase (rhyth 10) [-2 1 2 1 1 -2 1 2 3 4 nil] stresses)))
       (then
-        (after -1 (phrase (rhyth 10) [-1 -2 -3 0 0 -3 0 1 0 -3 nil])))
+        (after -1 (phrase (rhyth 10) [-1 -2 -3 0 0 -3 0 1 0 -3 nil] stresses)))
       (all :part ::dux)
       (with rhythm-n-bass))))
 
@@ -59,7 +60,7 @@
     (all :part ::comes)))
 
 (def chorus
-  (let [doesnt (phrase (concat (repeat 4 1/2) [6]) [-3 0 0 -3 0])
+  (let [doesnt (phrase (concat (repeat 4 1/2) [6]) [-3 0 0 -3 0] (cons 5/4 (repeat 1)))
         doesnt-at-all (->> doesnt
                            (times 3)
                            (then
@@ -99,14 +100,17 @@
     (in-time (bpm 160))
     (where :pitch (comp low D major))))
 
-(defmethod play-note ::comes [{midi :pitch s :duration}]
-  (some-> midi midi->hz (corgan s 1 :pan -1/3 :vibrato 32/3 :depth 0.1 :wet 0.6))) 
+(defmethod play-note ::comes [{midi :pitch s :duration stress :velocity}]
+  (some-> midi midi->hz (corgan s 1 :pan -1/3 :vibrato 32/3 :depth 0.1 :wet 0.6
+                                :vol (or stress 1)))) 
 
-(defmethod play-note ::default [{midi :pitch}]
-  (some-> midi midi->hz (organ 1/8 2 :pan 0 :wet 0.7))) 
+(defmethod play-note ::default [{midi :pitch stress :velocity}]
+  (some-> midi midi->hz (organ 1/8 2 :pan 0 :wet 0.7 :vol (or stress 1.0)))) 
 
-(defmethod play-note ::dux [{midi :pitch s :duration}]
-  (some-> midi midi->hz (corgan s 2 :pan 1/3 :vibrato 4/3 :depth 0.5 :wet 0.6 :limit 1500))) 
+(defmethod play-note ::dux [{midi :pitch s :duration stress :velocity}]
+  (some-> midi midi->hz
+          (corgan s 2 :pan 1/3 :vibrato 4/3 :depth 0.5 :wet 0.6 :limit 1500
+                  :vol (or stress 1)))) 
 
 (comment
   (play at-all)
