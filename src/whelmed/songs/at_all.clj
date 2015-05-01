@@ -35,16 +35,17 @@
     (with rhythm-n-bass)))
 
 (def melody
-  (->>
-    (after -1 (phrase (repeat 1/2) [2 4 5 4 4 2 4]))
-    (then
-      (after 9/2 (phrase (repeat 1/2) [-2 1 2 1 1 -2 1])))
-    (then
-      (after 9/2 (phrase (repeat 1/2) [-2 1 2 1 1 -2 1 2 3 4])))
-    (then
-      (after 6/2 (phrase (repeat 1/2) [-1 -2 -3 0 0 -3 0 1 0 -3])))
-    (all :part ::dux)
-    (with rhythm-n-bass)))
+  (letfn [(rhyth [n] (concat (repeat n 1/2) [(- 9 (/ n 2))]))]
+    (->>
+      (after -1 (phrase (rhyth 7) [2 4 5 4 4 2 4 nil]))
+      (then
+        (after -1 (phrase (rhyth 7) [-2 1 2 1 1 -2 1 nil])))
+      (then
+        (after -1 (phrase (rhyth 10) [-2 1 2 1 1 -2 1 2 3 4 nil])))
+      (then
+        (after -1 (phrase (rhyth 10) [-1 -2 -3 0 0 -3 0 1 0 -3 nil])))
+      (all :part ::dux)
+      (with rhythm-n-bass))))
 
 (def answer
   (->>
@@ -99,13 +100,13 @@
     (where :pitch (comp low D major))))
 
 (defmethod play-note ::comes [{midi :pitch s :duration}]
-  (corgan (midi->hz midi) s 1 :pan -1/3 :vibrato 32/3 :depth 0.1 :wet 0.6)) 
+  (some-> midi midi->hz (corgan s 1 :pan -1/3 :vibrato 32/3 :depth 0.1 :wet 0.6))) 
 
 (defmethod play-note ::default [{midi :pitch}]
-  (organ (midi->hz midi) 1/8 2 :pan 0 :wet 0.7)) 
+  (some-> midi midi->hz (organ 1/8 2 :pan 0 :wet 0.7))) 
 
 (defmethod play-note ::dux [{midi :pitch s :duration}]
-  (corgan (midi->hz midi) s 2 :pan 1/3 :vibrato 4/3 :depth 0.5 :wet 0.6)) 
+  (some-> midi midi->hz (corgan s 2 :pan 1/3 :vibrato 4/3 :depth 0.5 :wet 0.6 :limit 1500))) 
 
 (comment
   (play at-all)
