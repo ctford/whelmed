@@ -59,13 +59,13 @@
     (then west-with-the-west-with-the)
     (all :part ::lead)))
 
-(def shifted-theme
+(def fadeout
   (->>
-    ill-run-away
-    (times 2)
-    (after 1/2)
-    drop-last
-    (all :part ::lead)))
+    (phrase (cycle [2/2 3/2 3/2])
+            [-1 0 4 3 2 1 -1 0 1 2])
+    (after -1)
+    (then (phrase (repeat 4) [-1 0 4 -1]))
+    (all :part ::ex)))
 
 ; Response
 (def a-parting-kiss
@@ -152,25 +152,25 @@
 ; Body
 (def west-with-the-sun
   (let [accompaniment
-          (->> backing (with bass)) 
+        (->> backing (with bass)) 
         intro
-         (->> backing (then accompaniment))
+        (->> backing (then accompaniment))
         call
-          (->> theme (with accompaniment beat) (times 2))
+        (->> theme (with accompaniment beat) (times 2))
         response
-          (->> reply (with accompaniment beat2) (times 2))
+        (->> reply (with accompaniment beat2) (times 2))
         variation
-          (->> theme (then spilling-theme)
-            (with (->> (with beat accompaniment) (times 2))))
-        fadeout
-          (->> accompaniment (with shifted-theme beat) (then bass))]
+        (->> theme (then spilling-theme)
+             (with (->> (with beat accompaniment) (times 2))))
+        outro (with fadeout (->> (with accompaniment beat) (then bass)))]
     (->>
-      intro (then call) (then response)
+      intro
+      (then call) (then response)
       (then (->> break (with light-bass flat-beat) (times 2)
-              (with (->> backing (after 16)))))
+                 (with (->> backing (after 16)))))
       (then variation)
       (then (->> response (with (->> break (after 16)))))
-      (then fadeout)
+      (then outro)
       (where :pitch (comp temperament/equal scale/A scale/minor))
       (where :time (bpm 80))
       (where :duration (bpm 80)))))
@@ -189,13 +189,17 @@
   [{freq :pitch}]
   (some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.7 :volume 1)))
 
+(defmethod live/play-note ::ex
+  [{freq :pitch seconds :duration}]
+  (some-> freq (corgan :walk 2 :pan 1/2 :depth 0.5 :dur seconds :vibrato 1/2 :wet 0.9 :vol 0.4)))
+
 (defmethod live/play-note ::response
   [{freq :pitch seconds :duration}]
   (some-> freq (organ seconds 3 :vol 1.0 :pan -1/4 :wet 0.8)))
 
 (defmethod live/play-note ::break
   [{freq :pitch}]
-  (some-> freq (bell 2 :duration 10 :vol 1.5 :position -1/6 :wet 0.8)))
+  (some-> freq (bell :duration 7 :vol 1.5 :position -1/6 :wet 0.6)))
 
 (defmethod live/play-note ::kick
   [{freq :pitch}]
