@@ -1,7 +1,7 @@
 (ns whelmed.play
   (:use
     [overtone.live :only [recording-start recording-stop kill-server]]
-    [leipzig.melody :only [then after]]
+    [leipzig.melody :only [then after duration]]
     [leipzig.live :only [play]]
     [whelmed.songs.west :only [west-with-the-sun]]
     [whelmed.songs.dolorem-ipsum :only [dolorem-ipsum]]
@@ -11,13 +11,23 @@
     [whelmed.songs.SKA :only [ska]]))
 
 (def tracks
-  [["west" west-with-the-sun] ; A minor
-   ["ska" ska] ; E minor
-   ["sidhe" sidhe] ; C minor
-   ;["dolorem" dolorem-ipsum] ; F lydian 
+  [["sidhe" sidhe] ; C minor -> E minor
+   ["west" west-with-the-sun] ; A minor
+   ; "my-friend"   ; F major
+   ["ska" ska] ; E minor -> B flat major -> E minor
+   ["dolorem" dolorem-ipsum] ; F lydian 
+   ; "i-never-knew" ; D minor
    ["love" love-and-fear] ; G minor
    ["at-all" at-all] ; D major
    ])
+
+(def minutes
+  (->> tracks
+       (map second)
+       (map duration)
+       (reduce +)
+       (* 1/60)
+       float))
 
 (defn lookup [track-name]
   (if (= track-name "all")

@@ -26,25 +26,25 @@
       [4 4 5 4 5 6 8 5 4 5])
     (times 2)
     (but 3.5 4 (phrase [1/8 1/8 1/8 1/8] [4 5 4 5]))
-    (where :part (is ::melody))))
+    (all :part ::melody)))
 
 (def sit-amet 
   (->>
     (phrase
       [4 1 3]
       [4 6 5])
-    (where :part (is ::melody))))
+    (all :part ::melody)))
 
 (def notice
   (->>
     (phrase
       [1 5/2 1/4 1/4 2 2 4 1 2.5 1/4 1/4 4 4]
       [5 4 2 3 4 7 6 6 5 4 3 4 2.5])
-    (where :part (is ::melody))))
+    (all :part ::melody)))
 
 (def it (->> (reduce with
                      [(phrase [1] [7]) (phrase [2] [4]) (phrase [3] [0])])
-          (where :part (is ::melody))))
+             (all :part ::melody)))
 
 ; Arpeggios
 (def theme 
@@ -56,18 +56,18 @@
       (map #(arpeggiate % [:v :i :iii :v] 1/4))
       (reduce #(then %2 %1))
       (times 2)
-      (where :part (is ::arpeggios)))))
+      (all :part ::arpeggios))))
 
 (def response
   (->>
-      (arpeggiate (-> triad (root 4) (inversion 2))
-        [:i :v :i :iii] 1/4)
-      (times 4)
+    (arpeggiate (-> triad (root 4) (inversion 2))
+                [:i :v :i :iii] 1/4)
+    (times 4)
     (then
       (->> (arpeggiate (-> sixth (root 1))
-             [:v :iii :i :vi] 1/4)
-        (times 4)))
-    (where :part (is ::arpeggios))))
+                       [:v :iii :i :vi] 1/4)
+           (times 4)))
+    (all :part ::arpeggios)))
 
 (def wander
   (->> 
@@ -90,20 +90,20 @@
              (-> triad (root 4) (inversion 2) (augment :i -3/2))
              [:i :v :i :iii] 1/4)
         (times 4)))
-    (where :part (is ::arpeggios))))
+    (all :part ::arpeggios)))
 
 (def air
   (->>
     (map #(times 4 (phrase [1/4] [%])) [0 -4 0 -5 0 0 0])
     (reduce #(then %2 %1))
-    (where :part (is ::arpeggios))))
+    (all :part ::arpeggios)))
 
-(def ends (->> (phrase [1/4] [7]) (where :part (is ::arpeggios))))
+(def ends (->> (phrase [1/4] [7]) (all :part ::arpeggios)))
 
 ; Oooh
 (def aaah
   (->> (phrase [1 1] [6 5]) (times 4)
-    (where :part (is ::oooh))))
+       (all :part ::oooh)))
 
 (def oooh-aaah
   (->>
@@ -116,7 +116,11 @@
     (then
       (->> aaah (with (phrase [2 2 2 2] [4 4 3 3]))
         (with (phrase [1 1 1 1] [1 1 1 1]))))
-    (where :part (is ::oooh))))
+    (all :part ::oooh)
+    (with (->> (phrase (repeat 16 1/2) (repeat 7))
+               (then (phrase (repeat 8 1/2) (repeat 4)))
+               (then (phrase (repeat 8 1/2) (repeat 1)))
+               (all :part ::arpeggios)))))
 
 (def la-la-la-la
   (->>
@@ -124,12 +128,12 @@
             [4 8 6 4 2 8 6 4 1])
     (then (phrase [4] [3]))
     (times 2)
-    (where :part (is ::oooh))))
+    (all :part ::oooh)))
 
 (def wa-wa-wa-wa
   (->>
     (phrase [4 4 4 4 4 4] [4 7 8 10 11 8])
-    (where :part (is ::oooh))))
+    (all :part ::oooh)))
 
 ; Pull it all together
 (def dolorem-ipsum
@@ -142,27 +146,28 @@
         finale
           (with it ends)]
     (->> lorem
-      (then intro) (then development)
+      (then intro)
+      (then development)
       (then (->> theme (wherever (between? 4 8), :pitch raise)))
       (then (->> theme (with neque)))
       (then oooh-aaah)
       (then (->> intro (with la-la-la-la)
               (then (with development wa-wa-wa-wa))
               (then air) (then finale)))
-      (where :time (bpm 80))
-      (where :duration (bpm 80))
+      (in-time (bpm 80))
       (where :pitch (comp F lydian)))))
 
 ; The arrangement
 (defmethod play-note ::melody [{:keys [pitch duration]}]
-  (bell (midi->hz pitch) (* 7 duration) 4))
-(defmethod play-note ::arpeggios [{:keys [pitch]}]
-  (sawnoff (midi->hz (- pitch 24))))
+  (some-> pitch midi->hz (bell (* 7 duration) :position 1/8 :wet 0.5 :volume 3.0))
+  (some-> pitch midi->hz (bell (* 8 duration) :position 1/9 :wet 0.9 :room 0.1 :volume 0.5)))
 (defmethod play-note ::arpeggios [{:keys [pitch duration]}]
-  (brassy (midi->hz (- pitch 24)) duration 0.3 0.1))
+  (some-> pitch (- 12) midi->hz (brassy duration 0.3 0.1 :noise 4 :pan -1/2 :p 3/3 :wet 0.6))
+  (some-> pitch (- 24) midi->hz (corgan duration :depth 0.3 :walk 0.2 :pan 1/2 :wet 0.6)))
 (defmethod play-note ::oooh [{:keys [pitch duration]}]
-  (groan (midi->hz pitch) (* 2 duration) 1/7))
+  (some-> pitch midi->hz (groan (* 2 duration) :vibrato 8/3 :position -1/6 :volume 2)))
 
 (comment
   (->> dolorem-ipsum play)
+  (jam (var dolorem-ipsum))
 )
