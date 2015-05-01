@@ -11,7 +11,7 @@
 ; Instruments
 (def the-key (comp temperament/equal scale/F scale/major))
 
-(definst organ [freq 440 dur 1 volume 0.6 pan 0 wet 0.5 room 0.5]
+(definst organic [freq 440 dur 1 volume 0.6 pan 0 wet 0.5 room 0.5]
   (-> (square freq)
       (+ (sin-osc 9) (sin-osc (* 2 freq)))
       (+ (sin-osc 9) (sin-osc (* 1.999 freq)))
@@ -59,7 +59,7 @@
 
 (defmethod live/play-note :accompaniment
   [{hertz :pitch seconds :duration}]
-  (some-> hertz (organ seconds :wet 0.8 :pan 1/3)))
+  (some-> hertz (organic seconds :wet 0.8 :pan 1/3)))
 
 (defmethod live/play-note :melody
   [{hertz :pitch seconds :duration}]
