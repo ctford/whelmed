@@ -33,9 +33,7 @@
       (* (env-gen (adsr 0.05 0.2 0.7 0.1) (line:kr 1 0 dur) :action FREE))
       (* 1/10 volume)
       (pan2 pan)
-      (free-verb :mix wet :room room)
-      
-      ))
+      (free-verb :mix wet :room room)))
 
 (definst sing [freq 440 dur 1.0 volume 1.0 pan 0 wet 0.5 room 0.5]
   (-> (saw freq)
@@ -46,19 +44,24 @@
       (pan2 pan)
       (free-verb :mix wet :room room)))
 
-(definst kick [freq 220 volume 1.0]
+(definst kick [freq 220 volume 1.0 wet 0.5 room 0.1 pan 0]
   (-> (line:kr freq (* freq 1/2) 0.5)
       sin-osc 
       (+ (sin-osc freq))
       (+ (sin-osc (/ freq 2) (sin-osc 1)))
       (* (env-gen (perc 0.01 0.1) :action FREE))
-      (* volume)))
+      (* volume)
+      (pan2 pan)
+      (free-verb :mix wet :room room)))
 
-(definst tip [freq 110 volume 1.0]
-  (-> (white-noise)
+(definst tip [freq 110 volume 1.0 wet 0.5 room 0.1 pan 0]
+  (-> (brown-noise)
+      (+ (sin-osc (* 1/4 freq)))
       (rlpf (* 3 freq) 1/2)
       (* (env-gen (perc 0.01 0.05) :action FREE))
-      (* 1/5 volume)))
+      (* volume)
+      (pan2 pan)
+      (free-verb :mix wet :room room)))
 
 ; Arrangement
 (defmethod live/play-note :bass
@@ -75,7 +78,7 @@
 
 (defmethod live/play-note :beat
   [{hertz :pitch drum :drum}]
-  (some-> hertz drum))
+  (some-> hertz (drum :volume 0.8)))
 
 ; Composition
 (defn power-up [chord]
@@ -172,18 +175,18 @@
 
 (def beat1
   (let [k (->> (phrase [1 1 2/3 1/3 1/3 1/3 1/3 1 1 1 1] (repeat -14))
-                       (where :drum (is kick)))
-        t (->> (phrase [2 2 2 1] (cycle [7 14])) (where :drum (is tip)))]
+                       (all :drum kick))
+        t (->> (phrase [2 2 2 1] (repeat 14)) (all :drum tip))]
     (->> (with k t)
          (all :part :beat)
          (times 4))))
 
 (def beat2
   (let [k (->> (phrase [1 1 1 1 1 1 1 1/2 1/2] (repeat -14))
-               (where :drum (is kick)))
+               (all :drum kick))
         t (->> (phrase [1 1 1 1/2 1/2 1 1 1/2 1/4 1/4 1/4 1/4]
-                       [7 14 7 14 14 14 14 14 7 7 7 7])
-               (where :drum (is tip))
+                       [14 14 14 14 14 14 14 14 11 11 11 11])
+               (all :drum tip)
                (after 1/2))]
     (->> (with k t)
          (all :part :beat)
@@ -229,7 +232,6 @@
     (then verse ) 
     (then bridge)
     (then (with chorus ba-da))
-    (filter #(-> % :part (not= :beat)))
     (where :pitch the-key)
     (where :time (bpm 120))
     (where :duration (bpm 120))))
