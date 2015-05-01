@@ -165,7 +165,7 @@
   (some-> pitch (- 12) midi->hz (brassy duration 0.3 0.1 :noise 4 :pan -1/2 :p 3/3 :wet 0.6))
   (some-> pitch (- 24) midi->hz (corgan duration :depth 0.3 :walk 0.2 :pan 1/2 :wet 0.6)))
 (defmethod play-note ::oooh [{:keys [pitch duration]}]
-  (some-> pitch midi->hz (groan (* 2 duration) :vibrato 8/3 :position -1/6 :volume 2)))
+  (some-> pitch midi->hz (groan (* 2 duration) :vibrato 8/3 :position -1/6 :volume 1)))
 
 (comment
   (->> dolorem-ipsum play)
