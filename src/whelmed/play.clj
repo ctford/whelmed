@@ -6,6 +6,7 @@
     [whelmed.songs.west :only [west-with-the-sun]]
     [whelmed.songs.dolorem-ipsum :only [dolorem-ipsum]]
     [whelmed.songs.sidhe :only [sidhe]]
+    [whelmed.songs.my-friend :only [my-friend]]
     [whelmed.songs.love-and-fear :only [love-and-fear]]
     [whelmed.songs.at-all :only [at-all]]
     [whelmed.songs.SKA :only [ska]]))
@@ -13,7 +14,7 @@
 (def tracks
   [["sidhe" sidhe] ; C minor -> E minor
    ["west" west-with-the-sun] ; A minor
-   ; "my-friend"   ; F major
+   ["my-friend" my-friend]   ; F major
    ["ska" ska] ; E minor -> B flat major -> E minor
    ["dolorem" dolorem-ipsum] ; F lydian 
    ; "i-never-knew" ; D minor

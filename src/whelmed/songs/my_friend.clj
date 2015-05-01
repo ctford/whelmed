@@ -1,5 +1,6 @@
 (ns whelmed.songs.my-friend
   (:require [overtone.live :refer :all]
+            [whelmed.instrument :refer [bass]]
             [leipzig.melody :refer :all]
             [leipzig.scale :as scale]
             [leipzig.canon :as canon]
@@ -9,18 +10,6 @@
 
 ; Instruments
 (def the-key (comp temperament/equal scale/F scale/major))
-
-(definst bass [freq 110 dur 1.0 volume 1.0 pan 0 wet 0.5 room 0.5]
-  (-> (sin-osc freq) 
-      (+ (* 1/3 (sin-osc (* 2 freq))))
-      (+ (* 1/2 (sin-osc (* 3 freq))))
-      (+ (* 1/3 (sin-osc (* 5 freq))))
-      (clip2 0.8)
-      (rlpf (the-key 14) 1/7)
-      (* (env-gen (adsr 0.02 0.2 0.1 0.1) (line:kr 1 0 dur) :action FREE))
-      (* volume)
-      (pan2 pan)
-      (free-verb :mix wet :room room)))
 
 (definst organ [freq 440 dur 1 volume 0.6 pan 0 wet 0.5 room 0.5]
   (-> (square freq)
@@ -66,7 +55,7 @@
 ; Arrangement
 (defmethod live/play-note :bass
   [{hertz :pitch seconds :duration}]
-  (some-> hertz (bass seconds :pan -1/3 :wet 0.7 :room 0.1)))
+  (some-> hertz (bass seconds :res (the-key 14) :pan -1/3 :wet 0.7 :room 0.1)))
 
 (defmethod live/play-note :accompaniment
   [{hertz :pitch seconds :duration}]
