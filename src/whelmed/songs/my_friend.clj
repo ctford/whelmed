@@ -70,7 +70,7 @@
 
 (defmethod live/play-note :accompaniment
   [{hertz :pitch seconds :duration}]
-  (some-> hertz (organ seconds :wet 0.7 :pan 1/3)))
+  (some-> hertz (organ seconds :wet 0.8 :pan 1/3)))
 
 (defmethod live/play-note :melody
   [{hertz :pitch seconds :duration}]
@@ -184,8 +184,8 @@
 (def beat2
   (let [k (->> (phrase [1 1 1 1 1 1 1 1/2 1/2] (repeat -14))
                (all :drum kick))
-        t (->> (phrase [1 1 1 1/2 1/2 1 1 1/2 1/4 1/4 1/4 1/4]
-                       [14 14 14 14 14 14 14 14 11 9 7 4])
+        t (->> (phrase [1 1 1 1/2 1/2 1 1 1 1/2]
+                       (repeat 14))
                (all :drum tip)
                (after 1/2))]
     (->> (with k t)
