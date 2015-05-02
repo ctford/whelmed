@@ -12,14 +12,14 @@
     [whelmed.songs.SKA :only [ska]]))
 
 (def tracks
-  [["sidhe" sidhe] ; C minor -> E minor
-   ["west" west-with-the-sun] ; A minor
-   ["my-friend" my-friend]   ; F major
-   ["ska" ska] ; E minor -> B flat major -> E minor
-   ["dolorem" dolorem-ipsum] ; F lydian 
-   ; "i-never-knew" ; D minor
-   ["love" love-and-fear] ; G minor
-   ["at-all" at-all] ; D major
+  [
+   ["west" west-with-the-sun] ; A minor, 80 bpm
+   ["sidhe" sidhe] ; C minor -> E minor, 105 bpm
+   ["my-friend" my-friend]   ; F major, 120 bpm
+   ["ska" ska] ; E minor -> B flat major -> E minor, 180 bpm -> 120 bpm
+   ["dolorem" dolorem-ipsum] ; F lydian, 80 bpm
+   ["love" love-and-fear] ; G minor, 80 bpm
+   ["at-all" at-all] ; D major, 160
    ])
 
 (def minutes

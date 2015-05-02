@@ -18,7 +18,8 @@
 
 (defmethod live/play-note :accompaniment
   [{hertz :pitch seconds :duration}]
-  (some-> hertz (organic seconds :wet 0.8 :pan 1/3)))
+  (some-> hertz (organic seconds :wet 0.8 :pan 1/3))
+  (some-> hertz (* 1.0001) (organic seconds :wet 0.9 :pan -1/3)))
 
 (defmethod live/play-note :melody
   [{hertz :pitch seconds :duration}]
@@ -26,7 +27,7 @@
 
 (defmethod live/play-note :beat
   [{hertz :pitch drum :drum}]
-  (some-> hertz (drum :volume 0.8)))
+  (some-> hertz (drum :volume 0.5)))
 
 ; Composition
 (defn power-up [chord]
