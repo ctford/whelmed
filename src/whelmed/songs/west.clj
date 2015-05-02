@@ -122,7 +122,7 @@
        (where :pitch scale/lower)
        (all :part ::bass)))
 
-(def bass
+(def bassline
   (->> light-bass
        (canon/canon
          (comp (canon/simple 1)
@@ -150,7 +150,7 @@
 ; Body
 (def west-with-the-sun
   (let [accompaniment
-        (->> backing (with bass)) 
+        (->> backing (with bassline)) 
         intro
         (->> backing (then accompaniment))
         call
@@ -160,7 +160,7 @@
         variation
         (->> theme (then spilling-theme)
              (with (->> (with beat accompaniment) (times 2))))
-        outro (with fadeout (->> (with accompaniment beat) (then bass)))]
+        outro (with fadeout (->> (with accompaniment beat) (then bassline)))]
     (->>
       intro
       (then call) (then response)
