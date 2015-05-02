@@ -59,10 +59,9 @@
     (then west-with-the-west-with-the)
     (all :part ::lead)))
 
-(def fadeout
+(def gymnopédie-one
   (->>
-    (after -1/2 (phrase [1/2] [-1]))
-    (then (phrase (cycle [3/2 3/2 2/2]) [0 4 3 2 1 -1 0 1 2]))
+    (phrase (cycle [3/2 3/2 2/2]) [nil 4 6 5 4 1 0 1 2])
     (then (phrase (repeat 4) [-1 0 4 -1]))
     (all :part ::break)))
 
@@ -160,7 +159,7 @@
         variation
         (->> theme (then spilling-theme)
              (with (->> (with beat accompaniment) (times 2))))
-        outro (with fadeout (->> (with accompaniment beat) (then bassline)))]
+        outro (with gymnopédie-one (->> (with accompaniment beat) (then bassline)))]
     (->>
       intro
       (then call) (then response)
