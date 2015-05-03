@@ -60,7 +60,7 @@
         whole (* 10 (mix partials))]
     (effects whole :room room :wet wet :pan position :volume volume)))
 
-(definst brassy [freq 440 dur 1.0 vol 1 wet 0.5 room 0.5 noise 1.0 position 0.0 limit 3000 p 1]
+(definst brassy [freq 440 dur 1.0 vol 1 wet 0.5 room 0.5 noise 1.0 limit 3000 p 1]
   (-> (+
        (* (sin-osc freq) (env-gen (adsr 0.0 0.3 0.3)))
        (* (white-noise) noise (env-gen (perc 0.0 0.01))))
