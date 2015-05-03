@@ -9,15 +9,27 @@
            input))
   (:default :kr))
 
+(defcgen effects [input  {:default :none}
+                  pan    {:default 0}
+                  wet    {:default 0.5}
+                  room   {:default 0.5}
+                  volume {:default 1.0}
+                  ]
+  (:kr (-> input
+           (* volume)
+           (pan2 pan)
+           (free-verb :mix wet :room room)
+           cut-out))
+  (:default :kr))
+
 (defsynth shudder [freq 440 vibrato 6 pan 0 wet 0.5 volume 1.0 room 0.5]
   (out 0
        (-> (square freq)
            (* (sin-osc freq))
-           (* (env-gen (perc 2 1.5) :action FREE))
+           (* (env-gen (perc 2 1.5)))
            (* (sin-osc vibrato))
-           (* 2/3 volume)
-           (free-verb :mix wet :room room)
-           (pan2 (line:ar pan (- pan) 3.5)))))
+           (* 2/3)
+           (effects :room room :wet wet :pan (line:ar pan (- pan) 3.5) :volume volume))))
 
 (defsynth sawish [freq 440 duration 1.5 vibrato 8/3 depth 1 volume 1.0 pan 0.0 wet 0.5 room 0.5]
   (let [envelope (env-gen (perc 0.01 duration))]
@@ -26,24 +38,21 @@
              (+ (* 3 (sin-osc freq)))
              (clip2 0.5)
              (* 2)
-             (* 2/3 volume envelope)
+             (* 2/3 envelope)
              (rlpf (mul-add (sin-osc vibrato) (* freq depth) (* 2 freq)) 1/3)
-             (free-verb :mix wet :room room)
-             (pan2 pan)
-             cut-out))))
+             (effects :room room :wet wet :pan pan :volume volume)))))
 
 (defsynth groan [freq 440 duration 10 vibrato 8/3 volume 1.0 position 0 wet 0.5 room 0.5 low 0.25]
   (let [envelope (* (sin-osc vibrato)
-                    (env-gen (perc 0.1 duration) :action FREE))]
+                    (env-gen (perc 0.1 duration)))]
     (out 0
          (-> (+
               (* low (sin-osc (* freq 1/2)))
               (* (sin-osc 0.5) (+ 0.1 (saw freq)))
               (* (sin-osc 0.8) (+ -0.03 (square freq)))
               (+ -0.04 (sin-osc freq)))
-             (* 0.7 volume envelope)
-             (free-verb :mix wet :room room)
-             (pan2 position)))))
+             (* 0.7 envelope)
+             (effects :room room :wet wet :pan position :volume volume)))))
 
 (defsynth bell [frequency 440 duration 1.0 volume 1.0 position 0 wet 0.5 room 0.5
                 h0 1 h1 0.6 h2 0.4 h3 0.25 h4 0.2 h5 0.15]
@@ -56,9 +65,8 @@
             (* 1/2 proportion envelope (sin-osc overtone))))
         partials
         (map proportional-partial harmonics proportions)
-        whole (-> partials mix (* 10) (free-verb :mix wet) (pan2 position))]
-    (detect-silence whole :action FREE)
-    (out 0 (* volume whole))))
+        whole (* 10 (mix partials))]
+    (out 0 (effects whole :room room :wet wet :pan position :volume volume))))
 
 (definst sawnoff [freq 440 depth 10]
   (let [envelope (env-gen (perc 0.1 0.9) :action FREE)] 
@@ -78,14 +86,12 @@
   (let [cutoff (line:kr 1.0 0.0 dur)
         whole (-> (+
                    (* (sin-osc freq) (env-gen (adsr 0.0 0.3 0.3) cutoff))
-                   (-> (white-noise) (* noise) (* (env-gen (perc 0.0 0.01)))))
+                   (* (white-noise) noise (env-gen (perc 0.0 0.01))))
                   (* vol 4)
                   (rlpf (* 5 freq) 1/10)
                   (* (pulse p 2/3))
                   (clip2 0.3)
-                  (pan2 (line:kr -1 1 dur))
-                  (free-verb :room room :mix wet))]
-    (detect-silence whole :action FREE)
+                  (effects :room room :wet wet :pan (line:kr -1 1 dur) :volume vol))]
     (out 0 whole)))
 
 (definst click [volume 1.0]
@@ -97,12 +103,10 @@
        (->
          (map #(sin-osc (* freq %)) (range 1 5))
          mix
-         (free-verb :mix wet :room room)
-         (pan2 pan)
-         (* vol)
-         (* (env-gen (asr attack 1.0 0.5) (line:kr 1.0 0.0 dur) :action FREE))
+         (* (env-gen (asr attack 1.0 0.5) (line:kr 1.0 0.0 dur)))
          (lpf (mul-add (sin-osc 5) freq (* freq 5)))
-         (lpf limit))))
+         (lpf limit)
+         (effects :pan pan :wet wet :room room :volume vol))))
 
 (defonce random-walk (audio-bus))
 
@@ -122,14 +126,10 @@
          (* 99)
          (rlpf (mul-add (sin-osc vibrato) (line:kr 0 (* depth (in:kr random-walk)) 10) (* freq 4)) 1/20)
          (clip2 0.4)
-         (* vol)
          (* (env-gen (adsr attack 1.0 0.5) (line:kr 1.0 0.0 dur)))
          (+ (* 1/4 (sin-osc (* 1.002 freq)) (env-gen (perc under-attack dur))))
          (rlpf (* walk (in:kr random-walk)) 1/5)
-         (free-verb :mix wet :room 0.5)
-         (lpf limit)
-         (pan2 pan)
-         cut-out)))
+         (effects :pan pan :wet wet :room room :volume vol))))
 
 (defsynth kraft-bass [freq 440 dur 1.0 vol 1.0 pan 0 wet 0.5 room 0.5]
   (let [envelope (env-gen (asr 0 1 1) (line:kr 1.0 0.0 dur))
@@ -139,10 +139,8 @@
                   (pulse (/ freq 2) 0.5)])]
     (out 0 (-> osc
                (lpf level)
-               (free-verb :room room :mix wet)
-               (pan2 pan)
-               (* vol envelope)
-               cut-out))))
+               (* envelope)
+               (effects :pan pan :wet wet :room room :volume vol)))))
 
 (definst bass [freq 110 dur 1.0 res 1000 volume 1.0 pan 0 wet 0.5 room 0.5]
   (-> (sin-osc freq) 
@@ -152,10 +150,7 @@
       (clip2 0.8)
       (rlpf res 1/7)
       (* (env-gen (adsr 0.02 0.2 0.1 0.1) (line:kr 1 0 dur)))
-      (* volume)
-      (pan2 pan)
-      (free-verb :mix wet :room room)
-      cut-out))
+      (effects :pan pan :wet wet :room room :volume volume)))
 
 (definst organic [freq 440 dur 1 volume 0.6 pan 0 wet 0.5 room 0.5]
   (-> (square freq)
@@ -165,21 +160,15 @@
       (+ (sin-osc 3) (sin-osc (* 6 freq)))
       (+ (sin-osc 3) (sin-osc (* 1/2 freq)))
       (lpf 4000)
-      (* (env-gen (adsr 0.05 0.2 0.7 0.1) (line:kr 1 0 dur)))
-      (* 1/10 volume)
-      (pan2 pan)
-      (free-verb :mix wet :room room)
-      cut-out))
+      (* 1/10 (env-gen (adsr 0.05 0.2 0.7 0.1) (line:kr 1 0 dur)))
+      (effects :pan pan :wet wet :room room :volume volume)))
 
 (definst sing [freq 440 dur 1.0 volume 1.0 pan 0 wet 0.5 room 0.5]
   (-> (saw freq)
       (+ (saw (* freq 1.01)))
       (rlpf (mul-add (sin-osc 8) 200 1500) 1/8)
-      (* (env-gen (asr 0.03 0.3 0.1) (line:kr 1 0 dur)))
-      (* 1/4 volume)
-      (pan2 pan)
-      (free-verb :mix wet :room room)
-      cut-out))
+      (* 1/4 (env-gen (asr 0.03 0.3 0.1) (line:kr 1 0 dur)))
+      (effects :room room :mix wet :pan pan :volume volume)))
 
 (definst kluck [freq 220 volume 1.0 wet 0.5 room 0.1 pan 0]
   (-> (line:kr freq (* freq 1/2) 0.5)
@@ -187,18 +176,12 @@
       (+ (sin-osc freq))
       (+ (sin-osc (/ freq 2) (sin-osc 1)))
       (* (env-gen (perc 0.01 0.1)))
-      (* volume)
-      (pan2 pan)
-      (free-verb :mix wet :room room)
-      cut-out))
+      (effects :room room :wet wet :pan pan :volume volume)))
 
 (definst tip [freq 110 volume 1.0 wet 0.5 room 0.1 pan 0]
   (-> (brown-noise)
       (+ (sin-osc (* 1/4 freq)))
       (rlpf (* 3 freq) 1/2)
       (* (env-gen (perc 0.01 0.05)))
-      (* volume)
-      (pan2 pan)
-      (free-verb :mix wet :room room)
-      cut-out))
+      (effects :room room :wet wet :pan pan :volume volume)))
  

@@ -2,7 +2,7 @@
   (:use
     [overtone.live :only [recording-start recording-stop kill-server]]
     [leipzig.melody :only [then after duration]]
-    [leipzig.live :only [play]]
+    [leipzig.live :only [play stop]]
     [whelmed.songs.west :only [west-with-the-sun]]
     [whelmed.songs.dolorem-ipsum :only [dolorem-ipsum]]
     [whelmed.songs.sidhe :only [sidhe]]
