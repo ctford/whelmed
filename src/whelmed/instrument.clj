@@ -68,14 +68,6 @@
         whole (* 10 (mix partials))]
     (out 0 (effects whole :room room :wet wet :pan position :volume volume))))
 
-(definst sawnoff [freq 440 depth 10]
-  (let [envelope (env-gen (perc 0.1 0.9) :action FREE)] 
-    (* 
-      envelope
-      (sin-osc freq)
-      (sin-osc (* 2 freq))
-      (saw (+ freq (* depth (lf-saw:kr 0.1 0.2)))))))
-
 (defsynth brassy [freq 440 dur 1.0 vol 1 wet 0.5 room 0.5 noise 1.0 position 0.0 limit 3000 p 1]
   (let [cutoff (line:kr 1.0 0.0 dur)
         whole (-> (+
