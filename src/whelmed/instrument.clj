@@ -76,12 +76,6 @@
       (sin-osc (* 2 freq))
       (saw (+ freq (* depth (lf-saw:kr 0.1 0.2)))))))
 
-(strings/gen-stringed-synth ektara 1 true)
-(defn pick [distort amp {midi :pitch, start :time, duration :duration}]
-  (let [synth-id (at start
-         (ektara midi :distort distort :amp amp :gate 1))]
-    (at (+ start (* 1000 duration)) (ctl synth-id :gate 0))))
-
 (defsynth brassy [freq 440 dur 1.0 vol 1 wet 0.5 room 0.5 noise 1.0 position 0.0 limit 3000 p 1]
   (let [cutoff (line:kr 1.0 0.0 dur)
         whole (-> (+
