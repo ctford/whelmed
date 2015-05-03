@@ -1,8 +1,7 @@
 (ns whelmed.instrument
   (:use
     [leipzig.melody]
-    [overtone.live])
-  (:require [overtone.synth.stringed :as strings])) 
+    [overtone.live]))
 
 (defcgen cut-out [input {:default :none}]
   (:kr (do (detect-silence input :action FREE)

@@ -7,9 +7,7 @@
     [leipzig.scale]
     [leipzig.chord]
     [whelmed.instrument])
-  (:require [overtone.live :as overtone]
-            [overtone.inst.drum :as drums]
-            [overtone.synth.stringed :as strings]
+  (:require [overtone.inst.drum :as drums]
             [leipzig.temperament :as temperament]))
 
 (defn harmonise [f notes]
