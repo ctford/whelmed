@@ -13,8 +13,7 @@
                   pan    {:default 0}
                   wet    {:default 0.5}
                   room   {:default 0.5}
-                  volume {:default 1.0}
-                  ]
+                  volume {:default 1.0}]
   (:kr (-> input
            (* volume)
            (pan2 pan)
@@ -26,9 +25,8 @@
   (out 0
        (-> (square freq)
            (* (sin-osc freq))
-           (* (env-gen (perc 2 1.5)))
            (* (sin-osc vibrato))
-           (* 2/3)
+           (* 2/3 (env-gen (perc 2 1.5)))
            (effects :room room :wet wet :pan (line:ar pan (- pan) 3.5) :volume volume))))
 
 (defsynth sawish [freq 440 duration 1.5 vibrato 8/3 depth 1 volume 1.0 pan 0.0 wet 0.5 room 0.5]
@@ -37,8 +35,7 @@
          (-> (sin-osc (* freq 0.51))
              (+ (* 3 (sin-osc freq)))
              (clip2 0.5)
-             (* 2)
-             (* 2/3 envelope)
+             (* 4/3 envelope)
              (rlpf (mul-add (sin-osc vibrato) (* freq depth) (* 2 freq)) 1/3)
              (effects :room room :wet wet :pan pan :volume volume)))))
 
@@ -69,9 +66,8 @@
     (out 0 (effects whole :room room :wet wet :pan position :volume volume))))
 
 (defsynth brassy [freq 440 dur 1.0 vol 1 wet 0.5 room 0.5 noise 1.0 position 0.0 limit 3000 p 1]
-  (let [cutoff (line:kr 1.0 0.0 dur)
-        whole (-> (+
-                   (* (sin-osc freq) (env-gen (adsr 0.0 0.3 0.3) cutoff))
+  (let [whole (-> (+
+                   (* (sin-osc freq) (env-gen (adsr 0.0 0.3 0.3)))
                    (* (white-noise) noise (env-gen (perc 0.0 0.01))))
                   (* vol 4)
                   (rlpf (* 5 freq) 1/10)
