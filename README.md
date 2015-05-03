@@ -6,10 +6,10 @@ lein run track \[filename.wav\]
 lein run all \[filename.wav\]
 
 Tracks:
-  * sidhe
-  * ska
   * west
+  * sidhe
+  * my-friend
+  * ska
   * dolorem
   * love
   * at-all 
-  * sidhe-sparse
