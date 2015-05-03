@@ -4,9 +4,10 @@
     leipzig.melody
     leipzig.live
     leipzig.chord
-    [overtone.live :only [midi->hz]]
+    leipzig.temperament
     whelmed.melody
-    whelmed.instrument))
+    whelmed.instrument)
+  (:require [leipzig.temperament :as temperament]))
 
 (defn with-bass [chord]
   (-> chord (assoc :bass (lower (:i chord)))))
@@ -98,19 +99,16 @@
     (then finale)
     (wherever (comp not :part), :part (is ::default))
     (in-time (bpm 160))
-    (where :pitch (comp low D major))))
+    (where :pitch (comp temperament/equal low D major))))
 
-(defmethod play-note ::comes [{midi :pitch s :duration stress :velocity}]
-  (some-> midi midi->hz (corgan s 1 :pan -1/3 :vibrato 32/3 :depth 0.1 :wet 0.6
-                                :vol (or stress 1)))) 
+(defmethod play-note ::comes [{hz :pitch s :duration stress :velocity}]
+  (some-> hz (corgan s 1 :pan -1/3 :vibrato 32/3 :depth 0.1 :wet 0.6 :vol (* 1/3 (or stress 2/3)) :limit 3000))) 
 
-(defmethod play-note ::default [{midi :pitch stress :velocity}]
-  (some-> midi midi->hz (organ 1/8 2 :pan 0 :wet 0.7 :vol (or stress 1.0)))) 
+(defmethod play-note ::default [{hz :pitch stress :velocity}]
+  (some-> hz (organ 1/8 2 :pan 0 :wet 0.7 :vol (* 1/3 (or stress 2/3))))) 
 
-(defmethod play-note ::dux [{midi :pitch s :duration stress :velocity}]
-  (some-> midi midi->hz
-          (corgan s 2 :pan 1/3 :vibrato 4/3 :depth 0.5 :wet 0.6 :limit 1500
-                  :vol (or stress 1)))) 
+(defmethod play-note ::dux [{hz :pitch s :duration stress :velocity}]
+  (some-> hz (corgan s 2 :pan 1/3 :vibrato 4/3 :depth 0.5 :wet 0.6 :limit 1500 :vol (* 1/3 (or stress 2/3))))) 
 
 (comment
   (play at-all)

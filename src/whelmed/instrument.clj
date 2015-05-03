@@ -100,6 +100,7 @@
     (* (env-gen (adsr attack 1.0 0.5) (line:kr 1.0 0.0 dur)))
     (+ (* 1/4 (sin-osc (* 1.002 freq)) (env-gen (perc under-attack dur))))
     (rlpf (* walk (in:kr random-walk)) 1/5)
+    (lpf limit)
     (effects :pan pan :wet wet :room room :volume vol)))
 
 (definst kraft-bass [freq 440 dur 1.0 vol 1.0 pan 0 wet 0.5 room 0.5]

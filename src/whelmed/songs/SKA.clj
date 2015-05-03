@@ -7,7 +7,8 @@
         [whelmed.contrib.harpsichord]
         [whelmed.melody]
         [overtone.inst.drum :as drum]
-        [overtone.live :only [recording-start recording-stop ctl at midi->hz now]]))
+        [overtone.live :only [recording-start recording-stop ctl at now]])
+  (:require [leipzig.temperament :as temperament]))
 
 ; Introduction
 (def once
@@ -247,31 +248,28 @@
     (then (->> rise
                (then (->> (groove 1) (in-time (partial * 3/2))))
                (where :pitch (comp F minor))))
+    (where :pitch temperament/equal)
     (in-time (bpm 180))))
 
-(defmethod play-note ::harmony [{midi :pitch seconds :duration}]
-  (some-> midi
-          midi->hz
-          (corgan :vol 0.8 :under-attack 0.2 :attack 0.02 :dur seconds :wet 0.2 :room 0.8 :pan 1/5 :vibrato 3 :limit 6000)))
+(defmethod play-note ::harmony [{hz :pitch seconds :duration}]
+  (some-> hz (corgan :vol 0.1 :under-attack 0.2 :attack 0.02 :dur seconds :wet 0.2 :room 0.8 :pan 1/5 :vibrato 3 :limit 6000)))
 
-(defmethod play-note ::bass [{midi :pitch seconds :duration open? :open}]
-  (some-> midi
-          midi->hz
-          (corgan :vol 1 :under-attack 0.1 :attack 0.001 :dur seconds :wet 0.2 :room 0.8 :pan -1/3 :vibrato (if open? 2 1) :limit (if open? 4000 1500))))
+(defmethod play-note ::bass [{hz :pitch seconds :duration open? :open}]
+  (some-> hz (corgan :vol 0.2 :under-attack 0.1 :attack 0.001 :dur seconds :wet 0.2 :room 0.8 :pan -1/3 :vibrato (if open? 2 1) :limit (if open? 4000 1500))))
 
-(defmethod play-note ::rhythm [{midi :pitch, s :duration}]
-  (some-> midi midi->hz (organ s :attack 0.01 :vol 2 :limit 2000 :attack 0 :pan 1/3 :room 0.8 :wet 0.6)))
+(defmethod play-note ::rhythm [{hz :pitch, s :duration}]
+  (some-> hz (organ s :attack 0.01 :vol 0.3 :limit 2000 :attack 0 :pan 1/3 :room 0.8 :wet 0.6)))
 
-(defmethod play-note ::beat [{midi :pitch}]
-  (some-> midi midi->hz (drum/kick2 :amp 1.4 :noise 0.05)))
+(defmethod play-note ::beat [{hz :pitch}]
+  (some-> hz (drum/kick2 :amp 0.4 :noise 0.05)))
 
-(defmethod play-note ::melody [{midi :pitch s :duration}]
-  (some-> midi midi->hz (sawish :pan -1/6 :volume 1.9 :duration 0.3 :vibrato 1 :wet 0.3 :room 0.01 :limit 3000 :depth 1))
-  (some-> midi midi->hz (harpsichord :pan 1/6 :volume 1.5 :duration s :vibrato 1 :wet 0.4 :room 0.8 :limit 2000 :depth 1)))
+(defmethod play-note ::melody [{hz :pitch s :duration}]
+  (some-> hz (sawish :pan -1/6 :volume 0.2 :duration 0.3 :vibrato 1 :wet 0.3 :room 0.01 :limit 3000 :depth 1))
+  (some-> hz (harpsichord :pan 1/6 :vol 0.2 :duration s :vibrato 1 :wet 0.4 :room 0.8 :limit 2000 :depth 1)))
 
-(defmethod play-note ::sunrise [{midi :pitch s :duration}]
-  (some-> midi midi->hz (organ :walk 1/2 :pan 1/2 :attack 0.1 :vol 0.6 :dur s :wet 0.5 :room 0.9 :limit 5000 :p 2))
-  (some-> midi midi->hz (brassy :walk 1/2 :pan 1/2 :attack 0.1 :vol 0.7 :dur s :wet 0.7 :room 0.8 :limit 4000)))
+(defmethod play-note ::sunrise [{hz :pitch s :duration}]
+  (some-> hz (organ :walk 1/2 :pan 1/2 :attack 0.1 :vol 0.1 :dur s :wet 0.5 :room 0.9 :limit 5000 :p 2))
+  (some-> hz (brassy :walk 1/2 :pan 1/2 :attack 0.1 :vol 0.2 :dur s :wet 0.7 :room 0.8 :limit 4000)))
 
 
 (comment

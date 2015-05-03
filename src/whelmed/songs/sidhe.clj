@@ -9,7 +9,8 @@
     [whelmed.instrument])
   (:require [overtone.live :as overtone]
             [overtone.inst.drum :as drums]
-            [overtone.synth.stringed :as strings]))
+            [overtone.synth.stringed :as string]
+            [leipzig.temperament :as temperament]))
 
 
 ; First section
@@ -159,16 +160,16 @@
     (all :part ::starboard uplift)))
 
 ; Arrangement
-(defmethod play-note ::port [{midi :pitch seconds :duration direction :direction}]
-  (some-> midi overtone/midi->hz (corgan seconds :vol 0.7 :pan -1/2 :wet 0.3 :room 0.9 :vibrato 105/60)))
+(defmethod play-note ::port [{hz :pitch seconds :duration direction :direction}]
+  (some-> hz (corgan seconds :vol 0.4 :pan -1/2 :wet 0.3 :room 0.9 :vibrato 105/60)))
 
-(defmethod play-note ::starboard [{midi :pitch seconds :duration direction :direction}]
-  (some-> midi overtone/midi->hz (corgan seconds :vol 0.7 :pan 1/2 :wet 0.5 :room 0.9 :vibrato 105/15)))
+(defmethod play-note ::starboard [{hz :pitch seconds :duration direction :direction}]
+  (some-> hz (corgan seconds :vol 0.4 :pan 1/2 :wet 0.5 :room 0.9 :vibrato 105/15)))
 
-(defmethod play-note ::fore [{midi :pitch seconds :duration direction :direction}]
-  (some-> midi overtone/midi->hz (kraft-bass :vol 3.0 :dur seconds :pan 0 :wet 0.7 :room 0.9)))
+(defmethod play-note ::fore [{hz :pitch seconds :duration direction :direction}]
+  (some-> hz (kraft-bass :vol 1 :dur seconds :pan 0 :wet 0.7 :room 0.9)))
 
-(defmethod play-note ::aft [{midi :pitch}] (some-> midi overtone/midi->hz drums/kick2))
+(defmethod play-note ::aft [{hz :pitch}] (some-> hz (drums/kick2 :amp 0.4)))
 
 
 ; Structure
@@ -189,6 +190,7 @@
            (then first-section)
            (then finale)
            (where :pitch (comp E minor))))
+    (where :pitch temperament/equal)
     (in-time (bpm 105))))
 
 (comment
