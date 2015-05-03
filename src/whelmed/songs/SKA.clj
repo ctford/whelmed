@@ -17,7 +17,7 @@
        (all :part ::bass)
        (where :pitch (comp lower lower))))
 
-(def bass
+(def base
   (->> once (times 2)))
 
 ; Groove
@@ -95,13 +95,13 @@
 
 (defn groove [rises]
   (->>
-    (with bass wish-you-were-here-again rhythm-section)
+    (with base wish-you-were-here-again rhythm-section)
     (times 2)
     (then (with
             (suns-on-the-rise rises)
             (sunrise rises)
             (oooh rises)
-            (after (* rises 16) (times 2 bass))))
+            (after (* rises 16) (times 2 base))))
     (with (beat rises))))
 
 (def extra
@@ -177,7 +177,7 @@
  
 ; Return
 (def fallbass
-  (->> (take 4 bass)
+  (->> (take 4 base)
        (then (phrase [4] [(lower -3.5)]))
        (all :part ::bass)))
 
@@ -231,7 +231,7 @@
 ; Structure
 (def ska
   (->>
-    (->> bass
+    (->> base
          (then (groove 1))
          (then (groove 2))
         (where :pitch (comp F minor)))

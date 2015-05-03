@@ -38,7 +38,7 @@
           :tick drums/closed-hat,
           :tock drums/open-hat})
 
-(defn bass [chord element]
+(defn base [chord element]
   (-> chord (assoc :bass (-> chord element lower))))
 
 (defn arpeggiate [chord ks duration]
@@ -48,7 +48,7 @@
       (reductions + 0 (repeat duration))))
 
 (def progression
-  (map bass
+  (map base
      [(-> seventh (root 0))
       (-> triad (assoc :v- -3) (root 2))
       (-> ninth (root -2))]
