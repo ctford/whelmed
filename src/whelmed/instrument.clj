@@ -80,10 +80,6 @@
                   (effects :room room :wet wet :pan (line:kr -1 1 dur) :volume vol))]
     (out 0 whole)))
 
-(definst click [volume 1.0]
-  (let [envelope (env-gen (perc 0.05 0.2) :action FREE)]
-    (* volume envelope (pulse 5000 100))))
-
 (defsynth organ [freq 440 dur 1.0 vol 1.0 pan 0.0 wet 0.5 room 0.5 limit 99999 attack 0.1]
   (out 0
        (->
