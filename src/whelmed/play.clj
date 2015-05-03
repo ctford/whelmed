@@ -15,11 +15,11 @@
   [
    ["west" west-with-the-sun] ; A minor, 80 bpm
    ["sidhe" sidhe] ; C minor -> E minor, 105 bpm
-   ["my-friend" my-friend]   ; F major, 120 bpm
+   ["my-friend" my-friend] ; F major, 120 bpm
    ["ska" ska] ; E minor -> B flat major -> E minor, 180 bpm -> 120 bpm
    ["dolorem" dolorem-ipsum] ; F lydian, 80 bpm
    ["love" love-and-fear] ; G minor, 80 bpm
-   ["at-all" at-all] ; D major, 160
+   ["at-all" at-all] ; D major, 160 bpm
    ])
 
 (def minutes
