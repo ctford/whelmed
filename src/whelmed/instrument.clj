@@ -79,16 +79,10 @@
     (lpf limit)
     (effects :pan pan :wet wet :room room :volume vol)))
 
-(defonce random-walk (audio-bus))
-
 (defsynth walker [out-bus 0 freq 0.5]
   (out:kr out-bus (mul-add (lf-noise1:kr freq) 1500 2000)))
-
-(defonce main (group "main"))
-(defonce inputs (group "inputs" :head main))
-(defonce outputs (group "latecomers" :after inputs))
-
-(defonce walk (walker [:tail inputs] random-walk))
+(defonce random-walk (audio-bus))
+(defonce walk (walker random-walk))
 
 (definst corgan [freq 440 dur 1.0 depth 1 walk 1 attack 0.01 under-attack 0.3 vol 1.0 pan 0.0 wet 0.5 room 0.5 vibrato 3 limit 99999]
   (->
