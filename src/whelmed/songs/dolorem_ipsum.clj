@@ -6,8 +6,8 @@
     [leipzig.scale]
     [leipzig.chord]
     [leipzig.canon]
-    [whelmed.instrument]
-    [overtone.live :only [midi->hz]]))
+    [whelmed.instrument])
+  (:require [leipzig.temperament :as temperament]))
 
 ; Extra concepts
 (defn arpeggiate [chord ks duration]
@@ -155,17 +155,17 @@
               (then (with development wa-wa-wa-wa))
               (then air) (then finale)))
       (in-time (bpm 80))
-      (where :pitch (comp F lydian)))))
+      (where :pitch (comp temperament/equal F lydian)))))
 
 ; The arrangement
 (defmethod play-note ::melody [{:keys [pitch duration]}]
-  (some-> pitch midi->hz (bell (* 7 duration) :position 1/8 :wet 0.5 :volume 1/5))
-  (some-> pitch midi->hz (bell (* 8 duration) :position 1/9 :wet 0.9 :room 0.1 :volume 0.25)))
+  (some-> pitch (bell (* 7 duration) :position 1/8 :wet 0.5 :volume 1/5))
+  (some-> pitch (bell (* 8 duration) :position 1/9 :wet 0.9 :room 0.1 :volume 0.25)))
 (defmethod play-note ::arpeggios [{:keys [pitch duration]}]
-  (some-> pitch (- 12) midi->hz (brassy duration 0.3 0.1 :noise 4 :pan -1/2 :p 3/3 :wet 0.6 :vol 0.25))
-  (some-> pitch (- 24) midi->hz (corgan (* 1/9 duration) :depth 0.3 :walk 0.2 :pan 1/2 :wet 0.6 :vol 0.5)))
+  (some-> pitch (/ 2) (brassy duration 0.3 0.1 :noise 4 :pan -1/3 :p 3/3 :wet 0.6 :vol 0.25))
+  (some-> pitch (/ 2) (corgan 0.5 :depth 0.3 :walk 0.3 :pan 1/3 :wet 0.6 :vol 0.5 :room 0.5)))
 (defmethod play-note ::oooh [{:keys [pitch duration]}]
-  (some-> pitch midi->hz (groan (* 2 duration) :low 4 :vibrato 8/3 :position -1/6 :volume 0.3)))
+  (some-> pitch (groan (* 2 duration) :low 4 :vibrato 8/3 :position -1/6 :volume 0.15)))
 
 (comment
   (->> dolorem-ipsum play)
