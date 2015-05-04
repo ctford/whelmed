@@ -80,7 +80,7 @@
       (rlpf (* 5 freq) 1/10)
       (* (pulse p 2/3))
       (clip2 0.3)
-      (effects :room room :wet wet :pan (line:kr -1 1 dur) :volume vol)))
+      (effects :room room :wet wet :pan (line:kr -1 1 dur) :volume vol :high limit)))
 
 (definst organ [freq 440 dur 1.0 vol 1.0 pan 0.0 wet 0.5 room 0.5 limit 20000 attack 0.1]
   (->
