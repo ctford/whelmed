@@ -159,7 +159,7 @@
         variation
         (->> theme (then spilling-theme)
              (with (->> (with beat accompaniment) (times 2))))
-        outro (with gymnopédie-one (->> (with accompaniment beat) (then bassline)))]
+        outro (after 4 (with gymnopédie-one (->> (with accompaniment beat) (then bassline))))]
     (->>
       intro
       (then call) (then response)
