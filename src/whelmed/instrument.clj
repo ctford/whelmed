@@ -17,14 +17,16 @@
 
 (defcgen effects [input  {:default :none}
                   pan    {:default 0}
-                  wet    {:default 0.5}
+                  wet    {:default 0.33}
                   room   {:default 0.5}
                   volume {:default 1.0}
+                  early  {:default 0.1}
                   high   {:default 20000}
                   low    {:default 0}]
   (:ar (-> input
            (* volume)
            (pan2 pan)
+           (free-verb :mix early :room 0.1)
            (free-verb :mix wet :room room)
            (lpf high)
            (hpf low)
@@ -153,4 +155,3 @@
       (rlpf (* 3 freq) 1/2)
       (* (env-gen (perc 0.01 0.05)))
       (effects :room room :wet wet :pan pan :volume volume)))
- 
