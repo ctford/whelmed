@@ -165,14 +165,14 @@
 
 ; Arrangement
 (defmethod play-note ::melody [{hz :pitch s :duration}]
-  (some-> hz (bell s :volume 0.9 :position 1/9 :wet 0.4 :room 0.1))
-  (some-> hz (* 2) (bell 4 :volume 0.6 :position 1/7 :wet 0.9 :room 0.9)))
+  (some-> hz (bell s :volume 1 :position 1/9 :wet 0.4 :room 0.1))
+  (some-> hz (* 2) (bell 4 :volume 0.7 :position 1/7 :wet 0.9 :room 0.9)))
 
 (defmethod play-note ::harmony [{hz :pitch s :duration}]
-  (some-> hz (bell 7 :volume 0.8 :position -1/2 :wet 0.8 :room 0.9)))
+  (some-> hz (bell 7 :volume 0.7 :position -1/2 :wet 0.8 :room 0.9)))
 
 (defmethod play-note ::chords [{hz :pitch, length :duration}]
-  (some-> hz (corgan length 0.8 :vol 0.2 :vibrato 2/3 :depth 0.4 :pan 1/4 :room 0.9)))
+  (some-> hz (corgan length 0.8 :vol 0.1 :vibrato 2/3 :depth 0.4 :pan 1/4 :room 0.9)))
 
 (defmethod play-note ::blurt [{:keys [pitch duration]}]
   (some-> pitch (corgan duration :depth 1 :vibrato 4/3 :vol 0.2 :pan -1/2 :room 0.9)))
