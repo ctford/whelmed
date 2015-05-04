@@ -87,7 +87,7 @@
     (where :pitch scale/raise)
     (all :part ::melody)))
 
-(def my-friend
+(def i-know-youre-my-friend
   (let [i-know
         (after 2
                (phrase [2/3 1/3 3/3 5/3 7/3]
@@ -149,7 +149,7 @@
   (->>
     intro
     (times 2)
-    (with my-friend)))
+    (with i-know-youre-my-friend)))
 
 (def chorus
   (->>
@@ -173,7 +173,7 @@
     (->> (with bass arpeggs core-med)
          (then (with flatline flock arpeggs core-med)))))
 
-(def track
+(def my-friend
   (->>
     intro 
     (then verse) 
@@ -187,7 +187,7 @@
 
 (comment
   ; Loop the track, allowing live editing.
-  (live/jam (var track))
-  (recording-start "my-friend.wav")
-  (live/play track)
+  (live/jam (var my-friend))
+  (recording-start "i-know-youre-my-friend.wav")
+  (live/play my-friend)
   (recording-stop))
