@@ -13,8 +13,8 @@
 
 (def tracks
   [
-   ["west" west-with-the-sun] ; A minor, 80 bpm
-   ["sidhe" sidhe] ; C minor -> E minor, 105 bpm
+   ["west" west-with-the-sun] ; F minor, 80 bpm
+   ["sidhe" sidhe] ; B flat minor -> D minor, 105 bpm
    ["my-friend" my-friend] ; F major, 120 bpm -> 60 bpm
    ["ska" ska] ; E minor -> B flat major -> E minor, 180 bpm -> 120 bpm
    ["dolorem" dolorem-ipsum] ; F lydian, 80 bpm

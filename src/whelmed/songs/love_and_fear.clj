@@ -175,7 +175,7 @@
   (some-> hz (corgan length 0.8 :vol 0.1 :vibrato 2/3 :depth 0.4 :pan 1/4 :room 0.9)))
 
 (defmethod play-note ::blurt [{:keys [pitch duration]}]
-  (some-> pitch (corgan duration :depth 1 :vibrato 4/3 :vol 0.2 :pan -1/3 :room 0.9)))
+  (some-> pitch (corgan duration :depth 1 :vibrato 4/3 :vol 0.15 :pan -1/3 :room 0.9)))
 
 (defmethod play-note ::bass [{:keys [duration pitch]}]
   (some-> pitch (corgan duration :vibrato 2/3 :limit 700 :depth 0 :pan -1/3 :depth 0 :vol 0.3 :room 0.9)))

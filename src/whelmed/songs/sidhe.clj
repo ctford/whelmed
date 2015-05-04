@@ -178,18 +178,18 @@
     (->> first-section
          (then second-section)
          (then key-change)
-         (where :pitch (comp C minor)))
+         (where :pitch (comp low B flat minor)))
     (then
       (->> third-section
            (then first-section)
            (then second-section)
            (then key-change)
-           (where :pitch (comp D minor))))
+           (where :pitch (comp C minor))))
     (then
       (->> third-section
            (then first-section)
            (then finale)
-           (where :pitch (comp E minor))))
+           (where :pitch (comp D minor))))
     (where :pitch temperament/equal)
     (in-time (bpm 105))))
 
