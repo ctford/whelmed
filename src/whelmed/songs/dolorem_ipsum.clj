@@ -162,7 +162,7 @@
   (some-> pitch (bell (* 7 duration) :position 1/8 :wet 0.5 :volume 1/5))
   (some-> pitch (bell (* 8 duration) :position 1/9 :wet 0.9 :room 0.1 :volume 0.25)))
 (defmethod play-note ::arpeggios [{:keys [pitch duration]}]
-  (some-> pitch (/ 2) (brassy duration 0.3 0.1 :noise 4 :pan -1/3 :p 3/3 :wet 0.6 :vol 0.25))
+  (some-> pitch (/ 2) (brassy duration 0.3 0.1 :noise 4 :pan -1/3 :p 3/3 :wet 0.6 :vol 0.25 :p 8/6))
   (some-> pitch (/ 2) (corgan 0.5 :depth 0.3 :walk 0.3 :pan 1/3 :wet 0.6 :vol 0.5 :room 0.5)))
 (defmethod play-note ::oooh [{:keys [pitch duration]}]
   (some-> pitch (groan (* 2 duration) :low 4 :vibrato 8/3 :position -1/6 :volume 0.15)))
