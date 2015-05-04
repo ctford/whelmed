@@ -3,6 +3,13 @@
     [leipzig.melody]
     [overtone.live]))
 
+; Generic machinery
+(defsynth walker [out-bus 0 freq 0.5]
+  (out:kr out-bus (lf-noise1:kr freq)))
+(defonce random-walk (audio-bus))
+(defonce walk (walker random-walk))
+(defonce resonance (mul-add (in:kr random-walk) 1500 2000))
+ 
 (defcgen cut-out [input {:default :none}]
   (:kr (do (detect-silence input :action FREE)
            input))
@@ -20,6 +27,7 @@
            cut-out))
   (:default :kr))
 
+; Instruments
 (definst shudder [freq 440 vibrato 6 pan 0 wet 0.5 volume 1.0 room 0.5]
   (-> (square freq)
       (* (sin-osc freq))
@@ -79,20 +87,15 @@
     (lpf limit)
     (effects :pan pan :wet wet :room room :volume vol)))
 
-(defsynth walker [out-bus 0 freq 0.5]
-  (out:kr out-bus (mul-add (lf-noise1:kr freq) 1500 2000)))
-(defonce random-walk (audio-bus))
-(defonce walk (walker random-walk))
-
 (definst corgan [freq 440 dur 1.0 depth 1 walk 1 attack 0.01 under-attack 0.3 vol 1.0 pan 0.0 wet 0.5 room 0.5 vibrato 3 limit 99999]
   (->
     (saw freq)
     (* 99)
-    (rlpf (mul-add (sin-osc vibrato) (line:kr 0 (* depth (in:kr random-walk)) 10) (* freq 4)) 1/20)
+    (rlpf (mul-add (sin-osc vibrato) (line:kr 0 (* depth resonance) 10) (* freq 4)) 1/20)
     (clip2 0.4)
     (* (env-gen (adsr attack 1.0 0.5) (line:kr 1.0 0.0 dur)))
     (+ (* 1/4 (sin-osc (* 1.002 freq)) (env-gen (perc under-attack dur))))
-    (rlpf (* walk (in:kr random-walk)) 1/5)
+    (rlpf (* walk resonance) 1/5)
     (lpf limit)
     (effects :pan pan :wet wet :room room :volume vol)))
 
