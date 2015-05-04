@@ -23,7 +23,7 @@
 
 (defmethod live/play-note ::melody
   [{hertz :pitch seconds :duration}]
-  (some-> hertz (sing seconds :wet 0.3)))
+  (some-> hertz (sing seconds :wet 0.3 :volume 1.2)))
 
 (defmethod live/play-note ::beat
   [{hertz :pitch drum :drum}]
