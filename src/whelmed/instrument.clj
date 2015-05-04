@@ -82,14 +82,13 @@
       (clip2 0.3)
       (effects :room room :wet wet :pan (line:kr -1 1 dur) :volume vol)))
 
-(definst organ [freq 440 dur 1.0 vol 1.0 pan 0.0 wet 0.5 room 0.5 limit 99999 attack 0.1]
+(definst organ [freq 440 dur 1.0 vol 1.0 pan 0.0 wet 0.5 room 0.5 limit 20000 attack 0.1]
   (->
     (map #(sin-osc (* freq %)) (range 1 5))
     mix
     (* (env-gen (asr attack 1.0 0.5) (line:kr 1.0 0.0 dur)))
     (lpf (mul-add (sin-osc 5) freq (* freq 5)))
-    (lpf limit)
-    (effects :pan pan :wet wet :room room :volume vol)))
+    (effects :pan pan :wet wet :room room :volume vol :high limit)))
 
 (definst corgan [freq 440 dur 1.0 depth 1 walk 1 attack 0.01 under-attack 0.3 vol 1.0 pan 0.0 wet 0.5 room 0.5 vibrato 3 limit 99999]
   (->
@@ -100,8 +99,7 @@
     (* (env-gen (adsr attack 1.0 0.5) (line:kr 1.0 0.0 dur)))
     (+ (* 1/4 (sin-osc (* 1.002 freq)) (env-gen (perc under-attack dur))))
     (rlpf (* walk resonance) 1/5)
-    (lpf limit)
-    (effects :pan pan :wet wet :room room :volume vol)))
+    (effects :pan pan :wet wet :room room :volume vol :high limit)))
 
 (definst kraft-bass [freq 440 dur 1.0 vol 1.0 pan 0 wet 0.5 room 0.5]
   (let [envelope (env-gen (asr 0 1 1) (line:kr 1.0 0.0 dur))
@@ -131,9 +129,8 @@
       (+ (sin-osc 6) (sin-osc (* 4.01 freq)))
       (+ (sin-osc 3) (sin-osc (* 6 freq)))
       (+ (sin-osc 3) (sin-osc (* 1/2 freq)))
-      (lpf 4000)
       (* 1/10 (env-gen (adsr 0.05 0.2 0.7 0.1) (line:kr 1 0 dur)))
-      (effects :pan pan :wet wet :room room :volume volume)))
+      (effects :pan pan :wet wet :room room :volume volume :high 4000)))
 
 (definst sing [freq 440 dur 1.0 volume 1.0 pan 0 wet 0.5 room 0.5]
   (-> (saw freq)
