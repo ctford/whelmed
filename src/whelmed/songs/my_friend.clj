@@ -186,10 +186,6 @@
             [(-> chord/triad (chord/root -2))
              (-> chord/triad (chord/root 2) (chord/inversion 1) (update-in [:iii] (partial + 1/2)))
              (-> chord/triad (chord/root -2))
-             (-> chord/triad (chord/root 3) (chord/inversion 1))
-             (-> chord/triad (chord/root -2))
-             (-> chord/triad (chord/root 3) (chord/inversion 1))
-             (-> chord/triad)
              (-> chord/triad (chord/root 3) (chord/inversion 1))])
     (all :part ::accompaniment)))
 
