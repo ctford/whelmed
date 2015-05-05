@@ -96,11 +96,11 @@
 
 (def air
   (->>
-    (map #(times 4 (phrase [1/4] [%])) [0 -4 0 -5 0 0 0])
-    (reduce #(then %2 %1))
+    (phrase (flatten (repeat 4 (repeat 4 1/4))) [0 -4 0 -5 0 0 0])
     (all :part ::arpeggios)))
 
-(def ends (->> (phrase [1/4] [7]) (all :part ::arpeggios)))
+(def ends (->> (phrase [1/4] [7])
+               (all :part ::arpeggios)))
 
 ; Oooh
 (def aaah
@@ -137,16 +137,13 @@
     (phrase [4 4 4 4 4 4] [4 7 8 10 11 8])
     (all :part ::oooh)))
 
+(def finale (with it ends))
+
 ; Pull it all together
 (def dolorem-ipsum
-  (let [lorem
-        (->> theme (then response))
-        intro
-        (->> lorem (with (->> neque (then sit-amet))) (times 2))
-        development
-        (->> wander (with notice))
-        finale
-        (with it ends)]
+  (let [lorem (->> theme (then response))
+        intro (->> lorem (with (->> neque (then sit-amet))) (times 2))
+        development (->> wander (with notice))]
     (->> lorem
          (then intro)
          (then development)
@@ -166,11 +163,11 @@
   (some-> pitch (bell (* 8 duration) :position 1/9 :wet 0.9 :room 0.2 :volume 0.25)))
 (defmethod play-note ::arpeggios [{:keys [pitch duration]}]
   (some-> pitch (/ 2) (brassy duration 0.3 0.1 :noise 9 :pan -1/3 :p 3/3 :wet 0.4 :vol 0.2 :p 8/6))
-  (some-> pitch (/ 2) (corgan 0.5 :depth 0.3 :walk 0.3 :pan 1/3 :wet 0.6 :vol 0.4 :room 0.5)))
+  (some-> pitch (/ 4) (corgan 0.2 :depth 0.3 :walk 0.5 :pan 1/3 :wet 0.4 :vol 0.4 :room 0.5)))
 (defmethod play-note ::oooh [{:keys [pitch duration]}]
   (some-> pitch (groan (* 2 duration) :low 10 :vibrato 8/3 :position -1/6 :volume 0.1)))
 
 (comment
   (->> dolorem-ipsum play)
-  (jam (var dolorem-ipsum))
+  (-> dolorem-ipsum var jam)
 )
