@@ -42,11 +42,12 @@
       [5 4 2 3 4 7 6 6 5 4 3 4 2.5])
     (all :part ::melody)))
 
-(def it (->> (with
-               (phrase [1] [7])
-               (phrase [2] [4])
-               (phrase [3] [0])) 
-             (all :part ::melody)))
+(def finale
+  (->> [(-> triad (inversion 2) (root 3) (update-in [:i] #(- % 1/2)))
+        (-> triad (inversion 1) (root 6))]
+       (mapthen #(->> (arpeggiate % [:i :v :i :iii] 1/4) (times 4)))
+       (times 2)
+       (all :part ::arpeggios)))
 
 ; Arpeggios
 (def theme 
@@ -55,8 +56,7 @@
         chords
           [triad (up triad) (up (up triad)) (up triad)]]
     (->> chords
-      (map #(arpeggiate % [:v :i :iii :v] 1/4))
-      (reduce #(then %2 %1))
+      (mapthen #(arpeggiate % [:v :i :iii :v] 1/4))
       (times 2)
       (all :part ::arpeggios))))
 
@@ -94,14 +94,6 @@
         (times 4)))
     (all :part ::arpeggios)))
 
-(def air
-  (->>
-    (phrase (flatten (repeat 4 (repeat 4 1/4))) [0 -4 0 -5 0 0 0])
-    (all :part ::arpeggios)))
-
-(def ends (->> (phrase [1/4] [7])
-               (all :part ::arpeggios)))
-
 ; Oooh
 (def aaah
   (->> (phrase [1 1] [6 5]) (times 4)
@@ -137,8 +129,6 @@
     (phrase [4 4 4 4 4 4] [4 7 8 10 11 8])
     (all :part ::oooh)))
 
-(def finale (with it ends))
-
 ; Pull it all together
 (def dolorem-ipsum
   (let [lorem (->> theme (then response))
@@ -152,7 +142,6 @@
          (then oooh-aaah)
          (then (->> intro (with la-la-la-la)
                     (then (with development wa-wa-wa-wa))
-                    (then air)
                     (then finale)))
          (in-time (bpm 80))
          (where :pitch (comp temperament/equal F lydian)))))
@@ -163,7 +152,7 @@
   (some-> pitch (bell (* 8 duration) :position 1/9 :wet 0.9 :room 0.2 :volume 0.25)))
 (defmethod play-note ::arpeggios [{:keys [pitch duration]}]
   (some-> pitch (/ 2) (brassy duration 0.3 0.1 :noise 9 :pan -1/3 :p 3/3 :wet 0.4 :vol 0.2 :p 8/6))
-  (some-> pitch (/ 4) (corgan 0.2 :depth 0.3 :walk 0.5 :pan 1/3 :wet 0.4 :vol 0.4 :room 0.5)))
+  (some-> pitch (/ 2) (corgan 0.2 :depth 0.3 :walk 0.5 :pan 1/3 :wet 0.4 :vol 0.4 :room 0.5)))
 (defmethod play-note ::oooh [{:keys [pitch duration]}]
   (some-> pitch (groan (* 2 duration) :low 10 :vibrato 8/3 :position -1/6 :volume 0.1)))
 
