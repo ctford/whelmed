@@ -8,7 +8,8 @@
   (out:kr out-bus (lf-noise1:kr freq)))
 (defonce random-walk (audio-bus))
 (defonce walk (walker random-walk))
-(defonce resonance (mul-add (in:kr random-walk) 1500 2000))
+(def resonance (mul-add (in:kr random-walk) 1500 2000))
+(def space (mul-add (in:kr random-walk) 1 0))
  
 (defcgen cut-out [input {:default :none}]
   (:ar (do (detect-silence input :action FREE)
@@ -27,7 +28,7 @@
            (* volume)
            (pan2 pan)
            (free-verb :mix early :room 0.1)
-           (free-verb :mix wet :room room)
+           (free-verb :mix wet :room space)
            (lpf high)
            (hpf low)
            cut-out))
