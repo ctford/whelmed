@@ -62,8 +62,8 @@
 (def gymnopédie-one
   (->>
     (phrase (cycle [3/2 3/2 2/2]) [nil 4 6 5 4 1 0 1 2])
-    (then (phrase (repeat 4) [-1 0 4 -1]))
-    (all :part ::break)))
+    (then (phrase (repeat 4) [-1 0 4 -1 4]))
+    (all :part ::epilogue)))
 
 ; Response
 (def a-parting-kiss
@@ -168,7 +168,7 @@
       (then variation)
       (then (->> response (with (->> break (after 16)))))
       (then outro)
-      (where :pitch (comp temperament/equal scale/B scale/flat scale/minor))
+      (where :pitch (comp temperament/equal scale/G scale/minor))
       (where :time (bpm 80))
       (where :duration (bpm 80)))))
 
@@ -184,11 +184,15 @@
 
 (defmethod live/play-note ::lead
   [{freq :pitch}]
-  (some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.7 :volume 1)))
+  (some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.8 :volume 0.8)))
 
 (defmethod live/play-note ::response
   [{freq :pitch seconds :duration}]
-  (some-> freq (organ seconds 3 :vol 1.0 :pan -1/4 :wet 0.8)))
+  (some-> freq (organ seconds :vol 1.0 :pan -1/4 :wet 0.8)))
+
+(defmethod live/play-note ::epilogue
+  [{freq :pitch seconds :duration}]
+  (some-> freq (corgan seconds :vol 1.5 :pan -1/4 :wet 0.6 :vibrato 100/60 :depth 0.5)))
 
 (defmethod live/play-note ::break
   [{freq :pitch}]
