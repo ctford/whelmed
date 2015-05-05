@@ -140,24 +140,25 @@
 ; Pull it all together
 (def dolorem-ipsum
   (let [lorem
-          (->> theme (then response))
+        (->> theme (then response))
         intro
-          (->> lorem (with (->> neque (then sit-amet))) (times 2))
+        (->> lorem (with (->> neque (then sit-amet))) (times 2))
         development
-          (->> wander (with notice))
+        (->> wander (with notice))
         finale
-          (with it ends)]
+        (with it ends)]
     (->> lorem
-      (then intro)
-      (then development)
-      (then (->> theme (wherever (between? 4 8), :pitch raise)))
-      (then (->> theme (with neque)))
-      (then oooh-aaah)
-      (then (->> intro (with la-la-la-la)
-              (then (with development wa-wa-wa-wa))
-              (then air) (then finale)))
-      (in-time (bpm 80))
-      (where :pitch (comp temperament/equal F lydian)))))
+         (then intro)
+         (then development)
+         (then (->> theme (wherever (between? 4 8), :pitch raise)))
+         (then (->> theme (with neque)))
+         (then oooh-aaah)
+         (then (->> intro (with la-la-la-la)
+                    (then (with development wa-wa-wa-wa))
+                    (then air)
+                    (then finale)))
+         (in-time (bpm 80))
+         (where :pitch (comp temperament/equal F lydian)))))
 
 ; The arrangement
 (defmethod play-note ::melody [{:keys [pitch duration]}]
