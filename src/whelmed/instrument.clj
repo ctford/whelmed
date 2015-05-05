@@ -50,7 +50,7 @@
         (rlpf (mul-add (sin-osc vibrato) (* freq depth) (* 2 freq)) 1/3)
         (effects :room room :wet wet :pan pan :volume volume))))
 
-(definst groan [freq 440 duration 10 vibrato 8/3 volume 1.0 position 0 wet 0.5 room 0.5 low 0.25]
+(definst groan [freq 440 duration 10 vibrato 8/3 volume 1.0 position 0 wet 0.5 room 0.5 low 0.25 limit 3000]
   (let [envelope (* (sin-osc vibrato) (env-gen (perc 0.1 duration)))]
     (-> (+
          (* low (sin-osc (* freq 1/2)))
@@ -58,7 +58,7 @@
          (* (sin-osc 0.8) (+ -0.03 (square freq)))
          (+ -0.04 (sin-osc freq)))
         (* 0.7 envelope)
-        (effects :room room :wet wet :pan position :volume volume))))
+        (effects :room room :wet wet :pan position :volume volume :high limit))))
 
 (definst bell [frequency 440 duration 1.0 volume 1.0 position 0 wet 0.5 room 0.5
                h0 1 h1 0.6 h2 0.4 h3 0.25 h4 0.2 h5 0.15]

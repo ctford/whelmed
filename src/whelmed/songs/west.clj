@@ -176,7 +176,7 @@
 (defmethod live/play-note ::bass
   [{freq :pitch left? :left?}]
   (let [[position low] (if left? [-1/3 0.3] [1/5 2])]
-    (some-> freq (groan :volume 0.5 :position position :wet 0.3 :low low))))
+    (some-> freq (groan :volume 0.5 :position position :wet 0.3 :low low :limit 3000))))
 
 (defmethod live/play-note ::accompaniment
   [{freq :pitch left? :left?}]
@@ -192,7 +192,7 @@
 
 (defmethod live/play-note ::epilogue
   [{freq :pitch seconds :duration}]
-  (some-> freq (corgan seconds :vol 1.5 :pan -1/4 :wet 0.6 :vibrato 100/60 :depth 0.5)))
+  (some-> freq (corgan seconds :vol 0.4 :pan -1/2 :wet 0.3 :vibrato 100/15 :room 0.9)))
 
 (defmethod live/play-note ::break
   [{freq :pitch}]
