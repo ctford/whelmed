@@ -42,8 +42,10 @@
       [5 4 2 3 4 7 6 6 5 4 3 4 2.5])
     (all :part ::melody)))
 
-(def it (->> (reduce with
-                     [(phrase [1] [7]) (phrase [2] [4]) (phrase [3] [0])])
+(def it (->> (with
+               (phrase [1] [7])
+               (phrase [2] [4])
+               (phrase [3] [0])) 
              (all :part ::melody)))
 
 ; Arpeggios
