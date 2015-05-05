@@ -1,4 +1,4 @@
-Some music by @ctford.
+Some music by [@ctford](https://twitter.com/ctford).
 
 https://github.com/ctford/whelmed
 
