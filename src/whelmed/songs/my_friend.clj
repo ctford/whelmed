@@ -1,5 +1,6 @@
 (ns whelmed.songs.my-friend
   (:require [overtone.live :refer :all]
+            [whelmed.melody :refer [in-time]]
             [whelmed.instrument :refer [bass organic sing tip kluck]]
             [leipzig.melody :refer :all]
             [leipzig.scale :as scale]
@@ -38,6 +39,12 @@
    (-> chord/triad (chord/root 1) power-up)
    (-> chord/triad (chord/root 2) power-up)
    (-> chord/triad (chord/root 1) power-up)])
+
+(def prefix
+  (->>
+    (phrase (repeat 2) (map #(dissoc % :v) chords))
+    (in-time (partial * 5/4))
+    (all :part ::accompaniment)))
 
 (def bassline
   (let [blat (phrase [2/2 1/2 5/2] [0 0 nil])
@@ -175,7 +182,8 @@
 
 (def my-friend
   (->>
-    intro 
+    (after (- (duration prefix)) prefix)
+    (then intro) 
     (then verse) 
     (then chorus)
     (then verse ) 
