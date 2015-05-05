@@ -9,7 +9,7 @@
             [leipzig.temperament :as temperament]))
 
 ; Instruments
-(def the-key (comp temperament/equal scale/F scale/major))
+(def the-key (comp temperament/equal scale/G scale/major))
 
 ; Arrangement
 (defmethod live/play-note ::bass

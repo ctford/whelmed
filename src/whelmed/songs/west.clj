@@ -168,7 +168,7 @@
       (then variation)
       (then (->> response (with (->> break (after 16)))))
       (then outro)
-      (where :pitch (comp temperament/equal scale/F scale/minor))
+      (where :pitch (comp temperament/equal scale/B scale/flat scale/minor))
       (where :time (bpm 80))
       (where :duration (bpm 80)))))
 

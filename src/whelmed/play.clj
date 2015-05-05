@@ -13,12 +13,12 @@
 
 (def tracks
   [
-   ["west" west-with-the-sun] ; F minor, 80 bpm
-   ["sidhe" sidhe] ; B flat minor -> D minor, 105 bpm
-   ["my-friend" my-friend] ; F major, 120 bpm -> 60 bpm
-   ["ska" ska] ; E minor -> B flat major -> E minor, 180 bpm -> 120 bpm
+   ["west" west-with-the-sun] ; G minor ending on B flat major seventh, 80 bpm
+   ["sidhe" sidhe] ; C minor -> D minor -> E minor ending on G major, 100 bpm
+   ["my-friend" my-friend] ; G major ending on A minor, 120 bpm -> 60 bpm
+   ["ska" ska] ; E minor -> B flat major -> E minor ending on C major, 180 bpm -> 120 bpm
    ["dolorem" dolorem-ipsum] ; F lydian, 80 bpm
-   ["love" love-and-fear] ; G minor, 80 bpm
+   ["love" love-and-fear] ; G minor ending on B flat major, 80 bpm (really 40 bpm)
    ["at-all" at-all] ; D major, 160 bpm -> 140 bpm
    ])
 
@@ -36,7 +36,7 @@
       tracks
       drop-last
       (map second)
-      (reduce #(then (after 3 %2) %1))
+      (reduce #(then %2 %1))
       (then (after (rand-int 900) at-all))) ; Secret track!
     (get
       (->>

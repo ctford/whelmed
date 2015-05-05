@@ -161,10 +161,10 @@
 
 ; Arrangement
 (defmethod play-note ::port [{hz :pitch seconds :duration direction :direction}]
-  (some-> hz (corgan seconds :vol 0.4 :pan -1/2 :wet 0.3 :room 0.9 :vibrato 105/60)))
+  (some-> hz (corgan seconds :vol 0.4 :pan -1/2 :wet 0.3 :room 0.9 :vibrato 100/60)))
 
 (defmethod play-note ::starboard [{hz :pitch seconds :duration direction :direction}]
-  (some-> hz (corgan seconds :vol 0.4 :pan 1/2 :wet 0.5 :room 0.9 :vibrato 105/15)))
+  (some-> hz (corgan seconds :vol 0.4 :pan 1/2 :wet 0.5 :room 0.9 :vibrato 100/15)))
 
 (defmethod play-note ::fore [{hz :pitch seconds :duration direction :direction}]
   (some-> hz (kraft-bass :vol 1 :dur seconds :pan 0 :wet 0.7 :room 0.9)))
@@ -178,20 +178,20 @@
     (->> first-section
          (then second-section)
          (then key-change)
-         (where :pitch (comp low B flat minor)))
+         (where :pitch (comp C minor)))
     (then
       (->> third-section
            (then first-section)
            (then second-section)
            (then key-change)
-           (where :pitch (comp C minor))))
+           (where :pitch (comp D minor))))
     (then
       (->> third-section
            (then first-section)
            (then finale)
-           (where :pitch (comp D minor))))
+           (where :pitch (comp E minor))))
     (where :pitch temperament/equal)
-    (in-time (bpm 105))))
+    (in-time (bpm 100))))
 
 (comment
   (overtone/recording-start "sidhe.wav")
