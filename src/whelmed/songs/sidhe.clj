@@ -147,7 +147,7 @@
 
 ; Finale
 (def uplift
-  (phrase (concat (repeat 7 4) [28]) [4 3 4 3 2 4 4 4 4]))
+  (phrase (concat (repeat 7 4) [20]) [4 3 4 3 2 4 4 4 4]))
 
 (def peace
   (->> harmony

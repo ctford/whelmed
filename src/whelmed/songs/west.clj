@@ -192,7 +192,7 @@
 
 (defmethod live/play-note ::epilogue
   [{freq :pitch seconds :duration}]
-  (some-> freq (corgan seconds :vol 0.4 :pan -1/2 :wet 0.3 :vibrato 100/15 :room 0.9)))
+  (some-> freq (corgan seconds :vol 0.4 :pan 1/2 :wet 0.5 :vibrato 100/60 :room 0.9)))
 
 (defmethod live/play-note ::break
   [{freq :pitch}]

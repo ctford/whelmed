@@ -9,7 +9,7 @@
 (defonce random-walk (audio-bus))
 (defonce walk (walker random-walk))
 (def resonance (mul-add (in:kr random-walk) 1500 2000))
-(def space (mul-add (in:kr random-walk) 1 0))
+(def space (mul-add (in:kr random-walk) 0.5 0.4))
  
 (defcgen cut-out [input {:default :none}]
   (:ar (do (detect-silence input :action FREE)
