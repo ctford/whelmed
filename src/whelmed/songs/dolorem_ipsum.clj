@@ -43,12 +43,13 @@
     (all :part ::melody)))
 
 (def finale
-  (->> [(-> triad (inversion 2) (root 3) (update-in [:i] #(- % 1/2)))
-        (-> triad (inversion 1) (root 6))]
-       (mapthen #(->> (arpeggiate % [:i :v :i :iii] 1/4) (times 4)))
-       (times 4)
-       (all :part ::arpeggios)
-       (with (->> (phrase (repeat 8 4) (cycle [0 -1])) (all :part ::oooh)))))
+  (let [alt-chords [(-> triad (inversion 2) (root 3) (update-in [:i] #(- % 1/2)))
+                    (-> triad (inversion 1) (root 6))]]
+    (->> 
+      (times 2 (mapthen #(->> (arpeggiate % [:i :v :i :iii] 1/4) (times 4)) alt-chords))
+      (then (times 2 (mapthen #(->> (arpeggiate % [:i :v :i :iii] 1/2) (times 2)) alt-chords)))
+      (all :part ::arpeggios)
+      (with (->> (phrase (repeat 8 4) (cycle [0 -1])) (all :part ::oooh))))))
 
 ; Arpeggios
 (def theme 

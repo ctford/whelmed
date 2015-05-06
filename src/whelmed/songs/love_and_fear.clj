@@ -180,8 +180,10 @@
 (defmethod play-note ::bass [{:keys [duration pitch]}]
   (some-> pitch (corgan duration :vibrato 2/3 :limit 700 :depth 0 :pan -1/3 :depth 0 :vol 0.3 :room 0.9)))
 
-(defmethod play-note ::arpeggios [{:keys [pitch duration]}]
-  (some-> pitch (corgan duration :vibrato 4/3 :vol 0.2 :depth 0.2 :limit 2000 :pan 1/5 :room 0.9)))
+(defn praise [p up] (if up p (/ p 2)))
+(defmethod play-note ::arpeggios [{:keys [pitch duration up]}]
+  (some-> pitch (praise up) (brassy duration :p 2/3 :noise 10 :pan -1/3 :wet 0.8 :vol 0.9 :p 8/6 :room 0.9))
+  (some-> pitch (corgan duration :vibrato 2/3 :vol 0.2 :depth 0.2 :limit 2000 :pan 1/5 :room 0.9)))
 
 (defmethod play-note ::beat [note] ((-> note :drum kit) :amp 0.5))
 
@@ -209,7 +211,8 @@
 
   (->>
     intro
-    (then (times 2 statement))
+    (then statement)
+    (then (all :up true statement))
     (then two-motives)
     (then (->> melodyb (where :pitch lower)
             (with (times 4 beatb))
