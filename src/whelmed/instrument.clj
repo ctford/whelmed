@@ -34,12 +34,12 @@
   (:default :ar))
 
 ; Instruments
-(definst shudder [freq 440 vibrato 6 pan 0 wet 0.5 volume 1.0 room 0.5]
+(definst shudder [freq 440 vibrato 6 pan 0 wet 0.5 volume 1.0 room 0.5 limit 5000]
   (-> (square freq)
       (* (sin-osc freq))
       (* (sin-osc vibrato))
       (* 2/3 (env-gen (perc 2 1.5)))
-      (effects :room room :wet wet :pan (line:ar pan (- pan) 3.5) :volume volume)
+      (effects :room room :wet wet :pan (line:ar pan (- pan) 3.5) :volume volume :high limit)
       cut-out))
 
 (definst sawish [freq 440 duration 1.5 vibrato 8/3 depth 1 volume 1.0 pan 0.0 wet 0.5 room 0.5]

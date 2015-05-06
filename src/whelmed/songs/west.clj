@@ -180,7 +180,7 @@
 
 (defmethod live/play-note ::accompaniment
   [{freq :pitch left? :left?}]
-  (some-> freq (shudder :volume 1 :pan (if left? 1/2 -1/2) :wet 0.8)))
+  (some-> freq (shudder :volume 1 :pan (if left? 1/2 -1/2) :wet 0.8 :limit 6000)))
 
 (defmethod live/play-note ::lead
   [{freq :pitch}]
