@@ -132,17 +132,6 @@
       (effects :pan pan :wet wet :room room :volume volume)
       cut-out))
 
-(definst organic [freq 440 dur 1 volume 0.6 pan 0 wet 0.5 room 0.5]
-  (-> (square freq)
-      (+ (sin-osc 9) (sin-osc (* 2 freq)))
-      (+ (sin-osc 9) (sin-osc (* 1.999 freq)))
-      (+ (sin-osc 6) (sin-osc (* 4.01 freq)))
-      (+ (sin-osc 3) (sin-osc (* 6 freq)))
-      (+ (sin-osc 3) (sin-osc (* 1/2 freq)))
-      (* 1/10 (env-gen (adsr 0.05 0.2 0.7 0.1) (line:kr 1 0 dur)))
-      (effects :pan pan :wet wet :room room :volume volume :high 4000)
-      cut-out))
-
 (definst sing [freq 440 dur 1.0 volume 1.0 pan 0 wet 0.5 room 0.5]
   (-> (saw freq)
       (+ (saw (* freq 1.01)))

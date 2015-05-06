@@ -1,7 +1,7 @@
 (ns whelmed.songs.my-friend
   (:require [overtone.live :refer :all]
             [whelmed.melody :refer [in-time]]
-            [whelmed.instrument :refer [bass organic sing tip kluck]]
+            [whelmed.instrument :refer [bass organ sing tip kluck]]
             [leipzig.melody :refer :all]
             [leipzig.scale :as scale]
             [leipzig.canon :as canon]
@@ -19,8 +19,8 @@
 
 (defmethod live/play-note ::accompaniment
   [{hertz :pitch seconds :duration}]
-  (some-> hertz (organic seconds :wet 0.8 :pan 1/3))
-  (some-> hertz (* 1.0001) (organic seconds :wet 0.9 :pan -1/3)))
+  (some-> hertz (organ seconds :wet 0.8 :pan 1/3))
+  (some-> hertz (* 1.0001) (organ seconds :wet 0.9 :pan -1/3)))
 
 (defmethod live/play-note ::melody
   [{hertz :pitch seconds :duration}]
