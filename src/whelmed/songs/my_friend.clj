@@ -19,8 +19,8 @@
 
 (defmethod live/play-note ::accompaniment
   [{hertz :pitch seconds :duration}]
-  (some-> hertz (organ seconds :attack 0.1 :wet 0.6 :pan 1/3 :vol 0.2))
-  (some-> hertz (* 1.0001) (organ seconds :attack 0.05 :wet 0.7 :pan -1/3 :vol 0.2)))
+  (some-> hertz (organ seconds :attack 0.06 :wet 0.4 :pan 1/3 :vol 0.2))
+  (some-> hertz (* 1.0001) (organ seconds :attack 0.03 :wet 0.7 :pan -1/3 :vol 0.2)))
 
 (defmethod live/play-note ::melody
   [{hertz :pitch seconds :duration}]
@@ -48,7 +48,6 @@
   (->>
     (phrase (repeat 2) (map #(dissoc % :v) chords))
     (in-time (partial * 6/5))
-    (times 2)
     (all :part ::accompaniment)))
 
 (def bassline
