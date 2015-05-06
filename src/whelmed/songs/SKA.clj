@@ -269,7 +269,7 @@
 
 (defmethod play-note ::sunrise [{hz :pitch s :duration}]
   (some-> hz (organ :walk 1/2 :pan 1/2 :attack 0.1 :vol 0.1 :dur s :wet 0.5 :room 0.9 :limit 5000 :p 2))
-  (some-> hz (brassy :walk 1/2 :pan 1/2 :attack 0.1 :vol 0.2 :dur s :wet 0.7 :room 0.8 :limit 4000)))
+  (some-> hz (brassy :walk 1/2 :pan 1/2 :attack 0.1 :vol 0.4 :dur s :wet 0.7 :room 0.8 :limit 4000)))
 
 
 (comment
