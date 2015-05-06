@@ -15,6 +15,7 @@
   (->> (phrase (cycle [5/3 1 1/3 1])
                [0 0 2 4 5 5 4 2])
        (having :open (cycle [false false false true]))
+       (with (->> (phrase (repeat 4) [4 9]) (all :secondary true)))
        (all :part ::bass)
        (where :pitch (comp lower lower))))
 
@@ -122,7 +123,7 @@
        (then (phrase (repeat 1/3)
                      (interleave (concat (range 0 8)) (repeat -7) (repeat -5))))
        (where :pitch raise)
-       (all :part ::harmony)))
+       (all :part ::pegs)))
 
 ; Plateau
 (def and-if-you-lived-here
@@ -179,7 +180,7 @@
 ; Return
 (def fallbass
   (->> (take 4 base)
-       (then (phrase [4] [(lower -3.5)]))
+       (then (phrase [4] [[-10.5 -6.5]]))
        (all :part ::bass)))
 
 (def fallchords
@@ -252,10 +253,14 @@
     (in-time (bpm 180))))
 
 (defmethod play-note ::harmony [{hz :pitch seconds :duration}]
-  (some-> hz (corgan :vol 0.1 :under-attack 0.2 :attack 0.02 :dur seconds :wet 0.2 :room 0.8 :pan 1/5 :vibrato 3 :limit 6000)))
+  (some-> hz (corgan :vol 0.2 :under-attack 0.2 :attack 0.02 :dur seconds :wet 0.2 :room 0.8 :pan 1/5 :vibrato 3 :limit 6000)))
 
-(defmethod play-note ::bass [{hz :pitch seconds :duration open? :open}]
-  (some-> hz (corgan :vol 0.2 :under-attack 0.1 :attack 0.001 :dur seconds :wet 0.2 :room 0.8 :pan -1/3 :vibrato (if open? 2 1) :limit (if open? 4000 1500))))
+(defmethod play-note ::pegs [{hz :pitch seconds :duration}]
+  (some-> hz (sing :volume 1.5 :dur seconds :wet 0.9 :room 0.8 :pan 1/5)))
+
+(defmethod play-note ::bass [{hz :pitch seconds :duration open? :open secondary? :secondary}]
+  (let [[pan vol] (if secondary? [1/3 0.1] [-1/3 0.3])]
+   (some-> hz (corgan :vol vol :under-attack 0.1 :attack 0.001 :dur seconds :wet 0.2 :room 0.8 :pan pan :vibrato (if open? 2 1) :limit (if open? 4000 1500)))))
 
 (defmethod play-note ::rhythm [{hz :pitch, s :duration}]
   (some-> hz (organ s :attack 0.01 :vol 0.3 :limit 2000 :attack 0 :pan 1/3 :room 0.8 :wet 0.6)))
