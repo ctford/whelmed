@@ -44,6 +44,7 @@
   (->>
     (phrase (repeat 2) (map #(dissoc % :v) chords))
     (in-time (partial * 5/4))
+    (times 2)
     (all :part ::accompaniment)))
 
 (def bassline
@@ -182,11 +183,10 @@
 
 (def postfix
   (->>
-    (phrase (repeat 4)
+    (phrase [4 4 8]
             [(-> chord/triad (chord/root -2))
-             (-> chord/triad (chord/root 2) (chord/inversion 1) (update-in [:iii] (partial + 1/2)))
-             (-> chord/triad (chord/root -2))
-             (-> chord/triad (chord/root 3) (chord/inversion 1))])
+             (-> chord/triad (chord/root 3) (chord/inversion 1))
+             (-> chord/triad (chord/root -2))])
     (all :part ::accompaniment)))
 
 (def my-friend
