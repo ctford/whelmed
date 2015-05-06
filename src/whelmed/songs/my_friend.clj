@@ -26,6 +26,10 @@
   [{hertz :pitch seconds :duration}]
   (some-> hertz (sing seconds :wet 0.3 :volume 1.2)))
 
+(defmethod live/play-note ::postfix [note]
+  (live/play-note (assoc note :part ::melody))
+  (live/play-note (assoc note :part ::accompaniment)))
+
 (defmethod live/play-note ::beat
   [{hertz :pitch drum :drum}]
   (some-> hertz (drum :volume 0.5)))
@@ -43,7 +47,7 @@
 (def prefix
   (->>
     (phrase (repeat 2) (map #(dissoc % :v) chords))
-    (in-time (partial * 5/4))
+    (in-time (partial * 6/5))
     (times 2)
     (all :part ::accompaniment)))
 
@@ -185,9 +189,9 @@
   (->>
     (phrase [4 4 8]
             [(-> chord/triad (chord/root -2))
-             (-> chord/triad (chord/root 3) (chord/inversion 1))
+             (-> chord/triad (chord/root 2) (chord/inversion 1) (update-in [:iii] (scale/from 1/2)))
              (-> chord/triad (chord/root -2))])
-    (all :part ::accompaniment)))
+    (all :part ::postfix)))
 
 (def my-friend
   (->>
