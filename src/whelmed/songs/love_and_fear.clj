@@ -188,7 +188,7 @@
 (defmethod play-note ::beat [note] ((-> note :drum kit) :amp 0.5))
 
 (def love-and-fear
-  (let [intro (with bassline arpeggios)
+  (let [intro (with bassline (all :up true arpeggios))
         statement
           (->> melody
             (with (times 4 beata))
@@ -211,8 +211,7 @@
 
   (->>
     intro
-    (then statement)
-    (then (all :up true statement))
+    (then (times 2 statement))
     (then two-motives)
     (then (->> melodyb (where :pitch lower)
             (with (times 4 beatb))
