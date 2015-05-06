@@ -13,10 +13,4 @@
 
 (def in-time tempo)
 
-(defn demo
-  ([notes] (demo major notes))
-  ([scale notes]
-    (->> notes
-      (in-time (bpm 90))
-      (where :pitch (comp C scale))
-      play)))
+(defn accelerando [from to by notes])
