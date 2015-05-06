@@ -12,8 +12,8 @@
 (def space (mul-add (in:kr random-walk) 0.5 0.4))
  
 (defcgen cut-out [input {:default :none}]
-  (:ar (do (detect-silence input :action FREE)
-           input))
+  (:ar (let [_  (detect-silence input :action FREE)]
+         input))
   (:default :ar))
 
 (defcgen effects [input  {:default :none}
