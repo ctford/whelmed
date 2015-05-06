@@ -91,7 +91,7 @@
         two (->> one
              (but 2 8 (phrase [1/2 1/2 1/2 1/2 4] [5 4 2 -1 0])))]
     (->> one (then two) (times 2)  
-      (but 27 32 (phrase [1 4] [7 6]))
+      (but 27 32 (phrase [1 3] [7 6]))
       (all :part ::arpeggios))))
 
 (def theme
