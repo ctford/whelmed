@@ -211,7 +211,8 @@
 
   (->>
     intro
-    (then (times 2 statement))
+    (then statement)
+    ;(then statement) Vary?
     (then two-motives)
     (then (->> melodyb (where :pitch lower)
             (with (times 4 beatb))
