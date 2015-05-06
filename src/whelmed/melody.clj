@@ -11,13 +11,7 @@
 
 (defn augment [chord k n] (update-in chord [k] (from n)))
 
-(defn in-time [timing notes]
-  (->> notes
-    (map
-      (fn [{time :time, duration :duration :as note}]
-        (let [relative-timing #(-> % (- time) timing (+ (timing time)))]
-          (update-in note [:duration] relative-timing))))
-    (where :time timing)))
+(def in-time tempo)
 
 (defn demo
   ([notes] (demo major notes))
