@@ -9,6 +9,7 @@
 (defonce random-walk (audio-bus))
 (defonce walk (walker random-walk))
 (def resonance (mul-add (in:kr random-walk) 1500 2000))
+(def direction (mul-add (in:kr random-walk) -0.5 0.25))
  
 (defmacro cut-out [input]
   `(let [in# ~input
@@ -25,7 +26,7 @@
                   low    {:default 0}]
   (:ar (-> input
            (* volume)
-           (pan2 pan)
+           (pan2 (+ direction pan))
            (free-verb :mix early :room 0.1)
            (free-verb :mix wet :room room)
            (lpf high)
