@@ -62,7 +62,7 @@
 (def gymnopédie-one
   (->>
     (phrase (cycle [3/2 3/2 2/2]) [nil 4 6 5 4 1 0 1 2])
-    (then (phrase (repeat 4) [-1 0 4 -1 4]))
+    (then (phrase (repeat 4) [-1 0 4 -1 -3]))
     (all :part ::epilogue)))
 
 ; Response
