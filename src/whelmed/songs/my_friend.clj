@@ -19,8 +19,8 @@
 
 (defmethod live/play-note ::accompaniment
   [{hertz :pitch seconds :duration}]
-  (some-> hertz (organ seconds :wet 0.8 :pan 1/3))
-  (some-> hertz (* 1.0001) (organ seconds :wet 0.9 :pan -1/3)))
+  (some-> hertz (organ seconds :attack 0.1 :wet 0.6 :pan 1/3 :vol 0.2))
+  (some-> hertz (* 1.0001) (organ seconds :attack 0.05 :wet 0.7 :pan -1/3 :vol 0.2)))
 
 (defmethod live/play-note ::melody
   [{hertz :pitch seconds :duration}]
