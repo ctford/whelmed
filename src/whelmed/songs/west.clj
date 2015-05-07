@@ -148,6 +148,11 @@
 
 ; Body
 (def west-with-the-sun
+
+  "I'll run away.
+  I'll get away.
+  But my heart will go west with the sun."
+
   (let [accompaniment
         (->> backing (with bassline)) 
         intro
