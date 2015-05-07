@@ -193,6 +193,11 @@
     (all :part ::postfix)))
 
 (def my-friend
+
+  "I know you're my friend, but
+  that's no excuse for the other day.
+  Anyone else would feel the same."
+
   (->>
     (after (- (duration prefix)) prefix)
     (then intro) 
