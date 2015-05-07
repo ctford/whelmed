@@ -93,19 +93,18 @@
     (then (->> melody (with answer)))
     (then (after 3/2 (->> melody (with answer)
                           (then chorus)
-                          (in-time (comp (scale [2/3 1/3]) #(* 2 %)))
-                          )))
+                          (in-time (comp (scale [2/3 1/3]) #(* 2 %))))))
     (then finale)
     (wherever (comp not :part), :part (is ::default))
     (in-time (bpm 160))
     (where :pitch (comp temperament/equal low D major))))
 
 (defmethod play-note ::dux [{hz :pitch s :duration stress :velocity}]
-  (some-> hz (sing s 1 :pan -1/5 :wet 0.4 :room 0.3 :vol (* 1/3 (or stress 2/3)) :limit 3000))
+  (some-> hz (* 2) (sing s 1 :pan -1/5 :wet 0.3 :room 0.3 :volume (* 2 (or stress 2/3)) :limit 4000))
   (some-> hz (corgan s 1 :pan 1/9 :wet 0.7 :room 0.3 :vol 0.2 :limit 1000 :vibrato 8/3))) 
 
-(defmethod play-note ::default [{hz :pitch stress :velocity}]
-  (some-> hz (bell 1/8 3 :pan 0 :wet 0.1 :room 0.3 :vol (or stress 2/3)))) 
+(defmethod play-note ::default [{s :duration hz :pitch stress :velocity}]
+  (some-> hz (corgan s :under-attack 0 :limit 1000 :depth 1/2 :pan 0 :vibrato 8/3 :wet 0.1 :room 0.3 :vol 0.08))) 
 
 (defmethod play-note ::comes [{hz :pitch s :duration stress :velocity}]
   (some-> hz (harpsichord s :pan 1/5 :vibrato 4/3 :room 0.3 :depth 0.5 :wet 0.5 :limit 1500 :vol 1.5))) 
