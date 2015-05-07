@@ -133,6 +133,17 @@
 
 ; Pull it all together
 (def dolorem-ipsum
+
+  "Neque porro quisquam est
+  qui dolorem ipsum quia dolor sit amet,
+  consectetur,
+  adipisci velit.
+
+  I am the captain of my fate.
+  I don't choose pain for its own sake.
+  It's just a trick to hold my place.
+  I've lost my sense but not my shape."
+
   (let [lorem (->> theme (then response))
         intro (->> lorem (with (->> neque (then sit-amet))) (times 2))
         development (->> wander (with notice))]
