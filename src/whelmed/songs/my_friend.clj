@@ -189,8 +189,11 @@
   (->>
     (phrase [16] [[-2 0]]) 
     (with (phrase (repeat 4 4) [2 3 3.5 3]))
-    (times 2)
-    (all :part ::postfix)))
+    (all :part ::postfix)
+    (with (->> (phrase [5/3 1 1/3 1] (repeat -9))
+               (times 4) 
+               (all :part ::bass)))
+    (times 2)))
 
 (def my-friend
 
