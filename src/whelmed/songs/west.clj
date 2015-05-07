@@ -189,7 +189,7 @@
 (defmethod live/play-note ::response
   [{freq :pitch seconds :duration}]
   (some-> freq (organ seconds :vol 1.0 :pan -1/4 :wet 0.8))
-  (some-> freq (/ 2) (sing seconds :vol 0.2 :pan 1/4 :wet 0.9)))
+  (some-> freq (/ 2) (sing seconds :vol 0.05 :pan 1/4 :wet 0.9)))
 
 (defmethod live/play-note ::epilogue
   [{freq :pitch seconds :duration}]
