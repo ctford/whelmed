@@ -6,6 +6,7 @@
     leipzig.chord
     leipzig.temperament
     whelmed.melody
+    whelmed.contrib.harpsichord
     whelmed.instrument)
   (:require [leipzig.temperament :as temperament]))
 
@@ -19,15 +20,13 @@
 (def progression [I I II II II V I (update-in V [:bass] lower)])
 
 (def rhythm-n-bass
-  (let [bass (fn [chord]
-               (phrase [3 1] (repeat (:bass chord))))
+  (let [bassline (phrase (cycle [4 3 1]) (mapcat #(repeat %2 (:bass %1)) progression (cycle [1 2])))
         rhythm (fn [chord]
-                 (->> [(dissoc chord :bass)]
-                   (phrase [2])
-                   (after 2)))
-        once #(with (rhythm %) (bass %))]
+                 (->> [nil (dissoc chord :bass)]
+                      (phrase (repeat 2))))]
     (->> progression
-         (mapthen once)
+         (mapthen rhythm)
+         (with bassline)
          (all :part ::default))))
 
 (def intro
@@ -53,7 +52,7 @@
   (->>
     (after 9/2 (phrase (repeat 1/2) [11 11 12 9 7]))
     (then
-      (after 11/2 (phrase (repeat 1/2) [8 8 9 8 3])))
+      (after 11/2 (phrase (repeat 1/2) [8 8 9 7 5])))
     (then
       (after 11/2 (phrase (repeat 1/2) [8 8 9 6 4])))
     (then
@@ -95,20 +94,21 @@
     (then (after 3/2 (->> melody (with answer)
                           (then chorus)
                           (in-time (comp (scale [2/3 1/3]) #(* 2 %)))
-                          (in-time #(* % 7/8)))))
+                          )))
     (then finale)
     (wherever (comp not :part), :part (is ::default))
     (in-time (bpm 160))
     (where :pitch (comp temperament/equal low D major))))
 
 (defmethod play-note ::dux [{hz :pitch s :duration stress :velocity}]
-  (some-> hz (sing s 1 :pan -1/3 :wet 0.6 :vol (* 1/2 (or stress 2/3)) :limit 3000))) 
+  (some-> hz (sing s 1 :pan -1/5 :wet 0.4 :room 0.3 :vol (* 1/3 (or stress 2/3)) :limit 3000))
+  (some-> hz (corgan s 1 :pan 1/9 :wet 0.7 :room 0.3 :vol 0.2 :limit 1000 :vibrato 8/3))) 
 
 (defmethod play-note ::default [{hz :pitch stress :velocity}]
-  (some-> hz (organ 1/8 2 :pan 0 :wet 0.7 :vol (* 1/2 (or stress 2/3))))) 
+  (some-> hz (bell 1/8 3 :pan 0 :wet 0.1 :room 0.3 :vol (or stress 2/3)))) 
 
 (defmethod play-note ::comes [{hz :pitch s :duration stress :velocity}]
-  (some-> hz (corgan s 2 :pan 1/3 :vibrato 4/3 :depth 0.5 :wet 0.6 :limit 1500 :vol (* 1/2 (or stress 2/3))))) 
+  (some-> hz (harpsichord s :pan 1/5 :vibrato 4/3 :room 0.3 :depth 0.5 :wet 0.5 :limit 1500 :vol 1.5))) 
 
 (comment
   (play at-all)

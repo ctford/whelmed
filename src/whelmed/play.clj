@@ -1,7 +1,7 @@
 (ns whelmed.play
   (:use
     [overtone.live :only [recording-start recording-stop kill-server]]
-    [leipzig.melody :only [then after duration]]
+    [leipzig.melody :only [then after duration tempo times]]
     [leipzig.live :only [play stop]]
     [whelmed.songs.west :only [west-with-the-sun]]
     [whelmed.songs.dolorem-ipsum :only [dolorem-ipsum]]
