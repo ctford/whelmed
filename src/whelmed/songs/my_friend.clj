@@ -1,6 +1,6 @@
 (ns whelmed.songs.my-friend
   (:require [overtone.live :refer :all]
-            [whelmed.melody :refer [in-time accelerando]]
+            [whelmed.melody :refer [in-time]]
             [whelmed.instrument :refer [bass organ corgan sing tip kluck]]
             [leipzig.melody :refer :all]
             [leipzig.scale :as scale]
@@ -190,7 +190,6 @@
     (phrase [16] [[-2 0]]) 
     (with (phrase (repeat 4 4) [2 3 3.5 3]))
     (times 2)
-    (in-time (accelerando 0 16 2/3))
     (all :part ::postfix)))
 
 (def my-friend
