@@ -191,9 +191,10 @@
            (then finale)
            (where :pitch (comp E minor))))
     (where :pitch temperament/equal)
-    (in-time (comp (bpm 80) (accelerando 0 32 4/5)))))
+    (in-time (comp (bpm 80) (accelerando 4 16 4/5)))))
 
 (comment
   (overtone/recording-start "sidhe.wav")
   (play sidhe)
+  (-> sidhe var jam)
   (overtone/recording-stop))
