@@ -62,7 +62,7 @@
         (effects :room room :wet wet :pan position :volume volume :high limit)
         cut-out)))
 
-(definst bell [frequency 440 duration 1.0 volume 1.0 position 0 wet 0.5 room 0.5
+(definst bell [frequency 440 duration 1.0 volume 1.0 position 0 wet 0.5 room 0.5 low 0
                h0 1 h1 0.6 h2 0.4 h3 0.25 h4 0.2 h5 0.15]
   (let [harmonics   [ 1  2  3  4.2  5.4 6.8]
         proportions [h0 h1 h2   h3   h4  h5]
@@ -74,11 +74,11 @@
         partials
         (map proportional-partial harmonics proportions)
         whole (* 10 (mix partials))]
-    (cut-out (effects whole :room room :wet wet :pan position :volume volume))))
+    (cut-out (effects whole :room room :wet wet :pan position :volume volume :low low))))
 
 (definst brassy [freq 440 dur 1.0 vol 1 wet 0.5 room 0.5 noise 1.0 limit 3000 p 1]
   (-> (+
-       (* (sin-osc freq) (env-gen (adsr 0.0 0.3 0.3)))
+       (* (sin-osc freq) (env-gen (adsr 0.0 0.3 0.3) (line:kr 1 0 dur)))
        (* (white-noise) noise (env-gen (perc 0.0 0.01))))
       (* vol)
       (rlpf (* 5 freq) 1/10)

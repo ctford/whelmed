@@ -165,11 +165,12 @@
 
 ; Arrangement
 (defmethod play-note ::melody [{hz :pitch s :duration}]
-  (some-> hz (bell s :volume 1 :position 1/9 :wet 0.4 :room 0.1))
-  (some-> hz (* 2) (bell 4 :volume 0.7 :position 1/7 :wet 0.9 :room 0.9)))
+  (some-> hz (bell s :volume 1 :position 1/9 :wet 0.4 :room 0.1 :low 400))
+  (some-> hz (* 2) (bell 4 :volume 0.7 :position 1/7 :wet 0.9 :room 0.9 :low 400)))
 
 (defmethod play-note ::harmony [{hz :pitch s :duration}]
-  (some-> hz (bell 7 :volume 0.7 :position -1/2 :wet 0.8 :room 0.9)))
+  (some-> hz (bell 7 :volume 0.7 :position -1/2 :wet 0.8 :room 0.9))
+  (some-> hz (sing s :volume 0.4 :position 1/2 :wet 0.8 :room 0.9)))
 
 (defmethod play-note ::chords [{hz :pitch, length :duration}]
   (some-> hz (corgan length 0.8 :vol 0.1 :vibrato 2/3 :depth 0.4 :pan 1/4 :room 0.9)))
@@ -182,7 +183,7 @@
 
 (defn praise [p up] (if up p (/ p 2)))
 (defmethod play-note ::arpeggios [{:keys [pitch duration up]}]
-  (some-> pitch (praise up) (brassy 4/6 :p 2/3 :noise 10 :pan -1/3 :wet 0.8 :vol 0.4 :p 8/6 :room 0.9))
+  (some-> pitch (praise up) (brassy :dur duration :p 2/3 :noise 10 :pan -1/3 :wet 0.8 :vol 0.4 :p 8/6 :room 0.9))
   (some-> pitch (corgan duration :vibrato 2/3 :vol 0.2 :depth 0.2 :limit 2000 :pan 1/5 :room 0.9)))
 
 (defmethod play-note ::beat [note] ((-> note :drum kit) :amp 0.3))

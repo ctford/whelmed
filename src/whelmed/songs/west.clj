@@ -184,11 +184,12 @@
 
 (defmethod live/play-note ::lead
   [{freq :pitch}]
-  (some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.8 :volume 0.8)))
+  (some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.6 :volume 0.7)))
 
 (defmethod live/play-note ::response
   [{freq :pitch seconds :duration}]
-  (some-> freq (organ seconds :vol 1.0 :pan -1/4 :wet 0.8)))
+  (some-> freq (organ seconds :vol 1.0 :pan -1/4 :wet 0.8))
+  (some-> freq (/ 2) (sing seconds :vol 0.4 :pan 1/4 :wet 0.9)))
 
 (defmethod live/play-note ::epilogue
   [{freq :pitch seconds :duration}]
