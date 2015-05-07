@@ -136,7 +136,7 @@
       (+ (saw (* freq 1.01)))
       (rlpf (mul-add (sin-osc 8) 200 1500) 1/8)
       (* 1/4 (env-gen (asr 0.03 0.3 0.1) (line:kr 1 0 dur)))
-      (effects :room room :mix wet :pan pan :volume volume)
+      (effects :room room :mix wet :pan pan :volume volume :high 5000)
       cut-out))
 
 (definst kluck [freq 220 volume 1.0 wet 0.5 room 0.1 pan 0]
