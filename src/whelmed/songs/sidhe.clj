@@ -218,7 +218,14 @@
   Yet as he bent to better see,
   His touch disturbed the water,
   Her face dissolved and left him only,  
-  Faint and distant laughter."
+  Faint and distant laughter.
+
+  ***
+  
+  Now memory fades, unwanted thoughts,
+  Disturb him in the dark,
+  Was she merely fancy spun,
+  To sooth a lonely heart?"
 
   (->>
     (->> first-section
