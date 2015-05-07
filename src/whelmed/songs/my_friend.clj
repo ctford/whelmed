@@ -185,12 +185,11 @@
     (->> (with bass arpeggs core-med)
          (then (with flatline flock arpeggs core-med)))))
 
-(def postfix
+(def bond
   (->>
-    (phrase [4 4 8]
-            [(-> chord/triad (chord/root -2))
-             (-> chord/triad (chord/root 2) (chord/inversion 1) (update-in [:iii] (scale/from 1/2)))
-             (-> chord/triad (chord/root -2))])
+    (phrase [16] [[-2 0]]) 
+    (with (phrase (repeat 4 4) [2 3 3.5 3]))
+    (times 2)
     (all :part ::postfix)))
 
 (def my-friend
@@ -202,7 +201,7 @@
     (then verse ) 
     (then bridge)
     (then (with chorus ba-da))
-    (then postfix)
+    (then bond)
     (where :pitch the-key)
     (where :time (bpm 120))
     (where :duration (bpm 120))))
