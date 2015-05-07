@@ -179,7 +179,7 @@
  
 ; Return
 (def fallbass
-  (->> (take 4 base)
+  (->> (take-while #(-> % :time (< 4)) base)
        (then (phrase [4] [[-10.5 -6.5]]))
        (all :part ::bass)))
 
@@ -247,7 +247,7 @@
                (with extra2)
                (where :pitch (comp low B major))))
     (then (->> rise
-               (then (->> (groove 1) (in-time (partial * 3/2))))
+               (then (->> (groove 1) (in-time (accelerando 0 32 3/2))))
                (where :pitch (comp F minor))))
     (where :pitch temperament/equal)
     (in-time (bpm 180))))
@@ -261,7 +261,8 @@
 
 (defmethod play-note ::bass [{hz :pitch seconds :duration open? :open secondary? :secondary}]
   (let [[pan vol] (if secondary? [1/3 0.1] [-1/3 0.3])]
-   (some-> hz (corgan :vol vol :under-attack 0.1 :attack 0.001 :dur seconds :wet 0.2 :room 0.8 :pan pan :vibrato (if open? 2 1) :limit (if open? 4000 1500)))))
+   (some-> hz (corgan :vol vol :under-attack 0.1 :attack 0.001 :dur seconds :wet 0.2 :room 0.8 :pan pan :vibrato (if open? 2 1) :limit (if open? 4000 1500)))
+   (some-> hz (bass :volume (* 3/4 vol) :dur seconds :wet 0.2 :room 0.8 :pan (- pan))) ))
 
 (defmethod play-note ::rhythm [{hz :pitch, s :duration}]
   (some-> hz (organ s :attack 0.01 :vol 0.3 :limit 2000 :attack 0 :pan 1/3 :room 0.8 :wet 0.6)))
@@ -275,8 +276,7 @@
 
 (defmethod play-note ::sunrise [{hz :pitch s :duration}]
   (some-> hz (organ :walk 1/2 :pan 1/2 :attack 0.1 :vol 0.1 :dur s :wet 0.5 :room 0.9 :limit 5000 :p 2))
-  (some-> hz (brassy :walk 1/2 :pan 1/2 :attack 0.1 :vol 0.4 :dur s :wet 0.7 :room 0.8 :limit 4000)))
-
+  (some-> hz (brassy :walk 1/2 :pan 1/2 :attack 0.1 :vol 0.4 :dur s :wet 0.6 :room 0.8 :limit 4000)))
 
 (comment
   (recording-start "ska.wav")

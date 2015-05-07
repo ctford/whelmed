@@ -1,7 +1,7 @@
 (ns whelmed.songs.my-friend
   (:require [overtone.live :refer :all]
             [whelmed.melody :refer [in-time]]
-            [whelmed.instrument :refer [bass organ sing tip kluck]]
+            [whelmed.instrument :refer [bass organ corgan sing tip kluck]]
             [leipzig.melody :refer :all]
             [leipzig.scale :as scale]
             [leipzig.canon :as canon]
@@ -15,7 +15,8 @@
 ; Arrangement
 (defmethod live/play-note ::bass
   [{hertz :pitch seconds :duration}]
-  (some-> hertz (bass seconds :res (the-key 14) :pan -1/3 :wet 0.7 :room 0.1)))
+  (some-> hertz (bass seconds :res (the-key 14) :pan -1/4 :wet 0.7 :room 0.1))
+  (some-> hertz (corgan seconds :vol 0.3 :res (the-key 14) :pan -1/3 :wet 0.9 :room 0.5)))
 
 (defmethod live/play-note ::accompaniment
   [{hertz :pitch seconds :duration}]

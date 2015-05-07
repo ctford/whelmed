@@ -13,4 +13,17 @@
 
 (def in-time tempo)
 
-(defn accelerando [from to by notes])
+(defn accelerando
+  "Linearly interpolated change between from and to."
+  [from to by]
+  (fn rate [t]
+    (cond
+      (>= from t) t
+      (>= to t) (let [duration (- to from)
+                      position (- t from)
+                      completion (/ position duration)
+                      extent (- by 1)
+                      base t
+                      extra (* position 1/2 completion extent)]
+                  (+ base extra)) 
+      :otherwise (+ (rate to) (* by (- t to))))))
