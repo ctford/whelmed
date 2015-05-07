@@ -190,6 +190,11 @@
 (defmethod play-note ::beat [note] ((-> note :drum kit) :amp 0.3))
 
 (def love-and-fear
+
+  "There are only two feelings, love and fear.
+  
+  Michael Leunig"
+
   (let [intro (with bassline (all :up true arpeggios))
         statement
           (->> melody
