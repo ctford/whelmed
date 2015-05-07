@@ -161,8 +161,8 @@
 
 ; The arrangement
 (defmethod play-note ::melody [{:keys [pitch duration]}]
-  (some-> pitch (bell (* 7 duration) :position 1/8 :wet 0.5 :volume 0.9))
-  (some-> pitch (bell (* 8 duration) :position 1/9 :wet 0.9 :room 0.2 :volume 0.8)))
+  (some-> pitch (bell (* 7 duration) :position 1/8 :wet 0.5 :volume 0.5))
+  (some-> pitch (bell (* 8 duration) :position 1/9 :wet 0.9 :room 0.2 :volume 0.3)))
 (defmethod play-note ::arpeggios [{:keys [pitch duration]}]
   (some-> pitch (/ 2) (brassy duration 0.3 0.1 :noise 9 :pan -1/3 :p 3/3 :wet 0.4 :vol 0.2 :p 8/6))
   (some-> pitch (/ 2) (corgan 0.2 :depth 0.3 :walk 0.5 :pan 1/3 :wet 0.4 :vol 0.4 :room 0.5)))
