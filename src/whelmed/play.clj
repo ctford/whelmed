@@ -37,7 +37,7 @@
       drop-last
       (map second)
       (reduce #(then %2 %1))
-      (then (after (rand-int 900) at-all))) ; Secret track!
+      (then (after 273.15 at-all))) ; Secret track!
     (get
       (->>
         tracks

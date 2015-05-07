@@ -190,7 +190,7 @@
     (phrase [16] [[-2 0]]) 
     (with (phrase (repeat 4 4) [2 3 3.5 3]))
     (all :part ::postfix)
-    (with (->> (phrase [5/3 1 1/3 1] (repeat -9))
+    (with (->> (phrase [5/3 1 1/3 1] (repeat -16))
                (times 4) 
                (all :part ::bass)))
     (times 2)))
