@@ -247,7 +247,7 @@
                (with extra2)
                (where :pitch (comp low B major))))
     (then (->> rise
-               (then (->> (groove 1) (take-while #(-> % :time (< 40))) (in-time (accelerando 0 8 3/2))))
+               (then (->> (groove 1) (take-while #(-> % :time (< 48))) (in-time (accelerando 0 8 3/2))))
                (where :pitch (comp F minor))))
     (where :pitch temperament/equal)
     (in-time (bpm 180))))
@@ -271,8 +271,8 @@
   (some-> hz (drum/kick2 :amp 0.4 :noise 0.05)))
 
 (defmethod play-note ::melody [{hz :pitch s :duration}]
-  (some-> hz (sawish :pan -1/6 :volume 0.2 :duration 0.3 :vibrato 1 :wet 0.3 :room 0.01 :limit 3000 :depth 1))
-  (some-> hz (harpsichord :pan 1/6 :vol 0.2 :duration s :vibrato 1 :wet 0.4 :room 0.8 :limit 2000 :depth 1)))
+  (some-> hz (sawish :pan -1/6 :volume 0.5 :duration 0.3 :vibrato 1 :wet 0.3 :room 0.01 :limit 3000 :depth 1))
+  (some-> hz (harpsichord :pan 1/6 :vol 0.5 :duration s :vibrato 1 :wet 0.4 :room 0.8 :limit 2000 :depth 1)))
 
 (defmethod play-note ::sunrise [{hz :pitch s :duration}]
   (some-> hz (organ :walk 1/2 :pan 1/2 :attack 0.1 :vol 0.1 :dur s :wet 0.5 :room 0.9 :limit 5000 :p 2))
