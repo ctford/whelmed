@@ -26,10 +26,10 @@
   (:ar (-> input
            (* volume)
            (pan2 pan)
-           (free-verb :mix early :room 0.1)
+;           (free-verb :mix early :room 0.1)
            (free-verb :mix wet :room room)
            (lpf high)
-           (hpf low)
+;           (hpf low)
            cut-out))
   (:default :ar))
 
@@ -38,9 +38,9 @@
   (-> (square freq)
       (* (sin-osc freq))
       (* (sin-osc vibrato))
+      (lpf 5000)
       (* 2/3 (env-gen (perc 2 1.5)))
-      (effects :room room :wet wet :pan (line:ar pan (- pan) 3.5) :volume volume :high limit)
-      ))
+      (effects :room room :wet wet :pan (line:ar pan (- pan) 3.5) :volume volume :high limit)))
 
 (definst sawish [freq 440 duration 1.5 vibrato 8/3 depth 1 volume 1.0 pan 0.0 wet 0.5 room 0.5]
   (let [envelope (env-gen (perc 0.01 duration))]
@@ -61,10 +61,10 @@
         (* 0.7 envelope)
         (effects :room room :wet wet :pan position :volume volume :high limit))))
 
-(definst bell [frequency 440 duration 1.0 volume 1.0 position 0 wet 0.5 room 0.5 low 0
-               h0 1 h1 0.6 h2 0.4 h3 0.25 h4 0.2 h5 0.15]
-  (let [harmonics   [ 1  2  3  4.2  5.4 6.8]
-        proportions [h0 h1 h2   h3   h4  h5]
+(definst bell [frequency 440 duration 1.0 volume 1.0 position 0 wet 0.5 room 0.5
+               h0 1 h1 0.6 h2 0.4 h3 0.25 h4 0.2]
+  (let [harmonics   [ 1  2  3  4.2  5.4]
+        proportions [h0 h1 h2   h3   h4]
         proportional-partial
         (fn [harmonic proportion]
           (let [envelope (* 1/5 (env-gen (perc 0.01 (* proportion duration))))
@@ -129,6 +129,7 @@
   (-> (saw freq)
       (+ (saw (* freq 1.01)))
       (rlpf (mul-add (sin-osc 8) 200 1500) 1/8)
+      (lpf 5000)
       (* 1/4 (env-gen (asr 0.03 0.3 0.1) (line:kr 1 0 dur)))
       (effects :room room :mix wet :pan pan :volume volume :high 5000)))
 

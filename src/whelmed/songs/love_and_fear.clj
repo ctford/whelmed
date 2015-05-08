@@ -166,11 +166,11 @@
 ; Arrangement
 (defmethod play-note ::melody [{hz :pitch s :duration}]
   (some-> hz (bell s :volume 1 :position 1/9 :wet 0.4 :room 0.1 :low 400))
-  (some-> hz (* 2) (bell (* 3/2 s) :volume 0.7 :position 1/7 :wet 0.9 :room 0.9))
+  (some-> hz (* 2) (bell (* 4/3 s) :volume 0.7 :position 1/7 :wet 0.9 :room 0.9))
   (some-> hz (sing s :volume 0.4 :position -1/9 :wet 0.8 :room 0.9)))
 
 (defmethod play-note ::harmony [{hz :pitch s :duration}]
-  (some-> hz (bell 7 :volume 0.7 :position -1/2 :wet 0.8 :room 0.9))
+  (some-> hz (bell 6 :volume 0.7 :position -1/2 :wet 0.8 :room 0.9))
   (some-> hz (sing s :volume 0.4 :position 1/2 :wet 0.8 :room 0.9)))
 
 (defmethod play-note ::chords [{hz :pitch, length :duration}]
