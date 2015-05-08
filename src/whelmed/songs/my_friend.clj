@@ -125,7 +125,7 @@
   (->> (phrase [1 1 1 1/2 1 1/2 1/2 1/2 1 1/2 1/2]
                [0 0 0 -2 -3 0 -2 -3 0 -2 -3])
        (canon/canon (canon/interval -7))
-       (times 8)
+       (times 4)
        (where :pitch scale/raise)
        (all :part ::harmony)))
 
@@ -186,7 +186,7 @@
                      (times 2)
                      (all :part ::accompaniment))]
     (->> (with bass arpeggs core-med)
-         (then (with flatline flock arpeggs core-med)))))
+         (with (after 32 ba-da) (->> chorus (drop-while #(-> % :time (< 32))))))))
 
 (def bond
   (->>
@@ -196,7 +196,8 @@
     (with (->> (phrase [5/3 1 1/3 1] (repeat -16))
                (times 4) 
                (all :part ::bass)))
-    (times 2)))
+    (times 2)
+    (with (->> (phrase [16 8 4 4] [nil 5 3.5 3]) (all :part ::melody)))))
 
 (def my-friend
 
@@ -211,7 +212,6 @@
     (then chorus)
     (then verse ) 
     (then bridge)
-    (then (with chorus ba-da))
     (then bond)
     (where :pitch the-key)
     (where :time (bpm 120))
