@@ -16,7 +16,7 @@
 (defmethod live/play-note ::bass
   [{hertz :pitch seconds :duration}]
   (some-> hertz (bass seconds :res (the-key 14) :pan -1/4 :wet 0.7 :room 0.1))
-  (some-> hertz (corgan seconds :vol 0.2 :res (the-key 14) :pan 1/4 :wet 0.9 :room 0.5 :limit 600)))
+  (some-> hertz (corgan seconds :vibrato 2 :vol 0.3 :res (the-key 14) :pan 1/4 :wet 0.9 :room 0.5 :limit 600)))
 
 (defmethod live/play-note ::accompaniment
   [{hertz :pitch seconds :duration}]
@@ -26,6 +26,10 @@
 (defmethod live/play-note ::melody
   [{hertz :pitch seconds :duration}]
   (some-> hertz (sing seconds :wet 0.3 :volume 1.2)))
+
+(defmethod live/play-note ::harmony
+  [{hertz :pitch seconds :duration}]
+  (some-> hertz (sing seconds :wet 0.2 :volume 1.0 :pan -1/3)))
 
 (defmethod live/play-note ::postfix [note]
   (live/play-note (assoc note :part ::melody))
@@ -92,12 +96,11 @@
 
 (def core-med
   (->>
-    (phrase (repeat 1/3) [-7 -5 -3])
+    (->> (phrase (repeat 1/3) [-7 -5 -3]) (all :part ::harmony))
     (canon/canon (canon/interval -7))
     (after -1)
-    (then (phrase [15 1 7 1 7 1] [7 8 9 8 7 8]))
-    (where :pitch scale/raise)
-    (all :part ::melody)))
+    (then (->> (phrase [15 1 7 1 7 1] [7 8 9 8 7 8]) (all :part ::melody)))
+    (where :pitch scale/raise)))
 
 (def i-know-youre-my-friend
   (let [i-know
@@ -124,7 +127,7 @@
        (canon/canon (canon/interval -7))
        (times 8)
        (where :pitch scale/raise)
-       (all :part ::melody)))
+       (all :part ::harmony)))
 
 (def twiddle
   (let [twid (fn [a b c] (phrase [1/2 1/2 1/2 3/2 1/2 1/2] [b a b c b a]))]
