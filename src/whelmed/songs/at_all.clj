@@ -107,7 +107,8 @@
   (some-> hz (corgan s :under-attack 0 :limit 1000 :depth 1/2 :pan 0 :vibrato 8/3 :wet 0.1 :room 0.3 :vol 0.08))) 
 
 (defmethod play-note ::comes [{hz :pitch s :duration stress :velocity}]
-  (some-> hz (harpsichord s :pan 1/5 :vibrato 4/3 :room 0.3 :depth 0.5 :wet 0.5 :limit 1500 :vol 1.5))) 
+  (some-> hz (harpsichord s :pan 1/5 :vibrato 4/3 :room 0.3 :depth 0.5 :wet 0.5 :limit 1500 :vol 1.5))
+  (some-> hz (corgan s :pan 1/3 :vibrato 4/3 :room 0.3 :depth 0 :wet 0.5 :limit 1500 :vol 0.7))) 
 
 (comment
   (play at-all)
