@@ -20,12 +20,13 @@
 
 (defmethod live/play-note ::accompaniment
   [{hertz :pitch seconds :duration}]
-  (some-> hertz (organ seconds :attack 0.06 :wet 0.4 :pan 1/3 :vol 0.2))
-  (some-> hertz (* 1.0001) (organ seconds :attack 0.03 :wet 0.7 :pan -1/3 :vol 0.2)))
+  (some-> hertz (corgan seconds :attack 0 :under-attack 0.1 :depth 0.3 :wet 0.5 :pan 1/3 :vol 0.1 :vibrato 8))
+  (some-> hertz (* 1.0001) (organ seconds :attack 0 :wet 0.7 :pan -1/3 :vol 0.1)))
 
 (defmethod live/play-note ::melody
   [{hertz :pitch seconds :duration}]
-  (some-> hertz (sing seconds :wet 0.3 :volume 1.2)))
+  (some-> hertz (sing seconds :wet 0.3 :volume 1.4))
+  (some-> hertz (/ 2) (organ seconds :wet 0.7 :pan 1/5 :vol 0.1)))
 
 (defmethod live/play-note ::harmony
   [{hertz :pitch seconds :duration}]
@@ -186,7 +187,10 @@
                      (times 2)
                      (all :part ::accompaniment))]
     (->> (with bass arpeggs core-med)
-         (with (after 32 ba-da) (->> chorus (drop-while #(-> % :time (< 32))))))))
+         (with (after 32 ba-da)
+           (->> chorus
+                (drop-while #(-> % :time (< 32)))
+                (wherever #(-> % :part (= ::acompaniment)) :pitch scale/lower))))))
 
 (def bond
   (->>
