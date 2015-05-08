@@ -2,9 +2,12 @@ pom.xml
 pom.xml.asc
 *jar
 *wav
+*mp3
+*log
 /lib/
 /classes/
 /target/
 /doc/
 .lein-deps-sum
 .lein-repl-history
+.nrepl-port
