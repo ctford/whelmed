@@ -62,8 +62,8 @@
 (def gymnopédie-one
   (->>
     (phrase (cycle [3/2 3/2 2/2]) [nil 4 6 5 4 1 0 1 2])
-    (then (phrase (concat (repeat 4 4) (cycle [3/4 3/4 2/4]))
-                  [-1 0 4 -1 -3 -4 -5 -3 -4 -5]))
+    (then (phrase (repeat 4) [-1 0 4 5 4]))
+    (where :pitch scale/lower)
     (all :part ::epilogue)))
 
 ; Response
@@ -199,7 +199,7 @@
 
 (defmethod live/play-note ::epilogue
   [{freq :pitch seconds :duration}]
-  (some-> freq (corgan seconds :vol 0.4 :pan 1/2 :wet 0.5 :vibrato 100/60 :room 0.9)))
+  (some-> freq (corgan seconds :vol 0.4 :pan 1/2 :wet 0.5 :vibrato 80/60 :room 0.9)))
 
 (defmethod live/play-note ::break
   [{freq :pitch}]
