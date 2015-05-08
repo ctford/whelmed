@@ -52,9 +52,11 @@
 
 (def prefix
   (->>
-    (phrase (repeat 2) (map #(dissoc % :v) chords))
-    (in-time (partial * 6/5))
-    (all :part ::accompaniment)))
+    (->> (phrase (repeat 2) [0 1 2 1]) (all :part ::accompaniment))
+    (with (->> (phrase (repeat 2) [9 10 11 10]) (all :part ::melody)))
+    (with (->> (phrase (repeat 2) [4 5 6 5]) (all :part ::harmony)))
+    (times 2)
+    (in-time (partial * 6/5))))
 
 (def bassline
   (let [blat (phrase [2/2 1/2 5/2] [0 0 nil])

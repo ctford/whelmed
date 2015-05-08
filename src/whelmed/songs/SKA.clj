@@ -247,7 +247,7 @@
                (with extra2)
                (where :pitch (comp low B major))))
     (then (->> rise
-               (then (->> (groove 1) (take-while #(-> % :time (< 32))) (in-time (accelerando 0 32 3/2))))
+               (then (->> (groove 1) (take-while #(-> % :time (< 40))) (in-time (accelerando 0 8 3/2))))
                (where :pitch (comp F minor))))
     (where :pitch temperament/equal)
     (in-time (bpm 180))))

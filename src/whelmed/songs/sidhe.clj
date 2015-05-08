@@ -147,7 +147,7 @@
 
 ; Finale
 (def uplift
-  (phrase (concat (repeat 7 4) [28]) [4 3 4 3 2 4 4 4 4]))
+  (phrase (concat (repeat 7 4) [20]) [4 3 4 3 2 4 4 4 4]))
 
 (def peace
   (->> harmony
@@ -244,7 +244,7 @@
            (then finale)
            (where :pitch (comp E minor))))
     (where :pitch temperament/equal)
-    (in-time (comp (bpm 80) (accelerando 4 16 4/5)))))
+    (in-time (comp (bpm 80) (accelerando 0 16 4/5)))))
 
 (comment
   (overtone/recording-start "sidhe.wav")
