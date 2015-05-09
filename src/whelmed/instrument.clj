@@ -1,7 +1,14 @@
 (ns whelmed.instrument
   (:use
     [leipzig.melody]
-    [overtone.live]))
+    [overtone.live])
+  (:require [overtone.inst.drum :as drums]))
+
+(def kick2 drums/kick2)
+
+(def kit {:kick kick2 
+          :tick drums/closed-hat,
+          :tock drums/open-hat})
 
 ; Generic machinery
 (defsynth walker [out-bus 0 freq 0.5]

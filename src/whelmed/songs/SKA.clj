@@ -6,7 +6,6 @@
         [whelmed.instrument]
         [whelmed.contrib.harpsichord]
         [whelmed.melody]
-        [overtone.inst.drum :as drum]
         [overtone.live :only [recording-start recording-stop ctl at now]])
   (:require [leipzig.temperament :as temperament]))
 
@@ -268,7 +267,7 @@
   (some-> hz (organ s :attack 0.01 :vol 0.3 :limit 2000 :attack 0 :pan 1/3 :room 0.8 :wet 0.6)))
 
 (defmethod play-note ::beat [{hz :pitch}]
-  (some-> hz (drum/kick2 :amp 0.4 :noise 0.05)))
+  (some-> hz (kick2 :amp 0.4 :noise 0.05)))
 
 (defmethod play-note ::melody [{hz :pitch s :duration}]
   (some-> hz (sawish :pan -1/6 :volume 0.5 :duration 0.3 :vibrato 1 :wet 0.3 :room 0.01 :limit 3000 :depth 1))

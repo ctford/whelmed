@@ -9,7 +9,6 @@
     [leipzig.chord :as chord]
     [whelmed.instrument :refer :all]
     [leipzig.canon :as canon]
-    [overtone.inst.drum :as drums]
     [overtone.live :as overtone]))
 
 (def progression
@@ -208,7 +207,7 @@
 
 (defmethod live/play-note ::kick
   [{freq :pitch}]
-  (some-> freq drums/kick2))
+  (some-> freq kick2))
 
 (comment
   (overtone/fx-freeverb)

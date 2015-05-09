@@ -8,7 +8,6 @@
     [leipzig.chord]
     [whelmed.instrument])
   (:require [overtone.live :as overtone]
-            [overtone.inst.drum :as drums]
             [overtone.synth.stringed :as string]
             [leipzig.temperament :as temperament]))
 
@@ -169,7 +168,7 @@
 (defmethod play-note ::fore [{hz :pitch seconds :duration direction :direction}]
   (some-> hz (kraft-bass :vol 1 :dur seconds :pan 0 :wet 0.7 :room 0.9)))
 
-(defmethod play-note ::aft [{hz :pitch}] (some-> hz (drums/kick2 :amp 0.4)))
+(defmethod play-note ::aft [{hz :pitch}] (some-> hz (kick2 :amp 0.4)))
 
 
 ; Structure

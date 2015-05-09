@@ -7,8 +7,7 @@
     [leipzig.scale]
     [leipzig.chord]
     [whelmed.instrument])
-  (:require [overtone.inst.drum :as drums]
-            [leipzig.temperament :as temperament]))
+  (:require [leipzig.temperament :as temperament]))
 
 (defn harmonise [f notes]
   (->> notes
@@ -32,10 +31,6 @@
       [(tap :tick [4/4 6/4 12/4 20/4 22/4 28/4] 8) 
        (tap :kick [0 1/4 2/4 3/4 8/4 9/4 10/4 11/4 16/4 19/4 24/4 27/4] 8)])
    (all :part ::beat)))
-
-(def kit {:kick drums/kick2 
-          :tick drums/closed-hat,
-          :tock drums/open-hat})
 
 (defn base [chord element]
   (-> chord (assoc :bass (-> chord element lower))))
