@@ -1,4 +1,4 @@
-Some music by [@ctford](https://twitter.com/ctford).
+Some music by [@ctford](https://twitter.com/ctford), available on [SoundCloud](https://soundcloud.com/ctford/whelmed).
 
 https://github.com/ctford/whelmed
 
