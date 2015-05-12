@@ -4,6 +4,6 @@
   :main ^{:skip-aot true} whelmed.play
   :jvm-opts ^:replace  []
   :dependencies	[
-    [org.clojure/clojure "1.5.1"]
+    [org.clojure/clojure "1.6.0"]
     [overtone "0.9.1"]
     [leipzig "0.9.0-SNAPSHOT"]])
