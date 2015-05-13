@@ -46,7 +46,7 @@
       track-name)))
 
 (defn play-n-wait [music]
-  (->> music (after 1) play deref)
+  (->> music play deref)
   (Thread/sleep 4000))
 
 (defn record [music file-name]
