@@ -1,6 +1,5 @@
 (ns whelmed.songs.my-friend
   (:require [overtone.live :refer :all]
-            [whelmed.melody :refer [in-time]]
             [whelmed.instrument :refer [bass organ corgan sing tip kluck]]
             [leipzig.melody :refer :all]
             [leipzig.scale :as scale]
@@ -56,7 +55,7 @@
     (with (->> (phrase (repeat 2) [9 10 11 10]) (all :part ::melody)))
     (with (->> (phrase (repeat 2) [4 5 6 5]) (all :part ::harmony)))
     (times 2)
-    (in-time (partial * 6/5))))
+    (tempo (partial * 6/5))))
 
 (def bassline
   (let [blat (phrase [2/2 1/2 5/2] [0 0 nil])
@@ -220,8 +219,7 @@
     (then bridge)
     (then bond)
     (where :pitch the-key)
-    (where :time (bpm 120))
-    (where :duration (bpm 120))))
+    (tempo (bpm 120))))
 
 (comment
   ; Loop the track, allowing live editing.

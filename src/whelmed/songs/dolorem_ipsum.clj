@@ -156,7 +156,7 @@
          (then (->> intro (with la-la-la-la)
                     (then (with development wa-wa-wa-wa))
                     (then finale)))
-         (in-time (comp (bpm 40) (accelerando 0 4 1/2)))
+         (tempo (comp (bpm 40) (accelerando 0 4 1/2)))
          (where :pitch (comp temperament/equal F lydian)))))
 
 ; The arrangement

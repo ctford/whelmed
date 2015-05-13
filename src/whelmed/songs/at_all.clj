@@ -93,10 +93,10 @@
     (then (->> melody (with answer)))
     (then (after 3/2 (->> melody (with answer)
                           (then chorus)
-                          (in-time (comp (scale [2/3 1/3]) #(* 2 %))))))
+                          (tempo (comp (scale [2/3 1/3]) #(* 2 %))))))
     (then finale)
     (wherever (comp not :part), :part (is ::default))
-    (in-time (bpm 160))
+    (tempo (bpm 160))
     (where :pitch (comp temperament/equal low D major))))
 
 (defmethod play-note ::dux [{hz :pitch s :duration stress :velocity}]

@@ -220,7 +220,7 @@
             (with (times 4 beatb))
             (with (->> (times 2 chords) (all :part ::blurt)))))
     (then outro) 
-    (in-time (bpm 80))
+    (tempo (bpm 80))
     (where :pitch (comp temperament/equal G minor)))))
 
 (comment

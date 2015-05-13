@@ -246,10 +246,10 @@
                (with extra2)
                (where :pitch (comp low B major))))
     (then (->> rise
-               (then (->> (groove 1) (take-while #(-> % :time (< 48))) (in-time (accelerando 0 8 3/2))))
+               (then (->> (groove 1) (take-while #(-> % :time (< 48))) (tempo (accelerando 0 8 3/2))))
                (where :pitch (comp F minor))))
     (where :pitch temperament/equal)
-    (in-time (bpm 180))))
+    (tempo (bpm 180))))
 
 (defmethod play-note ::harmony [{hz :pitch seconds :duration}]
   (some-> hz (corgan :vol 0.2 :under-attack 0.2 :attack 0.02 :dur seconds :wet 0.2 :room 0.8 :pan -1/5 :vibrato 3 :limit 6000))

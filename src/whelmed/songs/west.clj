@@ -174,8 +174,7 @@
       (then (->> response (with (->> break (after 16)))))
       (then outro)
       (where :pitch (comp temperament/equal scale/G scale/minor))
-      (where :time (bpm 80))
-      (where :duration (bpm 80)))))
+      (tempo (bpm 80)))))
 
 ; Arrangement
 (defmethod live/play-note ::bass
