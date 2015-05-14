@@ -69,9 +69,9 @@
         (effects :room room :wet wet :pan position :volume volume :high limit))))
 
 (definst bell [frequency 440 duration 1.0 volume 1.0 position 0 wet 0.5 room 0.5
-               h0 1 h1 0.6 h2 0.4 h3 0.25]
-  (let [harmonics   [ 1  2  3  4.2]
-        proportions [h0 h1 h2   h3]
+               h0 1 h1 0.6 h2 0.4 h3 0.25 h4 0.2]
+  (let [harmonics   [ 1  2  3  4.2  5.4]
+        proportions [h0 h1 h2   h3   h4]
         proportional-partial
         (fn [harmonic proportion]
           (let [envelope (* 1/5 (env-gen (perc 0.01 (* proportion duration))))
