@@ -6,4 +6,4 @@
   :dependencies	[
     [org.clojure/clojure "1.6.0"]
     [overtone "0.9.1"]
-    [leipzig "0.9.0-SNAPSHOT"]])
+    [leipzig "0.9.0"]])
