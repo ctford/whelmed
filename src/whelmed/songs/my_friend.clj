@@ -1,10 +1,9 @@
 (ns whelmed.songs.my-friend
-  (:require [overtone.live :refer :all]
-            [whelmed.instrument :refer [bass organ corgan sing tip kluck]]
+  (:require [whelmed.instrument :refer [bass organ corgan sing tip kluck]]
             [leipzig.melody :refer :all]
             [leipzig.scale :as scale]
             [leipzig.canon :as canon]
-            [leipzig.live :as live]
+            [leipzig.live :refer :all]
             [leipzig.chord :as chord]
             [leipzig.temperament :as temperament]))
 
@@ -12,30 +11,30 @@
 (def the-key (comp temperament/equal scale/G scale/major))
 
 ; Arrangement
-(defmethod live/play-note ::bass
+(defmethod play-note ::bass
   [{hertz :pitch seconds :duration}]
   (some-> hertz (bass seconds :res (the-key 14) :pan -1/4 :wet 0.7 :room 0.1))
   (some-> hertz (corgan seconds :vibrato 2 :vol 0.3 :res (the-key 14) :pan 1/4 :wet 0.9 :room 0.5 :limit 600)))
 
-(defmethod live/play-note ::accompaniment
+(defmethod play-note ::accompaniment
   [{hertz :pitch seconds :duration}]
   (some-> hertz (corgan seconds :attack 0 :under-attack 0.1 :depth 0.3 :wet 0.5 :pan 1/3 :vol 0.1 :vibrato 8))
   (some-> hertz (* 1.0001) (organ seconds :attack 0 :wet 0.7 :pan -1/3 :vol 0.1)))
 
-(defmethod live/play-note ::melody
+(defmethod play-note ::melody
   [{hertz :pitch seconds :duration}]
   (some-> hertz (sing seconds :wet 0.3 :volume 1.4))
   (some-> hertz (/ 2) (organ seconds :wet 0.7 :pan 1/5 :vol 0.1)))
 
-(defmethod live/play-note ::harmony
+(defmethod play-note ::harmony
   [{hertz :pitch seconds :duration}]
   (some-> hertz (sing seconds :wet 0.2 :volume 1.0 :pan -1/3)))
 
-(defmethod live/play-note ::postfix [note]
-  (live/play-note (assoc note :part ::melody))
-  (live/play-note (assoc note :part ::accompaniment)))
+(defmethod play-note ::postfix [note]
+  (play-note (assoc note :part ::melody))
+  (play-note (assoc note :part ::accompaniment)))
 
-(defmethod live/play-note ::beat
+(defmethod play-note ::beat
   [{hertz :pitch drum :drum}]
   (some-> hertz (drum :volume 0.5)))
 
@@ -193,7 +192,7 @@
                 (drop-while #(-> % :time (< 32)))
                 (wherever #(-> % :part (= ::acompaniment)) :pitch scale/lower))))))
 
-(def bond
+(def bond-quote
   (->>
     (phrase [16] [[-2 0]]) 
     (with (phrase (repeat 4 4) [2 3 3.5 3]))
@@ -202,7 +201,10 @@
                (times 4) 
                (all :part ::bass)))
     (times 2)
-    (with (->> (phrase [16 8 4 4] [nil 5 3.5 3]) (all :part ::melody)))))
+    (with (->> (phrase (cycle [3/2 3/2 2/2]) [5 6 5 5 7 6])
+               (times 2)
+               (after 16)
+               (all :part ::melody)))))
 
 (def my-friend
 
@@ -217,13 +219,11 @@
     (then chorus)
     (then verse ) 
     (then bridge)
-    (then bond)
+    (then bond-quote)
     (where :pitch the-key)
     (tempo (bpm 120))))
 
 (comment
-  ; Loop the track, allowing live editing.
-  (live/jam (var my-friend))
-  (recording-start "i-know-youre-my-friend.wav")
-  (live/play my-friend)
-  (recording-stop))
+  (-> my-friend var jam)
+  (->> my-friend play)
+  )
