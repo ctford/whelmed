@@ -1,6 +1,7 @@
 (ns whelmed.contrib.harpsichord
-  (:use [overtone.live]
-        [overtone.helpers.lib]))
+  (:require
+    [overtone.live :refer :all]
+    [overtone.helpers.lib :refer :all]))
 
 ; Originally written by Phil Potter and copied from the Overtone examples
 

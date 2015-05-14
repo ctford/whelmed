@@ -1,16 +1,16 @@
 (ns whelmed.play
-  (:use
-    [overtone.live :only [recording-start recording-stop kill-server]]
-    [leipzig.melody :only [then after duration tempo times]]
-    [leipzig.live :only [play stop]]
-    [whelmed.songs.west :only [west-with-the-sun]]
-    [whelmed.songs.dolorem-ipsum :only [dolorem-ipsum]]
-    [whelmed.songs.sidhe :only [sidhe]]
-    [whelmed.songs.my-friend :only [my-friend]]
-    [whelmed.songs.love-and-fear :only [love-and-fear]]
-    [whelmed.songs.at-all :only [at-all]]
-    [whelmed.songs.zero :only [zero]]
-    [whelmed.songs.SKA :only [ska]]))
+  (:require
+    [overtone.live :refer [recording-start recording-stop kill-server]]
+    [leipzig.melody :refer [then after duration tempo times]]
+    [leipzig.live :refer [play stop]]
+    [whelmed.songs.west :refer [west-with-the-sun]]
+    [whelmed.songs.dolorem-ipsum :refer [dolorem-ipsum]]
+    [whelmed.songs.sidhe :refer [sidhe]]
+    [whelmed.songs.my-friend :refer [my-friend]]
+    [whelmed.songs.love-and-fear :refer [love-and-fear]]
+    [whelmed.songs.at-all :refer [at-all]]
+    [whelmed.songs.zero :refer [zero]]
+    [whelmed.songs.SKA :refer [ska]]))
 
 (def tracks
   [

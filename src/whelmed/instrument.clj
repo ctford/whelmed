@@ -1,8 +1,8 @@
 (ns whelmed.instrument
-  (:use
-    [leipzig.melody]
-    [overtone.live])
-  (:require [overtone.inst.drum :as drums]))
+  (:require
+    [leipzig.melody :refer :all]
+    [overtone.live :refer :all]
+    [overtone.inst.drum :as drums]))
 
 (def kick2 drums/kick2)
 

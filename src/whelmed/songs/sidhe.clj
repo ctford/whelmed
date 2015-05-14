@@ -1,16 +1,15 @@
 (ns whelmed.songs.sidhe
-  (:use
-    [leipzig.melody]
-    [leipzig.live]
-    [leipzig.canon]
-    [whelmed.melody]
-    [leipzig.scale]
-    [leipzig.chord]
-    [whelmed.instrument])
-  (:require [overtone.live :as overtone]
-            [overtone.synth.stringed :as string]
-            [leipzig.temperament :as temperament]))
-
+  (:require
+    [leipzig.melody :refer :all]
+    [leipzig.live :refer :all]
+    [leipzig.canon :refer :all]
+    [whelmed.melody :refer :all]
+    [leipzig.scale :refer :all]
+    [leipzig.chord :refer :all]
+    [whelmed.instrument :refer :all]
+    [overtone.live :as overtone]
+    [overtone.synth.stringed :as string]
+    [leipzig.temperament :as temperament]))
 
 ; First section
 (def bassline

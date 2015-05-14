@@ -1,13 +1,13 @@
 (ns whelmed.songs.love-and-fear
-  (:use
-    [leipzig.melody]
-    [leipzig.live]
-    [leipzig.canon]
-    [whelmed.melody]
-    [leipzig.scale]
-    [leipzig.chord]
-    [whelmed.instrument])
-  (:require [leipzig.temperament :as temperament]))
+  (:require
+    [leipzig.melody :refer :all]
+    [leipzig.live :refer :all]
+    [leipzig.canon :refer :all]
+    [whelmed.melody :refer :all]
+    [leipzig.scale :refer :all]
+    [leipzig.chord :refer :all]
+    [whelmed.instrument :refer :all]
+    [leipzig.temperament :as temperament]))
 
 (defn harmonise [f notes]
   (->> notes

@@ -1,12 +1,12 @@
 (ns whelmed.melody
-  (:use
-    [leipzig.melody]
-    [leipzig.live]
-    [leipzig.chord]
-    [leipzig.scale]))
+  (:require
+    [leipzig.scale :refer [from]]))
 
-(defn between? [from to]
-  (fn [note] 
-    (and (>= (:time note) from) (< (:time note) to))))
+(defn between?
+  [from to]
+  (fn [{:keys [time]}] 
+    (and (>= time from) (< time to))))
 
-(defn augment [chord k n] (update-in chord [k] (from n)))
+(defn augment
+  [chord k n]
+  (update-in chord [k] (from n)))

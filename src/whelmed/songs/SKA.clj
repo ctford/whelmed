@@ -1,13 +1,14 @@
 (ns whelmed.songs.SKA
-  (:use [leipzig.melody]
-        [leipzig.live]
-        [leipzig.scale]
-        [leipzig.chord]
-        [whelmed.instrument]
-        [whelmed.contrib.harpsichord]
-        [whelmed.melody]
-        [overtone.live :only [recording-start recording-stop ctl at now]])
-  (:require [leipzig.temperament :as temperament]))
+  (:require
+    [leipzig.melody :refer :all]
+    [leipzig.live :refer :all]
+    [leipzig.scale :refer :all]
+    [leipzig.chord :refer :all]
+    [whelmed.instrument :refer :all]
+    [whelmed.contrib.harpsichord :refer :all]
+    [whelmed.melody :refer :all]
+    [leipzig.temperament :as temperament]
+    [overtone.live :refer [recording-start recording-stop ctl at now]]))
 
 ; Introduction
 (def once

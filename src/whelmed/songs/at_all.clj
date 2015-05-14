@@ -1,14 +1,14 @@
 (ns whelmed.songs.at-all
-  (:use
-    leipzig.scale
-    leipzig.melody
-    leipzig.live
-    leipzig.chord
-    leipzig.temperament
-    whelmed.melody
-    whelmed.contrib.harpsichord
-    whelmed.instrument)
-  (:require [leipzig.temperament :as temperament]))
+  (:require
+    [leipzig.scale :refer :all]
+    [leipzig.melody :refer :all]
+    [leipzig.live :refer :all]
+    [leipzig.chord :refer :all]
+    [leipzig.temperament :refer :all]
+    [whelmed.melody :refer :all]
+    [whelmed.contrib.harpsichord :refer :all]
+    [whelmed.instrument :refer :all]
+    [leipzig.temperament :as temperament]))
 
 (defn with-bass [chord]
   (-> chord (assoc :bass (lower (:i chord)))))

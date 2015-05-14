@@ -1,13 +1,13 @@
 (ns whelmed.songs.dolorem-ipsum
-  (:use
-    [leipzig.melody]
-    [leipzig.live]
-    [whelmed.melody]
-    [leipzig.scale]
-    [leipzig.chord]
-    [leipzig.canon]
-    [whelmed.instrument])
-  (:require [leipzig.temperament :as temperament]))
+  (:require
+    [leipzig.melody :refer :all]
+    [leipzig.live :refer :all]
+    [whelmed.melody :refer :all]
+    [leipzig.scale :refer :all]
+    [leipzig.chord :refer :all]
+    [leipzig.canon :refer :all]
+    [leipzig.temperament :as temperament]
+    [whelmed.instrument :refer :all]))
 
 ; Extra concepts
 (defn arpeggiate [chord ks duration]
