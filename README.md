@@ -12,4 +12,5 @@ Tracks:
   * Square kilometer array - `ska`
   * Dolorem ipsum - `dolorem`
   * Love and fear - `love`
+  * Zero (cover of John Cage's 273) - `zero`
   * At all - `at-all` 

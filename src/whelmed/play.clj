@@ -9,6 +9,7 @@
     [whelmed.songs.my-friend :only [my-friend]]
     [whelmed.songs.love-and-fear :only [love-and-fear]]
     [whelmed.songs.at-all :only [at-all]]
+    [whelmed.songs.zero :only [zero]]
     [whelmed.songs.SKA :only [ska]]))
 
 (def tracks
@@ -19,6 +20,7 @@
    ["ska" ska] ; E minor -> B flat major -> E minor ending on C major, 180 bpm -> 120 bpm
    ["dolorem" dolorem-ipsum] ; F lydian, 80 bpm
    ["love" love-and-fear] ; G minor ending on B flat major, 80 bpm (really 40 bpm)
+   ["zero" zero] ; Undefined
    ["at-all" at-all] ; D major, 160 bpm -> 140 bpm
    ])
 
@@ -34,10 +36,8 @@
   (if (= track-name "all")
     (->>
       tracks
-      drop-last
       (map second)
-      (reduce #(then %2 %1))
-      (then (after 273.15 at-all))) ; Secret track!
+      (reduce #(then %2 %1)))
     (get
       (->>
         tracks
