@@ -201,8 +201,7 @@
                (times 4) 
                (all :part ::bass)))
     (times 2)
-    (with (->> (phrase (cycle [3/2 3/2 2/2]) [5 6 5 5 7 6])
-               (times 2)
+    (with (->> (phrase (cycle [3 3 2]) [5 6 5 5 7 6])
                (after 16)
                (all :part ::melody)))))
 
