@@ -238,7 +238,7 @@
     (->> base
          (then (groove 1))
          (then (groove 2))
-        (where :pitch (comp F minor)))
+         (where :pitch (comp F minor)))
     (then (->> mid-section
                (where :pitch (comp low B major))))
     (then (->> (rise false)
@@ -249,7 +249,8 @@
                (with extra2)
                (where :pitch (comp low B major))))
     (then (->> (rise true)
-               (then (->> (groove 1) (take-while #(-> % :time (< 48))) (tempo (accelerando 0 8 3/2))))
+               (then (->> (groove 1) (take-while #(-> % :time (< 48)))))
+               (tempo (accelerando 0 12 3/2))
                (where :pitch (comp F minor))))
     (where :pitch temperament/equal)
     (tempo (bpm 180))))
