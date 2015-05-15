@@ -209,7 +209,7 @@
     (times 4)
     (all :part ::beat)))
 
-(def rise
+(defn rise [double?]
   (->> fallbass
        (with fallchords (after 6 falla))
        (then
@@ -222,7 +222,9 @@
               (with (after 6 falla))))
        (then (take 5 fallbass))
        (with stompier)
-       (then (->> (after -4 (phrase (repeat 2/3) [3.5 3 2.5 2 1 0.5]))
+       (then (->> (phrase (repeat 2/3) [3.5 3 2.5 2 1 0.5])
+                  (with (if double? (phrase (repeat 2/3) [0 -0.5 -1 -1.5 -2 -3]) []))
+                  (after -4)
                   (all :part ::harmony)))))
 
 (def bump
@@ -239,14 +241,14 @@
         (where :pitch (comp F minor)))
     (then (->> mid-section
                (where :pitch (comp low B major))))
-    (then (->> rise
+    (then (->> (rise false)
                (then bump)
                (then (with extra (groove 2)))
                (where :pitch (comp F minor))))
     (then (->> mid-section
                (with extra2)
                (where :pitch (comp low B major))))
-    (then (->> rise
+    (then (->> (rise true)
                (then (->> (groove 1) (take-while #(-> % :time (< 48))) (tempo (accelerando 0 8 3/2))))
                (where :pitch (comp F minor))))
     (where :pitch temperament/equal)
