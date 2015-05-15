@@ -228,8 +228,8 @@
                   (all :part ::harmony)))))
 
 (def bump
-  (->> (phrase (concat (repeat 6 1) (repeat 6 1/3))
-               (concat (repeat 6 -14) (repeat 6 -7)))
+  (->> (phrase (concat [1 1 1 2/3 1/3 1 1] (repeat 6 1/3))
+               (concat (repeat 7 -14) (repeat 6 -7)))
        (all :part ::beat)))
 
 ; Structure
