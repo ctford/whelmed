@@ -71,7 +71,7 @@
         bada (->> (phrase [1/2 1/2 3/2 2/2 9/2] [0 4 5 4 0])
                   (times 3)
                   drop-last
-                  (then (phrase [5/2 1/2 1/2 10/2] [0 1 0 -1]))
+                  (then (phrase [5/2 1/2 1/2 9/2] [0 1 0 -1]))
                   (after 9/2)
                   (where :pitch raise)
                   (all :part ::comes))]
