@@ -217,6 +217,8 @@
                   (overtone/out 0
                                 (-> dry
                                     (+ wet delayed)
+                                    (overtone/rlpf resonance 1/2)
+                                    (overtone/hpf (* 440 4/3))
                                     overtone/pan2))))
 (def trigger-vocals (memoize treated-vocals))
 
@@ -224,7 +226,7 @@
   (overtone/fx-freeverb)
   (->> west-with-the-sun var live/jam)
   (->> west-with-the-sun live/play)
-  (overtone/recording-start "west-with-the-sun-vocals3.wav")
+  (overtone/recording-start "west-with-the-sun-vocals5.wav")
   (trigger-vocals)
   (overtone/recording-stop)
 ) 
