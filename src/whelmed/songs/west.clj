@@ -188,7 +188,8 @@
 
 (defmethod live/play-note ::lead
   [{freq :pitch}]
-  (some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.6 :volume 0.7)))
+  ;(some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.6 :volume 0.7))
+  (trigger-vocals))
 
 (defmethod live/play-note ::response
   [{freq :pitch seconds :duration}]
@@ -208,10 +209,22 @@
   [{freq :pitch}]
   (some-> freq kick2))
 
+(def vocal-buffer (overtone/load-sample "~/Audio/2015-05-19-12:05:02-west-take1.wav" :start (int (* 44 1000 1.5)) ))
+(overtone/synth treated-vocals []
+                (let [dry (overtone/play-buf 1 vocal-buffer)
+                      delayed (overtone/delay-c dry :delay-time 0.01)
+                      wet (overtone/free-verb (+ dry delayed) :mix 0.2 :room 0.9 :damp 1)]
+                  (overtone/out 0
+                                (-> dry
+                                    (+ wet delayed)
+                                    overtone/pan2))))
+(def trigger-vocals (memoize treated-vocals))
+
 (comment
   (overtone/fx-freeverb)
   (->> west-with-the-sun var live/jam)
   (->> west-with-the-sun live/play)
-  (overtone/recording-start "west-with-the-sun.wav")
+  (overtone/recording-start "west-with-the-sun-vocals3.wav")
+  (trigger-vocals)
   (overtone/recording-stop)
 ) 
