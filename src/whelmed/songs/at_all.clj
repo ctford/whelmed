@@ -76,7 +76,7 @@
                   (where :pitch raise)
                   (all :part ::comes))]
     (->>
-      doesnt-at-all 
+      doesnt-at-all
       (then (with doesnt-at-all bada)))))
 
 (def finale
@@ -101,16 +101,16 @@
 
 (defmethod play-note ::dux [{hz :pitch s :duration stress :velocity}]
   (some-> hz (* 2) (sing s 1 :pan -1/5 :wet 0.3 :room 0.3 :volume (* 2 (or stress 2/3)) :limit 4000))
-  (some-> hz (corgan s 1 :pan 1/9 :wet 0.7 :room 0.3 :vol 0.2 :limit 1000 :vibrato 8/3))) 
+  (some-> hz (corgan s 1 :pan 1/9 :wet 0.7 :room 0.3 :vol 0.2 :limit 1000 :vibrato 8/3)))
 
 (defmethod play-note ::default [{s :duration hz :pitch stress :velocity}]
-  (some-> hz (corgan s :under-attack 0 :limit 1000 :depth 1/2 :pan 0 :vibrato 8/3 :wet 0.1 :room 0.3 :vol 0.08))) 
+  (some-> hz (corgan s :under-attack 0 :limit 1000 :depth 1/2 :pan 0 :vibrato 8/3 :wet 0.1 :room 0.3 :vol 0.08)))
 
 (defmethod play-note ::comes [{hz :pitch s :duration stress :velocity}]
   (some-> hz (harpsichord s :pan 1/5 :vibrato 4/3 :room 0.3 :depth 0.5 :wet 0.5 :limit 1500 :vol 1.0))
-  (some-> hz (corgan s :pan 1/3 :vibrato 4/3 :room 0.3 :depth 0 :wet 0.5 :limit 1500 :vol 0.5))) 
+  (some-> hz (corgan s :pan 1/3 :vibrato 4/3 :room 0.3 :depth 0 :wet 0.5 :limit 1500 :vol 0.5)))
 
 (comment
   (play at-all)
   (jam (var at-all))
-) 
+)
