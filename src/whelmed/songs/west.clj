@@ -188,8 +188,9 @@
 
 (defmethod live/play-note ::lead
   [{freq :pitch}]
-  (some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.6 :volume 0.1))
-  (trigger-vocals))
+ ; (some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.6 :volume 0.1))
+ ; (trigger-vocals) 
+  )
 
 (defmethod live/play-note ::response
   [{freq :pitch seconds :duration}]
@@ -210,25 +211,25 @@
   (some-> freq (kick2 :amp 0.4)))
 
 (overtone/defsynth treated-vocals []
-                (let [lead (overtone/load-sample "2015-05-19-17:35:56.wav" :start (int (* 44 1000 1.15)))
-                      harmony (overtone/load-sample "2015-05-19-17:26:52-west-harmony-1.wav" :start (int (* 44 1000 1.4)))
+                (let [lead (overtone/load-sample "vocals/west-lead.wav" :start (int (* 44 1000 1.6)))
+                      harmony (overtone/load-sample "vocals/west-harmony.wav" :start (int (* 44 1000 1.6)))
                       dry (+ (overtone/pan2 (overtone/play-buf 1 lead) 1/3)
-                             (overtone/pan2 (overtone/play-buf 1 harmony) -1/3))
-                      delayed (overtone/delay-c dry :delay-time 0.01)
+                             (* 0.5 (overtone/pan2 (overtone/play-buf 1 harmony) -1/3)))
+                      delayed (overtone/delay-c dry :delay-time 0.05)
                       wet (overtone/free-verb (+ dry delayed) :mix 0.4 :room 0.9 :damp 1)]
                   (overtone/out 0
                                 (-> (overtone/compander wet wet)
-                                    (* 2.5)
-                                    (overtone/lpf (* 440 4/3 3))
-                                    (overtone/hpf (* 440 4/3))
+                                    (* 10)
+                                    (overtone/lpf 3000)
+                                    (overtone/hpf 1000)
                                     overtone/pan2))))
-
-(def trigger-vocals (memoize treated-vocals))
 
 (comment
   (overtone/fx-freeverb)
   (->> west-with-the-sun var live/jam)
-  (->> west-with-the-sun live/play)
-  (trigger-vocals)
-  (overtone/recording-stop)
-) 
+  (do
+    (overtone/recording-stop)
+    (overtone/recording-start "west-with-the-vocals2.wav")
+    (treated-vocals)
+    (->> west-with-the-sun live/play))
+  ) 
