@@ -222,7 +222,8 @@
             (with (->> (times 2 chords) (all :part ::blurt)))))
     (then outro) 
     (tempo (bpm 80))
-    (where :pitch (comp temperament/equal G minor)))))
+    (where :pitch (comp temperament/equal G minor))
+    (with [{:time 0 :duration 0 :part ::vocals}]))))
 
 (overtone/defsynth treated-vocals []
   (let [lead (overtone/load-sample "vocals/love-lead.wav")
@@ -236,13 +237,13 @@
                       (overtone/lpf 3000)
                       (overtone/hpf 1000)
                       overtone/pan2))))
+
+(defmethod play-note ::vocals
+  [_]
+  (treated-vocals))
+
 (comment
   (jam (var love-and-fear))
   (play love-and-fear)
-  (do
-    (overtone/recording-stop)
-    (treated-vocals)
-    (play love-and-fear)
-    (overtone/recording-start "love-vocals1.wav")
-    )
-  )
+  (overtone/recording-stop)
+  (overtone/recording-start "love-vocals1.wav"))

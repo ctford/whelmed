@@ -174,7 +174,8 @@
       (then (->> response (with (->> break (after 16)))))
       (then outro)
       (where :pitch (comp temperament/equal scale/G scale/minor))
-      (tempo (bpm 80)))))
+      (tempo (bpm 80))
+      (with [{:time 0 :duration 0 :part ::vocals}]))))
 
 ; Arrangement
 (defmethod live/play-note ::bass
@@ -189,7 +190,6 @@
 (defmethod live/play-note ::lead
   [{freq :pitch}]
  ; (some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.6 :volume 0.1))
- ; (trigger-vocals) 
   )
 
 (defmethod live/play-note ::response
@@ -211,8 +211,8 @@
   (some-> freq (kick2 :amp 0.4)))
 
 (overtone/defsynth treated-vocals []
-                (let [lead (overtone/load-sample "vocals/west-lead.wav" :start (int (* 44 1000 1.6)))
-                      harmony (overtone/load-sample "vocals/west-harmony.wav" :start (int (* 44 1000 1.6)))
+                (let [lead (overtone/load-sample "vocals/west-lead.wav" :start (int (* 44 1000 1.85)))
+                      harmony (overtone/load-sample "vocals/west-harmony.wav" :start (int (* 44 1000 1.85)))
                       dry (+ (overtone/pan2 (overtone/play-buf 1 lead) 1/3)
                              (* 0.5 (overtone/pan2 (overtone/play-buf 1 harmony) -1/3)))
                       delayed (overtone/delay-c dry :delay-time 0.05)
@@ -224,12 +224,14 @@
                                     (overtone/hpf 1000)
                                     overtone/pan2))))
 
+(defmethod live/play-note ::vocals
+  [_]
+  (treated-vocals))
+
 (comment
-  (overtone/fx-freeverb)
   (->> west-with-the-sun var live/jam)
   (do
     (overtone/recording-stop)
     (overtone/recording-start "west-with-the-vocals2.wav")
-    (treated-vocals)
     (->> west-with-the-sun live/play))
   ) 
