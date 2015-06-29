@@ -7,7 +7,8 @@
     [leipzig.scale :refer :all]
     [leipzig.chord :refer :all]
     [whelmed.instrument :refer :all]
-    [leipzig.temperament :as temperament]))
+    [leipzig.temperament :as temperament]
+    [overtone.live :as overtone]))
 
 (defn harmonise [f notes]
   (->> notes
@@ -223,7 +224,25 @@
     (tempo (bpm 80))
     (where :pitch (comp temperament/equal G minor)))))
 
+(overtone/defsynth treated-vocals []
+  (let [lead (overtone/load-sample "vocals/love-lead.wav")
+        dry (+ (overtone/pan2 (overtone/play-buf 1 lead) 1/3))
+        delayed (overtone/delay-c dry :delay-time 0.05)
+        delayed2 (* 0.3 (overtone/delay-c dry :delay-time 8/6))
+        wet (overtone/free-verb (+ dry delayed delayed2) :mix 0.4 :room 0.9 :damp 1)]
+    (overtone/out 0
+                  (-> (overtone/compander wet wet)
+                      (* 10)
+                      (overtone/lpf 3000)
+                      (overtone/hpf 1000)
+                      overtone/pan2))))
 (comment
   (jam (var love-and-fear))
   (play love-and-fear)
-)
+  (do
+    (overtone/recording-stop)
+    (treated-vocals)
+    (play love-and-fear)
+    (overtone/recording-start "love-vocals1.wav")
+    )
+  )
