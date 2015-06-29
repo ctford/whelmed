@@ -1,4 +1,4 @@
-Some music by [@ctford](https://twitter.com/ctford), available on [SoundCloud](https://soundcloud.com/ctford/whelmed).
+Some music by [@ctford](https://twitter.com/ctford), available on [SoundCloud](https://soundcloud.com/ctford/whelmed). Uses Github's new large file support for vocal tracks.
 
 https://github.com/ctford/whelmed
 
