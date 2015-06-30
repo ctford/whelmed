@@ -1,4 +1,4 @@
-Some music by [@ctford](https://twitter.com/ctford), available on [SoundCloud](https://soundcloud.com/ctford/whelmed). Uses Github's new large file support for vocal tracks.
+Some music by [@ctford](https://twitter.com/ctford), available on [SoundCloud](https://soundcloud.com/ctford/whelmed). Uses Github's new [large file storage](https://help.github.com/articles/versioning-large-files/) for managing recorded vocal parts.
 
 https://github.com/ctford/whelmed
 
