@@ -6,7 +6,3 @@
   [from to]
   (fn [{:keys [time]}] 
     (and (>= time from) (< time to))))
-
-(defn augment
-  [chord k n]
-  (update-in chord [k] (from n)))

@@ -1,5 +1,5 @@
 (ns whelmed.songs.west
-  (:require 
+  (:require
     [leipzig.melody :refer :all]
     [leipzig.live :as live]
     [leipzig.live :refer [stop]]
@@ -153,21 +153,17 @@
   I'll get away.
   But my heart will go west with the sun."
 
-  (let [accompaniment
-        (->> backing (with bassline)) 
-        intro
-        (->> backing (then accompaniment))
-        call
-        (->> theme (with accompaniment beat) (times 2))
-        response
-        (->> reply (with accompaniment beat2) (times 2))
-        variation
-        (->> theme (then spilling-theme)
-             (with (->> (with beat accompaniment) (times 2))))
+  (let [accompaniment (->> backing (with bassline)) 
+        intro (->> backing (then accompaniment))
+        call (->> theme (with accompaniment beat) (times 2))
+        response (->> reply (with accompaniment beat2) (times 2))
+        variation (->> theme (then spilling-theme)
+                       (with (->> (with beat accompaniment) (times 2))))
         outro (after 4 (with gymnopédie-one (->> (with accompaniment beat) (then bassline))))]
     (->>
       intro
-      (then call) (then response)
+      (then call)
+      (then response)
       (then (->> break (with light-bass flat-beat) (times 2)
                  (with (->> backing (after 16)))))
       (then variation)
@@ -175,7 +171,7 @@
       (then outro)
       (where :pitch (comp temperament/equal scale/G scale/minor))
       (tempo (bpm 80))
-      (with [{:time 0 :duration 0 :part ::vocals}]))))
+      #_(with [{:time 0 :duration 0 :part ::vocals}]))))
 
 ; Arrangement
 (defmethod live/play-note ::bass
@@ -189,7 +185,7 @@
 
 (defmethod live/play-note ::lead
   [{freq :pitch}]
- ; (some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.6 :volume 0.1))
+  (some-> freq (sawish :pan -1/6 :vibrato 8/3 :wet 0.6 :volume 0.1))
   )
 
 (defmethod live/play-note ::response
@@ -210,7 +206,7 @@
   [{freq :pitch}]
   (some-> freq (kick2 :amp 0.4)))
 
-(overtone/defsynth treated-vocals []
+#_(overtone/defsynth treated-vocals []
                 (let [lead (overtone/load-sample "vocals/west-lead.wav" :start (int (* 44 1000 1.85)))
                       harmony (overtone/load-sample "vocals/west-harmony.wav" :start (int (* 44 1000 1.85)))
                       dry (+ (overtone/pan2 (overtone/play-buf 1 lead) 1/3)
@@ -224,7 +220,7 @@
                                     (overtone/hpf 1000)
                                     overtone/pan2))))
 
-(defmethod live/play-note ::vocals
+#_(defmethod live/play-note ::vocals
   [_]
   (treated-vocals))
 
@@ -234,4 +230,4 @@
     (overtone/recording-stop)
     (overtone/recording-start "west-with-the-vocals2.wav")
     (->> west-with-the-sun live/play))
-  ) 
+  )

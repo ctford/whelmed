@@ -223,9 +223,9 @@
     (then outro) 
     (tempo (bpm 80))
     (where :pitch (comp temperament/equal G minor))
-    (with [{:time 0 :duration 0 :part ::vocals}]))))
+    #_(with [{:time 0 :duration 0 :part ::vocals}]))))
 
-(overtone/defsynth treated-vocals []
+#_(overtone/defsynth treated-vocals []
   (let [lead (overtone/load-sample "vocals/love-lead.wav")
         dry (+ (overtone/pan2 (overtone/play-buf 1 lead) 1/3))
         delayed (overtone/delay-c dry :delay-time 0.05)
@@ -238,7 +238,7 @@
                       (overtone/hpf 1000)
                       overtone/pan2))))
 
-(defmethod play-note ::vocals
+#_(defmethod play-note ::vocals
   [_]
   (treated-vocals))
 
